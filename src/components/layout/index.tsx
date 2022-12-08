@@ -13,6 +13,7 @@ export function Layout({ children }: layoutProps) {
   const checkRoute = [
     '/login',
     '/register',
+    '/receipt',
     `/activate/${query.hash}`,
     '/recovery',
     `/recovery-password/${query.hash}`,

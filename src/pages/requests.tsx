@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import {
   Box,
   Flex,
@@ -14,34 +15,21 @@ import axios from 'axios';
 import { Layout, TabletRequests } from '~/components';
 
 export default function Requests() {
+  const [loading, setLoading] = useState(false);
+  const [docPdf, setDocpdf] = useState<any>();
   const [requests, setRequests] = useState({
     requests: [],
   });
 
-  //   const requests = [
-  //     {
-  //       number_request: '1',
-  //       type: 'Retirada',
-  //       name: 'Allisson',
-  //       phone: '99999999',
-  //       date: '07/12/22',
-  //       amount: 50000,
-  //       status: 'sucess',
-  //     },
-  //     {
-  //       number_request: '2',
-  //       type: 'Emtrega',
-  //       name: 'Miguel',
-  //       phone: '99999999',
-  //       date: '07/12/22',
-  //       amount: 10000,
-  //       status: 'pending',
-  //     },
-  //   ];
-
   useEffect(() => {
     async function getRequests() {
       const { data } = await axios.get('http://localhost:3000/requests');
+      const { data: pdf } = await axios.get(
+        'http://localhost:3000/requests/download'
+      );
+
+      setDocpdf(pdf);
+
       setRequests(data);
     }
     getRequests();
@@ -64,6 +52,7 @@ export default function Requests() {
       </Flex>
       <Text>Requests</Text>
       <TabletRequests
+        file={docPdf}
         head_options={[
           'N° Pedido',
           'Tipo',
@@ -80,3 +69,14 @@ export default function Requests() {
     </Box>
   );
 }
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   // Fetch data from external API
+//   const res = await fetch(`http://localhost:3000/requests/download`);
+//   const data = await res.arrayBuffer();
+//   const result = new DataView(data);
+//   fs.writeFileSync(`public/cv.html`, result);
+//   console.log(data);
+
+//   // Pass data to the page via props
+//   return { props: {} };
+// };

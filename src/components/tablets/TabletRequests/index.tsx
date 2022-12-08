@@ -58,7 +58,10 @@ export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
               textAlign="center"
             >
               {head_options?.map((item, key) => (
-                <Th textAlign={key === 8 ? 'center' : 'left'} key={key}>
+                <Th
+                  textAlign={key === 8 || key === 6 ? 'center' : 'left'}
+                  key={key}
+                >
                   {item}
                 </Th>
               ))}
@@ -69,8 +72,12 @@ export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
               <Tr borderBottom="1px solid #32394e" key={idx}>
                 <Td>{item.id}</Td>
                 <Td>{item.type}</Td>
-                <Td>{item.userRequest.name}</Td>
-                <Td>{phonesFormat(item.userRequest.from)}</Td>
+                <Td>
+                  <Box>
+                    <Text> {item.userRequest.name}</Text>
+                    <Text>{phonesFormat(item.userRequest.from)}</Text>
+                  </Box>
+                </Td>
                 <Td fontSize="14px">
                   <Box>
                     <Text>
@@ -110,7 +117,22 @@ export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
                   </Badge>
                 </Td>
                 <Td>
-                  <Button variant="outline" size="sm">
+                  <Flex justify="center" cursor="pointer">
+                    <Icon
+                      icon="material-symbols:print-outline-rounded"
+                      width={25}
+                    />
+                  </Flex>
+                </Td>
+                <Td>
+                  <Button
+                    rightIcon={
+                      <Icon icon="icon-park-solid:success" width={18} />
+                    }
+                    bg="#27AE60"
+                    color="#fff"
+                    size="sm"
+                  >
                     Concluir
                   </Button>
                 </Td>
@@ -127,7 +149,15 @@ export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
                       onOpen();
                     }}
                   >
-                    <Icon icon="circum:menu-kebab" width={22} />
+                    <Flex
+                      border="1px solid #cccccc39"
+                      boxShadow="2xl"
+                      w="-webkit-fit-content"
+                      p="5px"
+                      borderRadius="5px"
+                    >
+                      <Icon icon="circum:menu-kebab" width={22} />
+                    </Flex>
                   </Flex>
                 </Td>
               </Tr>

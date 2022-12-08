@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+/* eslint-disable no-shadow */
+import React, { useEffect, useRef, useState } from 'react';
+
 import {
   Badge,
   Box,
@@ -15,10 +17,13 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import { Icon } from '@iconify/react';
 import moment from 'moment';
 import { Modal } from '~/components/modals/modalDefault';
 import { phonesFormat } from '~/utils/formatPhone';
+import { PaymentConfirmation } from '~/components/receipt';
+// import pdf from './extract.html';
 
 export interface IDataRequests {
   number_request: string;
@@ -33,13 +38,69 @@ export interface IDataRequests {
 interface ITabletRequestsProps {
   head_options: string[];
   data: any[];
+  file: any;
 }
 
-export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
+export function TabletRequests({
+  head_options,
+  data,
+  file,
+}: ITabletRequestsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [loading, setLoading] = useState(false);
+  const [docPdf, setDocpdf] = useState('');
   const [details, setDetails] = useState([]);
-  return (
+  const IframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const printIframe = async (type: 'download' | 'print') => {
+    try {
+      const res = await fetch('http://localhost:3000/requests/download');
+      const data = await res.arrayBuffer();
+      const result = new DataView(data);
+      const newBlob = new Blob([result], { type: 'application/pdf' });
+      const fileURL = window.URL.createObjectURL(newBlob);
+
+      if (type === 'download') {
+        let link = document.createElement('a');
+        link.href = fileURL;
+        link.download = `comprovante.pdf`;
+        link.click();
+        return;
+      }
+
+      setDocpdf(fileURL);
+      setTimeout(() => {
+        if (IframeRef.current?.contentWindow) {
+          IframeRef.current?.contentWindow;
+          IframeRef.current?.focus();
+          IframeRef.current?.contentWindow.print();
+        }
+      }, 1000);
+      console.log(fileURL);
+    } catch (error) {
+      console.log();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return loading && docPdf ? (
+    <Text>Oi</Text>
+  ) : (
     <>
+      {docPdf && (
+        <iframe
+          ref={IframeRef}
+          id="receipt"
+          className="receipt"
+          // src="/extract.html"
+          // src="/extract.pdf"
+          // src="/login"
+          src={docPdf}
+          style={{ height: 500, display: 'none' }}
+          title="Receipt"
+        />
+      )}
       <TableContainer
         whiteSpace="nowrap"
         w="full"
@@ -117,11 +178,31 @@ export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
                   </Badge>
                 </Td>
                 <Td>
-                  <Flex justify="center" cursor="pointer">
-                    <Icon
-                      icon="material-symbols:print-outline-rounded"
-                      width={25}
-                    />
+                  <Flex px="20px" justify="space-around" align="center">
+                    <Box
+                      border="1px solid #cccccc39"
+                      boxShadow="2xl"
+                      borderRadius="5px"
+                      p="3px"
+                      cursor="pointer"
+                      onClick={() => printIframe('print')}
+                    >
+                      <Icon
+                        icon="material-symbols:print-outline-rounded"
+                        width={25}
+                      />
+                    </Box>
+                    <Box
+                      ml="5px"
+                      border="1px solid #cccccc39"
+                      boxShadow="2xl"
+                      borderRadius="5px"
+                      p="3px"
+                      cursor="pointer"
+                      onClick={() => printIframe('download')}
+                    >
+                      <Icon icon="material-symbols:download" width={25} />
+                    </Box>
                   </Flex>
                 </Td>
                 <Td>
@@ -152,9 +233,9 @@ export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
                     <Flex
                       border="1px solid #cccccc39"
                       boxShadow="2xl"
+                      borderRadius="5px"
                       w="-webkit-fit-content"
                       p="5px"
-                      borderRadius="5px"
                     >
                       <Icon icon="circum:menu-kebab" width={22} />
                     </Flex>
@@ -178,4 +259,7 @@ export function TabletRequests({ head_options, data }: ITabletRequestsProps) {
       </Modal>
     </>
   );
+}
+function isNil(newWindow: Window | null) {
+  throw new Error('Function not implemented.');
 }

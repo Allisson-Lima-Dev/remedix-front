@@ -9,6 +9,7 @@ export async function authPageProps({ Component, ctx, router }: AppContext) {
 
   const FREE_ROUTES = [
     '/login',
+    '/receipt',
     '/register',
     '/link-account',
     `/activate/[hash]`,

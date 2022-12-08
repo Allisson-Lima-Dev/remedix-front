@@ -67,11 +67,11 @@ export default function Requests() {
         head_options={[
           'N° Pedido',
           'Tipo',
-          'Nome',
-          'Telefone',
+          'Cliente',
           'Data',
           'Total',
           'Status',
+          'Comprovante',
           'Ação',
           'Detalhes',
         ]}

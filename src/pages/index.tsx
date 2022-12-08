@@ -174,7 +174,7 @@ export default function Home() {
             head_options={[
               'N° Pedido',
               'Tipo',
-              'Nome',
+              'Cliente',
               'Telefone',
               'Data',
               'Total',

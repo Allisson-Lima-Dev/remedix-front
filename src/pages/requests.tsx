@@ -24,11 +24,6 @@ export default function Requests() {
   useEffect(() => {
     async function getRequests() {
       const { data } = await axios.get('http://localhost:3000/requests');
-      const { data: pdf } = await axios.get(
-        'http://localhost:3000/requests/download'
-      );
-
-      setDocpdf(pdf);
 
       setRequests(data);
     }

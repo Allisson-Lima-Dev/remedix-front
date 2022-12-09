@@ -16,14 +16,18 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  Spinner,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import moment from 'moment';
 import { Modal } from '~/components/modals/modalDefault';
 import { phonesFormat } from '~/utils/formatPhone';
-import { PaymentConfirmation } from '~/components/receipt';
-// import pdf from './extract.html';
+import {
+  CreateRequest,
+  getReceiptRequest,
+  useReceiptRequest,
+} from '~/services/hooks/useRequests';
 
 export interface IDataRequests {
   number_request: string;
@@ -47,36 +51,42 @@ export function TabletRequests({
   file,
 }: ITabletRequestsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [id, setId] = useState('1');
   const [loading, setLoading] = useState(false);
   const [docPdf, setDocpdf] = useState('');
   const [details, setDetails] = useState([]);
   const IframeRef = useRef<HTMLIFrameElement | null>(null);
 
-  const printIframe = async (type: 'download' | 'print') => {
+  const printIframe = async (type: 'download' | 'print', id: string) => {
     try {
-      const res = await fetch('http://localhost:3000/requests/download');
-      const data = await res.arrayBuffer();
-      const result = new DataView(data);
-      const newBlob = new Blob([result], { type: 'application/pdf' });
-      const fileURL = window.URL.createObjectURL(newBlob);
+      setLoading(true);
+      CreateRequest(id).finally(async () => {
+        const res = await fetch(
+          `http://localhost:3000/requests/download/${id}`
+        );
+        const data = await res.arrayBuffer();
+        const result = new DataView(data);
+        const newBlob = new Blob([result], { type: 'application/pdf' });
+        const fileURL = window.URL.createObjectURL(newBlob);
 
-      if (type === 'download') {
-        let link = document.createElement('a');
-        link.href = fileURL;
-        link.download = `comprovante.pdf`;
-        link.click();
-        return;
-      }
-
-      setDocpdf(fileURL);
-      setTimeout(() => {
-        if (IframeRef.current?.contentWindow) {
-          IframeRef.current?.contentWindow;
-          IframeRef.current?.focus();
-          IframeRef.current?.contentWindow.print();
+        if (type === 'download') {
+          let link = document.createElement('a');
+          link.href = fileURL;
+          link.download = `comprovante.pdf`;
+          link.click();
+          return;
         }
-      }, 1000);
-      console.log(fileURL);
+
+        setDocpdf(fileURL);
+        setTimeout(() => {
+          if (IframeRef.current?.contentWindow) {
+            IframeRef.current?.contentWindow;
+            IframeRef.current?.focus();
+            IframeRef.current?.contentWindow.print();
+          }
+        }, 700);
+        console.log(res);
+      });
     } catch (error) {
       console.log();
     } finally {
@@ -185,12 +195,19 @@ export function TabletRequests({
                       borderRadius="5px"
                       p="3px"
                       cursor="pointer"
-                      onClick={() => printIframe('print')}
+                      onClick={() => {
+                        setId(item?.id);
+                        printIframe('print', item?.id);
+                      }}
                     >
-                      <Icon
-                        icon="material-symbols:print-outline-rounded"
-                        width={25}
-                      />
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        <Icon
+                          icon="material-symbols:print-outline-rounded"
+                          width={25}
+                        />
+                      )}
                     </Box>
                     <Box
                       ml="5px"
@@ -199,9 +216,13 @@ export function TabletRequests({
                       borderRadius="5px"
                       p="3px"
                       cursor="pointer"
-                      onClick={() => printIframe('download')}
+                      onClick={() => printIframe('download', item?.id)}
                     >
-                      <Icon icon="material-symbols:download" width={25} />
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        <Icon icon="material-symbols:download" width={25} />
+                      )}
                     </Box>
                   </Flex>
                 </Td>

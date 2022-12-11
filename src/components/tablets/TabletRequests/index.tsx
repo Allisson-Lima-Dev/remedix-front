@@ -16,14 +16,18 @@ import {
   Thead,
   Tr,
   useDisclosure,
+  Spinner,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import moment from 'moment';
 import { Modal } from '~/components/modals/modalDefault';
 import { phonesFormat } from '~/utils/formatPhone';
-import { PaymentConfirmation } from '~/components/receipt';
-// import pdf from './extract.html';
+import {
+  CreateRequest,
+  getReceiptRequest,
+  useReceiptRequest,
+} from '~/services/hooks/useRequests';
 
 export interface IDataRequests {
   number_request: string;
@@ -47,36 +51,42 @@ export function TabletRequests({
   file,
 }: ITabletRequestsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [id, setId] = useState('1');
   const [loading, setLoading] = useState(false);
   const [docPdf, setDocpdf] = useState('');
-  const [details, setDetails] = useState([]);
+  const [details, setDetails] = useState<any>();
   const IframeRef = useRef<HTMLIFrameElement | null>(null);
 
-  const printIframe = async (type: 'download' | 'print') => {
+  const printIframe = async (type: 'download' | 'print', id: string) => {
     try {
-      const res = await fetch('http://localhost:3000/requests/download');
-      const data = await res.arrayBuffer();
-      const result = new DataView(data);
-      const newBlob = new Blob([result], { type: 'application/pdf' });
-      const fileURL = window.URL.createObjectURL(newBlob);
+      setLoading(true);
+      CreateRequest(id).finally(async () => {
+        const res = await fetch(
+          `http://localhost:3000/requests/download/${id}`
+        );
+        const data = await res.arrayBuffer();
+        const result = new DataView(data);
+        const newBlob = new Blob([result], { type: 'application/pdf' });
+        const fileURL = window.URL.createObjectURL(newBlob);
 
-      if (type === 'download') {
-        let link = document.createElement('a');
-        link.href = fileURL;
-        link.download = `comprovante.pdf`;
-        link.click();
-        return;
-      }
-
-      setDocpdf(fileURL);
-      setTimeout(() => {
-        if (IframeRef.current?.contentWindow) {
-          IframeRef.current?.contentWindow;
-          IframeRef.current?.focus();
-          IframeRef.current?.contentWindow.print();
+        if (type === 'download') {
+          let link = document.createElement('a');
+          link.href = fileURL;
+          link.download = `comprovante.pdf`;
+          link.click();
+          return;
         }
-      }, 1000);
-      console.log(fileURL);
+
+        setDocpdf(fileURL);
+        setTimeout(() => {
+          if (IframeRef.current?.contentWindow) {
+            IframeRef.current?.contentWindow;
+            IframeRef.current?.focus();
+            IframeRef.current?.contentWindow.print();
+          }
+        }, 700);
+        console.log(res);
+      });
     } catch (error) {
       console.log();
     } finally {
@@ -131,7 +141,7 @@ export function TabletRequests({
           <Tbody pos="relative">
             {data?.map((item: any, idx) => (
               <Tr borderBottom="1px solid #32394e" key={idx}>
-                <Td>{item.id}</Td>
+                <Td>#{item.id}</Td>
                 <Td>{item.type}</Td>
                 <Td>
                   <Box>
@@ -167,14 +177,14 @@ export function TabletRequests({
                         ? 'green'
                         : item.status === 'Em Andamento'
                         ? 'yellow'
-                        : 'red'
+                        : 'yellow'
                     }
                   >
                     {item.status === 'sucess'
                       ? 'Concluido'
                       : item.status === 'Em Andamento'
                       ? 'Pendente'
-                      : 'Cancelado'}
+                      : 'Pendente'}
                   </Badge>
                 </Td>
                 <Td>
@@ -185,12 +195,19 @@ export function TabletRequests({
                       borderRadius="5px"
                       p="3px"
                       cursor="pointer"
-                      onClick={() => printIframe('print')}
+                      onClick={() => {
+                        setId(item?.id);
+                        printIframe('print', item?.id);
+                      }}
                     >
-                      <Icon
-                        icon="material-symbols:print-outline-rounded"
-                        width={25}
-                      />
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        <Icon
+                          icon="material-symbols:print-outline-rounded"
+                          width={25}
+                        />
+                      )}
                     </Box>
                     <Box
                       ml="5px"
@@ -199,9 +216,13 @@ export function TabletRequests({
                       borderRadius="5px"
                       p="3px"
                       cursor="pointer"
-                      onClick={() => printIframe('download')}
+                      onClick={() => printIframe('download', item?.id)}
                     >
-                      <Icon icon="material-symbols:download" width={25} />
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        <Icon icon="material-symbols:download" width={25} />
+                      )}
                     </Box>
                   </Flex>
                 </Td>
@@ -223,7 +244,7 @@ export function TabletRequests({
                     justify="center"
                     cursor="pointer"
                     onClick={() => {
-                      setDetails(item?.details);
+                      setDetails(item);
                       if (!item?.details) {
                         return;
                       }
@@ -246,20 +267,58 @@ export function TabletRequests({
           </Tbody>
         </Table>
       </TableContainer>
-      <Modal isOpen={isOpen} onClose={onClose} title="Detalhes do Pedido">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Detalhes do Pedido"
+        size="sm"
+      >
         <Box h="500px">
-          {details?.map((val: any, key: number) => (
+          <Flex w="full" justify="space-between" mb="5px">
+            <Text>N° do Pedido: #{details?.id}</Text>
+            <Text>
+              Valor:{' '}
+              {parseFloat(details?.amount).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              })}
+            </Text>
+          </Flex>
+          <Text>Tipo: {details?.type}</Text>
+          <Divider
+            borderColor="#cccccc3e"
+            my="6px"
+            borderStyle="dashed"
+            borderWidth="1.5px"
+          />
+          <Text mb="5px">Dados do Cliente:</Text>
+          <Text>Cliente: {details?.userRequest?.name}</Text>
+          <Text>Bairro: {details?.address[0]?.district}</Text>
+          <Text>
+            Rua: {details?.address[0]?.street},{' '}
+            {details?.address[0]?.number_home}
+          </Text>
+          <Divider
+            borderColor="#cccccc3e"
+            mt="6px"
+            borderStyle="dashed"
+            borderWidth="1.5px"
+          />
+          <Text my="10px">Descrição do pedido:</Text>
+          {details?.details?.map((val: any, key: number) => (
             <Box key={key} mb="5px">
               <Text>{val.title}</Text>
               <Text>{val.description}</Text>
-              <Divider borderColor="#cccccc3e" mt="6px" />
+              <Divider
+                borderColor="#cccccc3e"
+                mt="6px"
+                borderStyle="dashed"
+                borderWidth="1.5px"
+              />
             </Box>
           ))}
         </Box>
       </Modal>
     </>
   );
-}
-function isNil(newWindow: Window | null) {
-  throw new Error('Function not implemented.');
 }

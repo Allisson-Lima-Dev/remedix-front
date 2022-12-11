@@ -39,7 +39,7 @@ export function Modal({
       <ModalOverlay />
       <ModalContent
         maxW="max-content"
-        minW="500px"
+        minW={{ base: '', md: '500px' }}
         shadow="none"
         bg="#121626f8"
         color="#fff"

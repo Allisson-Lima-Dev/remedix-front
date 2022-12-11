@@ -13,6 +13,7 @@ import {
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { Layout, TabletRequests } from '~/components';
+import { useRequest } from '~/services/hooks/useRequests';
 
 export default function Requests() {
   const [loading, setLoading] = useState(false);
@@ -21,21 +22,10 @@ export default function Requests() {
     requests: [],
   });
 
-  useEffect(() => {
-    async function getRequests() {
-      const { data } = await axios.get('http://localhost:3000/requests');
-      const { data: pdf } = await axios.get(
-        'http://localhost:3000/requests/download'
-      );
+  const { data, refetch } = useRequest();
 
-      setDocpdf(pdf);
-
-      setRequests(data);
-    }
-    getRequests();
-  }, []);
   return (
-    <Box w="full" p="30px">
+    <Box w="full" p={{ base: '10px', md: '30px' }}>
       <Flex w="full" justify="flex-end">
         <InputGroup w="300px">
           <InputRightElement
@@ -51,6 +41,19 @@ export default function Requests() {
         </InputGroup>
       </Flex>
       <Text>Requests</Text>
+      <Flex
+        onClick={() => refetch()}
+        cursor="pointer"
+        mb="10px"
+        justify="center"
+        bg="#161A2E"
+        border="1px solid #29304D"
+        w="-webkit-fit-content"
+        p="5px"
+        borderRadius="5px"
+      >
+        <Icon icon="ic:outline-refresh" width={22} />
+      </Flex>
       <TabletRequests
         file={docPdf}
         head_options={[
@@ -64,7 +67,7 @@ export default function Requests() {
           'Ação',
           'Detalhes',
         ]}
-        data={requests?.requests}
+        data={data?.requests}
       />
     </Box>
   );

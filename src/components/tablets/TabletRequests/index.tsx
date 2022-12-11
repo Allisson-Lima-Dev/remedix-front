@@ -54,7 +54,7 @@ export function TabletRequests({
   const [id, setId] = useState('1');
   const [loading, setLoading] = useState(false);
   const [docPdf, setDocpdf] = useState('');
-  const [details, setDetails] = useState([]);
+  const [details, setDetails] = useState<any>();
   const IframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const printIframe = async (type: 'download' | 'print', id: string) => {
@@ -141,7 +141,7 @@ export function TabletRequests({
           <Tbody pos="relative">
             {data?.map((item: any, idx) => (
               <Tr borderBottom="1px solid #32394e" key={idx}>
-                <Td>{item.id}</Td>
+                <Td>#{item.id}</Td>
                 <Td>{item.type}</Td>
                 <Td>
                   <Box>
@@ -177,14 +177,14 @@ export function TabletRequests({
                         ? 'green'
                         : item.status === 'Em Andamento'
                         ? 'yellow'
-                        : 'red'
+                        : 'yellow'
                     }
                   >
                     {item.status === 'sucess'
                       ? 'Concluido'
                       : item.status === 'Em Andamento'
                       ? 'Pendente'
-                      : 'Cancelado'}
+                      : 'Pendente'}
                   </Badge>
                 </Td>
                 <Td>
@@ -244,7 +244,7 @@ export function TabletRequests({
                     justify="center"
                     cursor="pointer"
                     onClick={() => {
-                      setDetails(item?.details);
+                      setDetails(item);
                       if (!item?.details) {
                         return;
                       }
@@ -267,20 +267,58 @@ export function TabletRequests({
           </Tbody>
         </Table>
       </TableContainer>
-      <Modal isOpen={isOpen} onClose={onClose} title="Detalhes do Pedido">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Detalhes do Pedido"
+        size="sm"
+      >
         <Box h="500px">
-          {details?.map((val: any, key: number) => (
+          <Flex w="full" justify="space-between" mb="5px">
+            <Text>N° do Pedido: #{details?.id}</Text>
+            <Text>
+              Valor:{' '}
+              {parseFloat(details?.amount).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              })}
+            </Text>
+          </Flex>
+          <Text>Tipo: {details?.type}</Text>
+          <Divider
+            borderColor="#cccccc3e"
+            my="6px"
+            borderStyle="dashed"
+            borderWidth="1.5px"
+          />
+          <Text mb="5px">Dados do Cliente:</Text>
+          <Text>Cliente: {details?.userRequest?.name}</Text>
+          <Text>Bairro: {details?.address[0]?.district}</Text>
+          <Text>
+            Rua: {details?.address[0]?.street},{' '}
+            {details?.address[0]?.number_home}
+          </Text>
+          <Divider
+            borderColor="#cccccc3e"
+            mt="6px"
+            borderStyle="dashed"
+            borderWidth="1.5px"
+          />
+          <Text my="10px">Descrição do pedido:</Text>
+          {details?.details?.map((val: any, key: number) => (
             <Box key={key} mb="5px">
               <Text>{val.title}</Text>
               <Text>{val.description}</Text>
-              <Divider borderColor="#cccccc3e" mt="6px" />
+              <Divider
+                borderColor="#cccccc3e"
+                mt="6px"
+                borderStyle="dashed"
+                borderWidth="1.5px"
+              />
             </Box>
           ))}
         </Box>
       </Modal>
     </>
   );
-}
-function isNil(newWindow: Window | null) {
-  throw new Error('Function not implemented.');
 }

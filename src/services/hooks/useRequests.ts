@@ -25,6 +25,21 @@ export async function getReceiptRequest(id?: string): Promise<any> {
     throw new HandleError(error);
   }
 }
+
+async function getRequests() {
+  try {
+    const { data } = await api.get('/requests');
+    return data;
+  } catch (error) {
+    console.log();
+  }
+}
+
+export function useRequest() {
+  return useQuery(['AllRequests'], () => getRequests(), {
+    staleTime: 1000 * 5,
+  });
+}
 export function useReceiptRequest(id?: string) {
   return useQuery(['ReceiptRequest', { id }], () => getReceiptRequest(id), {
     staleTime: 1000 * 5,

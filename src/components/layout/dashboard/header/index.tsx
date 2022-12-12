@@ -21,9 +21,6 @@ import {
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
-import { HiMenu } from 'react-icons/hi';
-import { BiChevronDown, BiSearchAlt } from 'react-icons/bi';
-import { FaRegBell } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 import Router, { useRouter } from 'next/router';
 import { destroyCookie } from 'nookies';
@@ -241,7 +238,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
               color="#eeeef0"
             >
               <Text>{user?.name.split(' ')[0]}</Text>
-              <BiChevronDown size="15px" />
+              <Icon icon="mdi:user-circle-outline" />
             </Flex>
           </MenuButton>
           <MenuList bg="#2A2F42" color="#fff" border="none" zIndex={3000}>
@@ -268,7 +265,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
         onClick={onOpen}
         display={{ base: 'flex', lg: 'none' }}
       >
-        <HiMenu size="22px" color="#a6b0cf" />
+        <Icon icon="material-symbols:menu" color="#a6b0cf" width={22} />
       </Box>
 
       <Drawer

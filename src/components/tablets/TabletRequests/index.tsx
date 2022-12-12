@@ -62,7 +62,7 @@ export function TabletRequests({
       setLoading(true);
       CreateRequest(id).finally(async () => {
         const res = await fetch(
-          `http://localhost:3000/requests/download/${id}`
+          `https://api.remedix.com.br/requests/download/${id}`
         );
         const data = await res.arrayBuffer();
         const result = new DataView(data);

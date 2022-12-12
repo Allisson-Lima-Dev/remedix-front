@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Flex, Icon, Stack, Image } from '@chakra-ui/react';
-import {
-  RiGitMergeLine,
-  RiInputMethodLine,
-  RiMoneyDollarCircleLine,
-} from 'react-icons/ri';
-import { AiOutlineBank, AiOutlineHome } from 'react-icons/ai';
-import { HiOutlineUsers, HiUsers } from 'react-icons/hi';
-import { FaRobot } from 'react-icons/fa';
+import { Icon as IconName } from '@iconify/react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { NavLink } from './NavLink';
@@ -24,7 +17,7 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
       {
         title: 'Customers',
         route: '/',
-        icon: AiOutlineBank,
+        icon: Icon,
         subMenu: [
           {
             title: 'View',
@@ -43,7 +36,7 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
       {
         title: 'Financial',
         route: '/financial',
-        icon: RiMoneyDollarCircleLine,
+        icon: Icon,
       },
     ],
     menu1: [

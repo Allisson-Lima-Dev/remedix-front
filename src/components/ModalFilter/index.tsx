@@ -14,7 +14,7 @@ import {
   QueryObserverResult,
   RefetchOptions,
   RefetchQueryFilters,
-} from '@tanstack/react-query';
+} from 'react-query';
 
 interface ModalProps extends ModalChakraModal {
   title?: string;

@@ -51,42 +51,40 @@ export function TabletRequests({
   file,
 }: ITabletRequestsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [id, setId] = useState('1');
+  const [type, setType] = useState<'download' | 'print'>();
+  const [id, setId] = useState();
   const [loading, setLoading] = useState(false);
   const [docPdf, setDocpdf] = useState('');
   const [details, setDetails] = useState<any>();
   const IframeRef = useRef<HTMLIFrameElement | null>(null);
 
-  const printIframe = async (type: 'download' | 'print', id: string) => {
+  const printIframe = async (Type: 'download' | 'print', id: string) => {
+    setType(Type);
     try {
       setLoading(true);
-      CreateRequest(id).finally(async () => {
-        const res = await fetch(
-          `https://api.remedix.com.br/requests/download/${id}`
-        );
-        const data = await res.arrayBuffer();
-        const result = new DataView(data);
-        const newBlob = new Blob([result], { type: 'application/pdf' });
-        const fileURL = window.URL.createObjectURL(newBlob);
+      const res = await fetch(`https://api.remedix.com.br/requests/pdf/${id}`);
+      const data = await res.arrayBuffer();
+      const result = new DataView(data);
+      const newBlob = new Blob([result], { type: 'application/pdf' });
+      const fileURL = window.URL.createObjectURL(newBlob);
 
-        if (type === 'download') {
-          let link = document.createElement('a');
-          link.href = fileURL;
-          link.download = `comprovante.pdf`;
-          link.click();
-          return;
+      if (Type === 'download') {
+        let link = document.createElement('a');
+        link.href = fileURL;
+        link.download = `#${id}-comprovante.pdf`;
+        link.click();
+        return;
+      }
+
+      setDocpdf(fileURL);
+      setTimeout(() => {
+        if (IframeRef.current?.contentWindow) {
+          IframeRef.current?.contentWindow;
+          IframeRef.current?.focus();
+          IframeRef.current?.contentWindow.print();
         }
-
-        setDocpdf(fileURL);
-        setTimeout(() => {
-          if (IframeRef.current?.contentWindow) {
-            IframeRef.current?.contentWindow;
-            IframeRef.current?.focus();
-            IframeRef.current?.contentWindow.print();
-          }
-        }, 700);
-        console.log(res);
-      });
+      }, 700);
+      console.log(res);
     } catch (error) {
       console.log();
     } finally {
@@ -94,18 +92,13 @@ export function TabletRequests({
     }
   };
 
-  return loading && docPdf ? (
-    <Text>Oi</Text>
-  ) : (
+  return (
     <>
       {docPdf && (
         <iframe
           ref={IframeRef}
           id="receipt"
           className="receipt"
-          // src="/extract.html"
-          // src="/extract.pdf"
-          // src="/login"
           src={docPdf}
           style={{ height: 500, display: 'none' }}
           title="Receipt"
@@ -189,18 +182,20 @@ export function TabletRequests({
                 </Td>
                 <Td>
                   <Flex px="20px" justify="space-around" align="center">
-                    <Box
+                    <Flex
                       border="1px solid #cccccc39"
                       boxShadow="2xl"
                       borderRadius="5px"
+                      justify="center"
                       p="3px"
                       cursor="pointer"
                       onClick={() => {
+                        setType('print');
                         setId(item?.id);
                         printIframe('print', item?.id);
                       }}
                     >
-                      {loading ? (
+                      {loading && type === 'print' && id === item.id ? (
                         <Spinner />
                       ) : (
                         <Icon
@@ -208,22 +203,27 @@ export function TabletRequests({
                           width={25}
                         />
                       )}
-                    </Box>
-                    <Box
+                    </Flex>
+                    <Flex
                       ml="5px"
                       border="1px solid #cccccc39"
                       boxShadow="2xl"
                       borderRadius="5px"
+                      justify="center"
                       p="3px"
                       cursor="pointer"
-                      onClick={() => printIframe('download', item?.id)}
+                      onClick={() => {
+                        setType('download');
+                        setId(item?.id);
+                        printIframe('download', item?.id);
+                      }}
                     >
-                      {loading ? (
+                      {loading && type === 'download' && id === item.id ? (
                         <Spinner />
                       ) : (
                         <Icon icon="material-symbols:download" width={25} />
                       )}
-                    </Box>
+                    </Flex>
                   </Flex>
                 </Td>
                 <Td>

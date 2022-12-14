@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
+import { GetServerSideProps } from 'next';
 import { Layout, TabletRequests } from '~/components';
 import { useRequest } from '~/services/hooks/useRequests';
 
@@ -27,6 +28,7 @@ export default function Requests() {
   return (
     <Box w="full" p={{ base: '10px', md: '30px' }}>
       <Flex w="full" justify="flex-end">
+        {/* <MyComponent /> */}
         <InputGroup w="300px">
           <InputRightElement
             pointerEvents="none"
@@ -72,14 +74,3 @@ export default function Requests() {
     </Box>
   );
 }
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   // Fetch data from external API
-//   const res = await fetch(`http://localhost:3000/requests/download`);
-//   const data = await res.arrayBuffer();
-//   const result = new DataView(data);
-//   fs.writeFileSync(`public/cv.html`, result);
-//   console.log(data);
-
-//   // Pass data to the page via props
-//   return { props: {} };
-// };

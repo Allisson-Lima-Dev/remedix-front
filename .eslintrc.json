@@ -83,6 +83,7 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "react/no-children-prop": "off",
-    "no-constant-condition": "off"
+    "no-constant-condition": "off",
+    "no-param-reassign": "off"
   }
 }

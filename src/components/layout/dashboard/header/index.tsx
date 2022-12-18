@@ -161,7 +161,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
               </Flex>
             </Link>
           ) : idx === 2 ? (
-            <Box cursor="not-allowed">
+            <Box cursor="not-allowed" key={idx}>
               <Flex mr="20px" align="center">
                 <Icon
                   icon={item.icon}

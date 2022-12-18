@@ -26,19 +26,25 @@ export async function getReceiptRequest(id?: string): Promise<any> {
   }
 }
 
-async function getRequests() {
+async function getRequests(page: number, per_page: number) {
   try {
-    const { data } = await api.get('/requests');
+    const { data } = await api.get(
+      `/requests?per_page=${per_page}&page=${page}`
+    );
     return data;
   } catch (error) {
     console.log();
   }
 }
 
-export function useRequest() {
-  return useQuery(['AllRequests'], () => getRequests(), {
-    staleTime: 1000 * 5,
-  });
+export function useRequest(page?: number, per_page?: number) {
+  return useQuery(
+    ['AllRequests', { page, per_page }],
+    () => getRequests(page || 1, per_page || 200),
+    {
+      staleTime: 1000 * 5,
+    }
+  );
 }
 export function useReceiptRequest(id?: string) {
   return useQuery(['ReceiptRequest', { id }], () => getReceiptRequest(id), {

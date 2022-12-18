@@ -13,6 +13,8 @@ interface INavigation {
   per_page: number;
   isFetching: boolean;
   total?: number;
+  next: boolean;
+  prev: boolean;
 }
 
 export function Pagination({
@@ -21,6 +23,8 @@ export function Pagination({
   setPage,
   isFetching,
   total = 1,
+  next,
+  prev,
 }: INavigation) {
   const lastPage = Math.ceil(total / per_page || 1);
 
@@ -29,23 +33,23 @@ export function Pagination({
   return (
     <Flex align="center" w="full" justify="center" my="40px">
       <Flex
-        cursor={current !== 1 ? 'pointer' : 'not-allowed'}
-        bg={current !== 1 ? '#363C4F' : '#2A3042'}
-        _hover={{ bg: '#556EE6', color: '#A6B0CF' }}
+        cursor={prev ? 'pointer' : 'not-allowed'}
+        bg={prev ? '#363C4F' : '#2A3042'}
+        _hover={{ bg: '#1461f1', color: '#ffffff' }}
         borderRadius="6px"
         w="38px"
         h="38px"
         justify="center"
         align="center"
         onClick={() => {
-          if (current > 1) {
+          if (prev) {
             setPage((page: number) => page - 1);
           }
         }}
       >
         <Icon
           icon="dashicons:arrow-left-alt2"
-          color={current !== 1 ? '#C4CDD5' : '#A6B0CF'}
+          color={prev ? '#C4CDD5' : '#A6B0CF'}
           width="20"
           height="20"
         />
@@ -62,10 +66,10 @@ export function Pagination({
                 h="38px"
                 key={key}
                 onClick={() => setPage(item)}
-                color={current === item ? '#556EE6' : '#A6B0CF'}
-                border={current === item ? '2px solid #556EE6' : ''}
-                _hover={{ bg: '#556EE6', color: '#A6B0CF' }}
-                bg="#2A3042"
+                color={current === item ? '#ffffff' : '#A6B0CF'}
+                border={current === item ? '' : '2px solid #69729c6d'}
+                _hover={{ bg: '#1461f1', color: '#ffffff' }}
+                bg={current === item ? '#4988FA' : 'transparent'}
               >
                 {item}
               </Button>
@@ -81,17 +85,17 @@ export function Pagination({
             ))}
       </Flex>
       <Flex
-        cursor={current < lastPage ? 'pointer' : 'not-allowed'}
-        bg={current < lastPage ? '#363C4F' : '#2A3042'}
-        color={current < lastPage ? '#C4CDD5' : '#A6B0CF'}
-        _hover={{ bg: '#556EE6', color: '#A6B0CF' }}
+        cursor={next ? 'pointer' : 'not-allowed'}
+        bg={next ? '#363C4F' : '#2A3042'}
+        color={next ? '#C4CDD5' : '#A6B0CF'}
+        _hover={{ bg: '#1461f1', color: '#ffffff' }}
         borderRadius="6px"
         w="38px"
         h="38px"
         justify="center"
         align="center"
         onClick={() => {
-          if (current < lastPage) {
+          if (next) {
             setPage((page: number) => page + 1);
           }
         }}
@@ -101,7 +105,7 @@ export function Pagination({
           width="20"
           height="20"
           style={{
-            cursor: current < lastPage ? 'pointer' : 'not-allowed',
+            cursor: next ? 'pointer' : 'not-allowed',
           }}
         />
       </Flex>

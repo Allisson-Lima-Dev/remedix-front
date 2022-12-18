@@ -28,6 +28,7 @@ import {
   getReceiptRequest,
   useReceiptRequest,
 } from '~/services/hooks/useRequests';
+import { Pagination } from '~/components/pagination';
 
 export interface IDataRequests {
   number_request: string;
@@ -42,13 +43,25 @@ export interface IDataRequests {
 interface ITabletRequestsProps {
   head_options: string[];
   data: any[];
-  file: any;
+  total?: number;
+  isFetching: boolean;
+  setPage: (numberPage: any) => void;
+  page: number;
+  per_page: number;
+  next: boolean;
+  prev: boolean;
 }
 
 export function TabletRequests({
   head_options,
   data,
-  file,
+  total,
+  isFetching,
+  per_page,
+  setPage,
+  page,
+  next,
+  prev,
 }: ITabletRequestsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [type, setType] = useState<'download' | 'print'>();
@@ -266,7 +279,17 @@ export function TabletRequests({
             ))}
           </Tbody>
         </Table>
+        <Pagination
+          isFetching={isFetching}
+          setPage={setPage}
+          per_page={per_page}
+          next={next}
+          prev={prev}
+          current={page}
+          total={total}
+        />
       </TableContainer>
+
       <Modal
         isOpen={isOpen}
         onClose={onClose}

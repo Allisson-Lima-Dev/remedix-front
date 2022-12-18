@@ -29,6 +29,7 @@ import {
   useReceiptRequest,
 } from '~/services/hooks/useRequests';
 import { Pagination } from '~/components/pagination';
+import { ModalRequest } from '~/components/modals/ModalRequest';
 
 export interface IDataRequests {
   number_request: string;
@@ -44,6 +45,7 @@ interface ITabletRequestsProps {
   head_options: string[];
   data: any[];
   total?: number;
+  lastPage: number;
   isFetching: boolean;
   setPage: (numberPage: any) => void;
   page: number;
@@ -57,6 +59,7 @@ export function TabletRequests({
   data,
   total,
   isFetching,
+  lastPage,
   per_page,
   setPage,
   page,
@@ -283,65 +286,14 @@ export function TabletRequests({
           isFetching={isFetching}
           setPage={setPage}
           per_page={per_page}
+          lastPage={lastPage}
           next={next}
           prev={prev}
           current={page}
           total={total}
         />
       </TableContainer>
-
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        title="Detalhes do Pedido"
-        size="sm"
-      >
-        <Box h="500px">
-          <Flex w="full" justify="space-between" mb="5px">
-            <Text>N° do Pedido: #{details?.id}</Text>
-            <Text>
-              Valor:{' '}
-              {parseFloat(details?.amount).toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              })}
-            </Text>
-          </Flex>
-          <Text>Tipo: {details?.type}</Text>
-          <Divider
-            borderColor="#cccccc3e"
-            my="6px"
-            borderStyle="dashed"
-            borderWidth="1.5px"
-          />
-          <Text mb="5px">Dados do Cliente:</Text>
-          <Text>Cliente: {details?.userRequest?.name}</Text>
-          <Text>Bairro: {details?.address[0]?.district}</Text>
-          <Text>
-            Rua: {details?.address[0]?.street},{' '}
-            {details?.address[0]?.number_home}
-          </Text>
-          <Divider
-            borderColor="#cccccc3e"
-            mt="6px"
-            borderStyle="dashed"
-            borderWidth="1.5px"
-          />
-          <Text my="10px">Descrição do pedido:</Text>
-          {details?.details?.map((val: any, key: number) => (
-            <Box key={key} mb="5px">
-              <Text>{val.title}</Text>
-              <Text>{val.description}</Text>
-              <Divider
-                borderColor="#cccccc3e"
-                mt="6px"
-                borderStyle="dashed"
-                borderWidth="1.5px"
-              />
-            </Box>
-          ))}
-        </Box>
-      </Modal>
+      <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

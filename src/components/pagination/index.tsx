@@ -9,6 +9,7 @@ import { setLocalStorage } from '~/utils/localStorageFormat';
 
 interface INavigation {
   current?: number;
+  lastPage: number;
   setPage: (numberPage: any) => void;
   per_page: number;
   isFetching: boolean;
@@ -20,15 +21,15 @@ interface INavigation {
 export function Pagination({
   current = 1,
   per_page,
+  lastPage,
   setPage,
   isFetching,
   total = 1,
   next,
   prev,
 }: INavigation) {
-  const lastPage = Math.ceil(total / per_page || 1);
-
   const { pagination } = createPagination(5, lastPage, current);
+  console.log({ pagination });
 
   return (
     <Flex align="center" w="full" justify="center" my="40px">

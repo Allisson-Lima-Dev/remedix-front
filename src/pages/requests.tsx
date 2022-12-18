@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable prefer-regex-literals */
 import React, { useEffect, useState } from 'react';
-
+import 'moment/locale/pt-br';
 import {
   Box,
   Flex,
@@ -20,23 +20,27 @@ import {
   Heading,
   Divider,
   Badge,
+  Center,
+  SimpleGrid,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
+import moment from 'moment';
 import { Layout, TabletRequests } from '~/components';
 import { useRequest } from '~/services/hooks/useRequests';
+import { CardRequest } from '~/components/cards/cardRequest';
+import { phonesFormat } from '~/utils/formatPhone';
+import { Pagination } from '~/components/pagination';
+import { ModalRequest } from '~/components/modals/ModalRequest';
 
 export default function Requests() {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(1);
-  const [docPdf, setDocpdf] = useState<any>();
-  // const [value, setValue] = useState('');
-  const [requests, setRequests] = useState({
-    requests: [],
-  });
-
+  const [perPage, setPerPage] = useState(3);
+  const [viewList, setViewList] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [details, setDetails] = useState<any>();
   const { register, handleSubmit, reset } = useForm<any>();
 
   const { data, refetch, isFetching } = useRequest(page, perPage);
@@ -58,19 +62,42 @@ export default function Requests() {
 
   return (
     <Box w="full" p={{ base: '10px', md: '30px' }}>
-      <Flex
-        onClick={() => refetch()}
-        cursor="pointer"
-        mb="10px"
-        justify="center"
-        bg="#161A2E"
-        border="1px solid #29304D"
-        w="-webkit-fit-content"
-        p="5px"
-        borderRadius="5px"
-      >
-        <Icon icon="ic:outline-refresh" width={22} />
+      <Flex w="full" justify="space-between" mb="10px">
+        <Flex
+          onClick={() => refetch()}
+          cursor="pointer"
+          justify="center"
+          bg="#161A2E"
+          border="1px solid #29304D"
+          w="-webkit-fit-content"
+          h="-webkit-fit-content"
+          p="5px"
+          borderRadius="5px"
+        >
+          <Icon icon="ic:outline-refresh" width={22} />
+        </Flex>
+        <Box>
+          <Text mb="2px">Pesquise</Text>
+          <InputGroup w="300px">
+            <InputRightElement
+              pointerEvents="none"
+              children={<Icon icon="ic:baseline-search" width={20} />}
+            />
+
+            <Input
+              type="tel"
+              placeholder="Busque por N° Pedido, nome..."
+              variant="outline"
+              // {...register('value', {
+              //   onChange(event: React.ChangeEvent<HTMLInputElement>) {
+              //     handleChange(event);
+              //   },
+              // })}
+            />
+          </InputGroup>
+        </Box>
       </Flex>
+
       <Tabs borderBottomColor="#32394e">
         <Flex align="center" justify="space-between" mb="20px">
           <TabList
@@ -89,91 +116,88 @@ export default function Requests() {
               </Tab>
             ))}
           </TabList>
-          <InputGroup w="300px">
-            <InputRightElement
-              pointerEvents="none"
-              children={<Icon icon="ic:baseline-search" width={20} />}
-            />
-            <Input
-              type="tel"
-              placeholder="Buscar Pedido"
-              variant="outline"
-              // {...register('value', {
-              //   onChange(event: React.ChangeEvent<HTMLInputElement>) {
-              //     handleChange(event);
-              //   },
-              // })}
-            />
-          </InputGroup>
+          <Flex align="center">
+            <Center
+              cursor="pointer"
+              onClick={() => {
+                setViewList(!viewList);
+              }}
+            >
+              <Icon icon="radix-icons:dashboard" width={23} />
+            </Center>
+          </Flex>
         </Flex>
 
         <TabPanels>
           <TabPanel p="0">
-            <TabletRequests
-              head_options={[
-                'N° Pedido',
-                'Tipo',
-                'Cliente',
-                'Data',
-                'Total',
-                'Status',
-                'Comprovante',
-                'Ação',
-                'Detalhes',
-              ]}
-              data={data?.data}
-              per_page={perPage}
-              setPage={setPage}
-              next={data?.next}
-              prev={data?.prev}
-              page={data?.current_page}
-              total={data?.total_pages}
-              isFetching={isFetching}
-            />
-            <Box
-              border="1px solid #ccc"
-              w="350px"
-              p="15px"
-              borderRadius="8px"
-              cursor="pointer"
-            >
-              <Flex align="center" w="full" justify="space-between" mb="5px">
-                <Heading fontSize="18px" ml="5px">
-                  Pedido: #44
-                </Heading>
-                <Text>15/01 as 15:30</Text>
-              </Flex>
-              <Divider borderColor="#ccc" />
-              <Flex align="center" my="10px">
-                <Avatar
-                  name="Fabio Lima"
-                  src="https://bit.ly/tioluwani-kolawole"
-                  w="40px"
-                  h="40px"
-                />
-
-                <Box ml="5px">
-                  <Text>Fabio Lima</Text>
-                  <Text>(98) 999999-99999</Text>
-                </Box>
-              </Flex>
-              <Flex w="full" justify="space-between" mt="8px">
-                <Badge
-                  variant="outline"
-                  p="5px 10px"
-                  // borderRadius="20px"
-                  fontSize="12px"
-                  colorScheme="yellow"
+            {viewList ? (
+              <TabletRequests
+                head_options={[
+                  'N° Pedido',
+                  'Tipo',
+                  'Cliente',
+                  'Data',
+                  'Total',
+                  'Status',
+                  'Comprovante',
+                  'Ação',
+                  'Detalhes',
+                ]}
+                data={data?.data}
+                per_page={perPage}
+                setPage={setPage}
+                next={data?.next}
+                prev={data?.prev}
+                page={data?.current_page}
+                total={data?.total_pages}
+                isFetching={isFetching}
+                lastPage={data?.total_pages}
+              />
+            ) : (
+              <Box>
+                <SimpleGrid
+                  columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
+                  spacing={10}
+                  justifyItems="center"
+                  minH="250px"
                 >
-                  Pendente
-                </Badge>
-                <Icon
-                  icon="material-symbols:chevron-right-rounded"
-                  width={25}
-                  color="#fff"
+                  {data?.data?.map((item: any, key: number) => (
+                    <CardRequest
+                      key={key}
+                      onClick={() => {
+                        setDetails(item);
+                        if (!item?.details) {
+                          return;
+                        }
+                        onOpen();
+                      }}
+                      number_request={item?.id}
+                      date={moment(item.createdAt)
+                        .locale('pt-br')
+                        .format('DD/MM/YYYY - LT')}
+                      name={item.userRequest.name}
+                      phone={phonesFormat(item.userRequest.from)}
+                      status={item?.status}
+                    />
+                  ))}
+                </SimpleGrid>
+                <Pagination
+                  isFetching={isFetching}
+                  per_page={perPage}
+                  current={page}
+                  setPage={setPage}
+                  next={data?.next}
+                  prev={data?.prev}
+                  total={data?.total_pages}
+                  lastPage={data?.total_pages}
                 />
-              </Flex>
-            </Box>
+                <ModalRequest
+                  details={details}
+                  isOpen={isOpen}
+                  onClose={onClose}
+                />
+              </Box>
+            )}
           </TabPanel>
           <TabPanel>
             <p>two!</p>

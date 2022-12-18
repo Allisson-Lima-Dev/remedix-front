@@ -11,6 +11,15 @@ import {
   Text,
   Input,
   useDisclosure,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Avatar,
+  Heading,
+  Divider,
+  Badge,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { Icon } from '@iconify/react';
@@ -20,7 +29,8 @@ import { Layout, TabletRequests } from '~/components';
 import { useRequest } from '~/services/hooks/useRequests';
 
 export default function Requests() {
-  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(1);
   const [docPdf, setDocpdf] = useState<any>();
   // const [value, setValue] = useState('');
   const [requests, setRequests] = useState({
@@ -29,48 +39,25 @@ export default function Requests() {
 
   const { register, handleSubmit, reset } = useForm<any>();
 
-  const { data, refetch } = useRequest();
+  const { data, refetch, isFetching } = useRequest(page, perPage);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const boletoRegex =
-      /^([0-9]{5})([0-9]{5})([0-9]{5})([0-9]{6})([0-9]{5})([0-9]{6})([0-9]{1})([0-9]{14})$/;
-    const newValue =
-      event.target.value.substring(0, 54).replace(/\D/g, '') || '';
+  const tabsName = [
+    {
+      name: 'Pendentes',
+      icon: 'mdi:store-alert',
+    },
+    {
+      name: 'Em Andamento',
+      icon: 'ic:twotone-pending-actions',
+    },
+    {
+      name: 'Concluido',
+      icon: 'icon-park-solid:success',
+    },
+  ];
 
-    if (boletoRegex.test(newValue)) {
-      event.currentTarget.value = newValue.replace(
-        boletoRegex,
-        '$1.$2 $3.$4 $5.$6 $7 $8'
-      );
-    } else {
-      event.currentTarget.value = newValue;
-    }
-  };
   return (
     <Box w="full" p={{ base: '10px', md: '30px' }}>
-      <Flex w="full" justify="flex-end">
-        {/* <MyComponent /> */}
-        <InputGroup w="500px">
-          <InputRightElement
-            pointerEvents="none"
-            children={<Icon icon="ic:baseline-search" width={20} />}
-          />
-          <Input
-            type="tel"
-            placeholder="Buscar Pedido"
-            variant="outline"
-            {...register('value', {
-              onChange(event: React.ChangeEvent<HTMLInputElement>) {
-                handleChange(event);
-              },
-            })}
-            // value={value}
-            // value={value}
-            // onChange={handleChange}
-          />
-        </InputGroup>
-      </Flex>
-      <Text>Requests</Text>
       <Flex
         onClick={() => refetch()}
         cursor="pointer"
@@ -84,21 +71,118 @@ export default function Requests() {
       >
         <Icon icon="ic:outline-refresh" width={22} />
       </Flex>
-      <TabletRequests
-        file={docPdf}
-        head_options={[
-          'N° Pedido',
-          'Tipo',
-          'Cliente',
-          'Data',
-          'Total',
-          'Status',
-          'Comprovante',
-          'Ação',
-          'Detalhes',
-        ]}
-        data={data?.requests}
-      />
+      <Tabs borderBottomColor="#32394e">
+        <Flex align="center" justify="space-between" mb="20px">
+          <TabList
+            borderBottomColor="#32394e"
+            borderBottom="1px solid #32394e"
+            w="-webkit-fit-content"
+          >
+            {tabsName?.map((item, idx) => (
+              <Tab
+                color="#cccccc49"
+                _selected={{ color: '#4988FA', borderBottomColor: '#4988FA' }}
+                fontSize="18px"
+              >
+                <Icon icon={item.icon} width={25} />{' '}
+                <Text ml="5px">{item.name}</Text>
+              </Tab>
+            ))}
+          </TabList>
+          <InputGroup w="300px">
+            <InputRightElement
+              pointerEvents="none"
+              children={<Icon icon="ic:baseline-search" width={20} />}
+            />
+            <Input
+              type="tel"
+              placeholder="Buscar Pedido"
+              variant="outline"
+              // {...register('value', {
+              //   onChange(event: React.ChangeEvent<HTMLInputElement>) {
+              //     handleChange(event);
+              //   },
+              // })}
+            />
+          </InputGroup>
+        </Flex>
+
+        <TabPanels>
+          <TabPanel p="0">
+            <TabletRequests
+              head_options={[
+                'N° Pedido',
+                'Tipo',
+                'Cliente',
+                'Data',
+                'Total',
+                'Status',
+                'Comprovante',
+                'Ação',
+                'Detalhes',
+              ]}
+              data={data?.data}
+              per_page={perPage}
+              setPage={setPage}
+              next={data?.next}
+              prev={data?.prev}
+              page={data?.current_page}
+              total={data?.total_pages}
+              isFetching={isFetching}
+            />
+            <Box
+              border="1px solid #ccc"
+              w="350px"
+              p="15px"
+              borderRadius="8px"
+              cursor="pointer"
+            >
+              <Flex align="center" w="full" justify="space-between" mb="5px">
+                <Heading fontSize="18px" ml="5px">
+                  Pedido: #44
+                </Heading>
+                <Text>15/01 as 15:30</Text>
+              </Flex>
+              <Divider borderColor="#ccc" />
+              <Flex align="center" my="10px">
+                <Avatar
+                  name="Fabio Lima"
+                  src="https://bit.ly/tioluwani-kolawole"
+                  w="40px"
+                  h="40px"
+                />
+
+                <Box ml="5px">
+                  <Text>Fabio Lima</Text>
+                  <Text>(98) 999999-99999</Text>
+                </Box>
+              </Flex>
+              <Flex w="full" justify="space-between" mt="8px">
+                <Badge
+                  variant="outline"
+                  p="5px 10px"
+                  // borderRadius="20px"
+                  fontSize="12px"
+                  colorScheme="yellow"
+                >
+                  Pendente
+                </Badge>
+                <Icon
+                  icon="material-symbols:chevron-right-rounded"
+                  width={25}
+                  color="#fff"
+                />
+              </Flex>
+            </Box>
+          </TabPanel>
+          <TabPanel>
+            <p>two!</p>
+          </TabPanel>
+          <TabPanel>
+            <p>three!</p>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Box>
   );
 }

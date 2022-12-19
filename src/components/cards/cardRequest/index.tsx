@@ -52,15 +52,17 @@ export function CardRequest({
         <Text fontSize="13px">{date}</Text>
       </Flex>
       <Divider borderColor="#ccc" />
-      <Flex align="center" my="10px">
+      <Flex align="center" my="10px" w="full">
         <Avatar
           name={name}
           src="https://bit.ly/tioluwani-kolawole"
           w="40px"
           h="40px"
+          fontSize="15px"
+          mr="5px"
         />
 
-        <Box ml="5px">
+        <Box>
           <Text>{name}</Text>
           <Text>{phone}</Text>
         </Box>
@@ -69,7 +71,7 @@ export function CardRequest({
         <Badge
           // variant="outline"
           p="5px 10px"
-          // borderRadius="20px"
+          borderRadius="5px"
           fontSize="12px"
           colorScheme={
             status === 'analysis'

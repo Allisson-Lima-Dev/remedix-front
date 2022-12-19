@@ -179,7 +179,7 @@ export function TabletRequests({
                   <Badge
                     variant="outline"
                     p="5px 10px"
-                    borderRadius="20px"
+                    borderRadius="5px"
                     fontSize="12px"
                     colorScheme={
                       item.status === 'sucess'

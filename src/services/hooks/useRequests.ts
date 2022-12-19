@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import { HandleError } from '~/error/HandlerError';
 import { api } from '../api';
+import { IRequests } from '~/types/requests';
 
 export async function CreateRequest(id?: string) {
   try {
@@ -26,10 +27,19 @@ export async function getReceiptRequest(id?: string): Promise<any> {
   }
 }
 
-async function getRequests(page: number, per_page: number) {
+async function getRequests({
+  page,
+  per_page,
+  endDate,
+  search,
+  startDate,
+  status,
+}: IRequests) {
   try {
     const { data } = await api.get(
-      `/requests?per_page=${per_page}&page=${page}`
+      `/requests?per_page=${per_page || 100}&page=${page || 1}${
+        status ? `&status=${status}` : ''
+      }`
     );
     return data;
   } catch (error) {
@@ -37,13 +47,20 @@ async function getRequests(page: number, per_page: number) {
   }
 }
 
-export function useRequest(page?: number, per_page?: number) {
+export function useRequest({
+  page,
+  per_page,
+  endDate,
+  search,
+  startDate,
+  status,
+}: IRequests) {
   return useQuery(
-    ['AllRequests', { page, per_page }],
-    () => getRequests(page || 1, per_page || 200),
+    ['AllRequests', { page, per_page, endDate, search, startDate, status }],
+    () => getRequests({ page, per_page, status }),
     {
       // staleTime: 1000 * 1,
-      refetchInterval: 1000 * 10,
+      // refetchInterval: 1000 * 10,
     }
   );
 }

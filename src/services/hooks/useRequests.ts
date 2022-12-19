@@ -42,7 +42,8 @@ export function useRequest(page?: number, per_page?: number) {
     ['AllRequests', { page, per_page }],
     () => getRequests(page || 1, per_page || 200),
     {
-      staleTime: 1000 * 5,
+      // staleTime: 1000 * 1,
+      refetchInterval: 1000 * 10,
     }
   );
 }

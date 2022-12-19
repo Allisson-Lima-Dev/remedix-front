@@ -16,10 +16,6 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Avatar,
-  Heading,
-  Divider,
-  Badge,
   Center,
   SimpleGrid,
 } from '@chakra-ui/react';
@@ -28,7 +24,7 @@ import { Icon } from '@iconify/react';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import moment from 'moment';
-import { Layout, TabletRequests } from '~/components';
+import { Layout, Select, TabletRequests } from '~/components';
 import { useRequest } from '~/services/hooks/useRequests';
 import { CardRequest } from '~/components/cards/cardRequest';
 import { phonesFormat } from '~/utils/formatPhone';
@@ -59,6 +55,9 @@ export default function Requests() {
       icon: 'icon-park-solid:success',
     },
   ];
+  let render = 1;
+  render += 1;
+  console.log('Rendrizou', render);
 
   return (
     <Box w="full" p={{ base: '10px', md: '30px' }}>
@@ -117,13 +116,38 @@ export default function Requests() {
             ))}
           </TabList>
           <Flex align="center">
+            <Select
+              variant="unstyled"
+              name=""
+              onChange={(e) => {
+                setPerPage(+e.target.value);
+                setPage(1);
+              }}
+            >
+              {['3', '10', '20', '30', '40', '50'].map((item) => (
+                <option
+                  value={item}
+                  style={{ background: '#161A2E' }}
+                  key={item}
+                >
+                  {item}
+                </option>
+              ))}
+            </Select>
             <Center
               cursor="pointer"
               onClick={() => {
                 setViewList(!viewList);
               }}
             >
-              <Icon icon="radix-icons:dashboard" width={23} />
+              <Icon
+                icon={
+                  viewList
+                    ? 'radix-icons:dashboard'
+                    : 'ic:baseline-format-list-bulleted'
+                }
+                width={23}
+              />
             </Center>
           </Flex>
         </Flex>

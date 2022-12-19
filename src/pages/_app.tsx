@@ -1,15 +1,17 @@
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
+import { CSSReset, ChakraProvider } from '@chakra-ui/react';
 import NextNprogress from 'nextjs-progressbar';
 import 'moment/locale/pt-br';
 import { QueryClientProvider } from 'react-query';
 import { Layout } from '~/components/layout';
 import { queryClient } from '~/services/queryClient';
 import { authPageProps } from '~/utils/authPageProps';
+import { theme } from '~/styles/theme';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
+      <CSSReset />
       <NextNprogress
         color="#4774fb"
         startPosition={0.3}
@@ -17,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         height={3}
         showOnShallow
       />
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <Layout>
           <Component {...pageProps} />
         </Layout>

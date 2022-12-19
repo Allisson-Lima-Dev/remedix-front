@@ -127,7 +127,7 @@ export function TabletRequests({
         overflowY="auto"
         h="700px"
       >
-        <Table variant="unstyled" size={{ base: 'sm', md: 'md' }}>
+        <Table variant="unstyled" size="sm">
           <Thead w="full" pos="relative">
             <Tr
               pos="sticky"

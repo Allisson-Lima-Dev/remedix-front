@@ -251,9 +251,11 @@ export default function Requests() {
               'Total',
               'Status',
               'Comprovante',
-              'Ação',
+              filterTab === 0 ? 'Aceitar' : '',
+              'Editar',
               'Detalhes',
             ]}
+            currentTab={filterTab}
             data={data?.data}
             per_page={perPage}
             setPage={setPage}

@@ -20,6 +20,7 @@ import {
 interface ModalProps extends ModalChakraModal {
   title?: string;
   padding?: string;
+  width?: string;
   refetch?: (
     options?: RefetchOptions & RefetchQueryFilters
   ) => Promise<QueryObserverResult>;
@@ -32,6 +33,7 @@ export function Modal({
   refetch,
   onClose,
   padding,
+  width,
   ...rest
 }: ModalProps) {
   return (
@@ -39,7 +41,7 @@ export function Modal({
       <ModalOverlay />
       <ModalContent
         maxW="max-content"
-        minW={{ base: '', md: '500px' }}
+        minW={{ base: '', md: width || '500px' }}
         shadow="none"
         bg="#121626f8"
         color="#fff"

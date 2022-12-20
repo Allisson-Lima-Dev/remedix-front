@@ -238,7 +238,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
               color="#eeeef0"
             >
               <Text>{user?.name.split(' ')[0]}</Text>
-              <Icon icon="mdi:user-circle-outline" />
+              <Icon icon="material-symbols:keyboard-arrow-down-rounded" />
             </Flex>
           </MenuButton>
           <MenuList bg="#2A2F42" color="#fff" border="none" zIndex={3000}>

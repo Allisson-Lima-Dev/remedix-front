@@ -17,19 +17,15 @@ import {
   Tr,
   useDisclosure,
   Spinner,
+  Center,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import moment from 'moment';
-import { Modal } from '~/components/modals/modalDefault';
 import { phonesFormat } from '~/utils/formatPhone';
-import {
-  CreateRequest,
-  getReceiptRequest,
-  useReceiptRequest,
-} from '~/services/hooks/useRequests';
 import { Pagination } from '~/components/pagination';
 import { ModalRequest } from '~/components/modals/ModalRequest';
+import { ModalConfirmation } from '~/components/modals/modalConfirmation';
 
 export interface IDataRequests {
   number_request: string;
@@ -44,6 +40,7 @@ export interface IDataRequests {
 interface ITabletRequestsProps {
   head_options: string[];
   data: any[];
+  currentTab?: number;
   total?: number;
   lastPage: number;
   isFetching: boolean;
@@ -65,9 +62,20 @@ export function TabletRequests({
   page,
   next,
   prev,
+  currentTab,
 }: ITabletRequestsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenCofirm,
+    onOpen: onOpenCofirm,
+    onClose: onCloseCofirm,
+  } = useDisclosure();
   const [type, setType] = useState<'download' | 'print'>();
+  const [typeRequest, setTypeRequest] = useState({
+    type: '',
+    number_request: 0,
+  });
+
   const [id, setId] = useState();
   const [loading, setLoading] = useState(false);
   const [docPdf, setDocpdf] = useState('');
@@ -137,14 +145,17 @@ export function TabletRequests({
               bg="#1E2540"
               textAlign="center"
             >
-              {head_options?.map((item, key) => (
-                <Th
-                  textAlign={key === 8 || key === 6 ? 'center' : 'left'}
-                  key={key}
-                >
-                  {item}
-                </Th>
-              ))}
+              {head_options?.map(
+                (item, key) =>
+                  item?.trim() && (
+                    <Th
+                      textAlign={key === 8 || key === 6 ? 'center' : 'left'}
+                      key={key}
+                    >
+                      {item}
+                    </Th>
+                  )
+              )}
             </Tr>
           </Thead>
           <Tbody pos="relative">
@@ -177,22 +188,22 @@ export function TabletRequests({
 
                 <Td>
                   <Badge
-                    variant="outline"
+                    variant={item?.status}
                     p="5px 10px"
                     borderRadius="5px"
                     fontSize="12px"
                     colorScheme={
-                      item.status === 'sucess'
+                      item.status === 'concluded'
                         ? 'green'
-                        : item.status === 'Em Andamento'
-                        ? 'yellow'
+                        : item.status === 'production'
+                        ? 'blue'
                         : 'yellow'
                     }
                   >
-                    {item.status === 'sucess'
+                    {item.status === 'concluded'
                       ? 'Concluido'
-                      : item.status === 'Em Andamento'
-                      ? 'Pendente'
+                      : item.status === 'production'
+                      ? 'Em andamento'
                       : 'Pendente'}
                   </Badge>
                 </Td>
@@ -242,19 +253,65 @@ export function TabletRequests({
                     </Flex>
                   </Flex>
                 </Td>
+                {currentTab === 0 && (
+                  <Td>
+                    <Center justifyContent="flex-start">
+                      <Text
+                        bg="green.500"
+                        border="1px solid #29304D"
+                        p="7px"
+                        borderRadius="5px"
+                        mr="5px"
+                        onClick={() => {
+                          onOpenCofirm();
+                          setTypeRequest({
+                            type: 'confirm',
+                            number_request: item?.id,
+                          });
+                        }}
+                      >
+                        Sim
+                      </Text>
+                      <Text
+                        bg="red.500"
+                        border="1px solid #29304D"
+                        p="7px"
+                        borderRadius="5px"
+                        onClick={() => {
+                          onOpenCofirm();
+                          setTypeRequest({
+                            type: 'canceled',
+                            number_request: item?.id,
+                          });
+                        }}
+                      >
+                        Não
+                      </Text>
+                    </Center>
+                  </Td>
+                )}
                 <Td>
-                  <Button
-                    rightIcon={
-                      <Icon icon="icon-park-solid:success" width={18} />
-                    }
-                    bg="#27AE60"
-                    color="#fff"
-                    size="sm"
-                  >
-                    Concluir
-                  </Button>
+                  <Center>
+                    <Center
+                      bg="#161A2E"
+                      border="1px solid #29304D"
+                      p="7px"
+                      borderRadius="5px"
+                      mr="5px"
+                    >
+                      <Icon icon="material-symbols:edit-outline-rounded" />
+                    </Center>
+                    <Center
+                      bg="#161A2E"
+                      border="1px solid #29304D"
+                      p="7px"
+                      borderRadius="5px"
+                    >
+                      <Icon icon="ic:outline-delete" />
+                    </Center>
+                  </Center>
                 </Td>
-                <Td>
+                <Td justifyContent="center">
                   <Flex
                     align="center"
                     justify="center"
@@ -293,6 +350,12 @@ export function TabletRequests({
           total={total}
         />
       </TableContainer>
+      <ModalConfirmation
+        isOpen={isOpenCofirm}
+        onClose={onCloseCofirm}
+        type={typeRequest.type}
+        number_request={typeRequest.number_request}
+      />
       <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
     </>
   );

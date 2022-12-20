@@ -8,19 +8,19 @@ const Badge = {
   },
 
   variants: {
-    completed: {
-      bg: 'green.100',
-      color: 'green.600',
+    concluded: {
+      bg: 'green.500',
+      color: 'green.100',
     },
     canceled: {
       bg: 'red.100',
       color: 'red.600',
     },
-    waiting: {
-      bg: 'orange.100',
-      color: 'orange.500',
+    analysis: {
+      bg: 'yellow.500',
+      color: 'yellow.100',
     },
-    processing: {
+    production: {
       bg: 'blue.100',
       color: 'blue.500',
     },

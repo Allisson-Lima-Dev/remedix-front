@@ -1,5 +1,4 @@
 import {
-  Icon,
   Link as ChakraLink,
   Text,
   LinkProps as ChakraLinkProps,
@@ -10,6 +9,7 @@ import {
   AccordionIcon,
   Box,
 } from '@chakra-ui/react';
+import { Icon, Icon as IconName } from '@iconify/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ElementType, Fragment } from 'react';
@@ -21,7 +21,8 @@ interface IPropsSubMenu<T = string> {
 }
 
 interface NavLinkProps extends ChakraLinkProps {
-  icon: ElementType;
+  // icon: ElementType;
+  icon: string;
   children: string;
   href: string;
   activeDrawer?: boolean;
@@ -57,7 +58,7 @@ export function NavLink({
           >
             <ChakraLink display="flex" alignItems="center" {...rest} w="full">
               <Icon
-                as={icon}
+                icon={icon}
                 fontSize="20"
                 color={
                   subMenu?.find((item) => item.route === asPath)
@@ -115,7 +116,7 @@ export function NavLink({
     <ActiveLink href={href} passHref checkHref={href}>
       <ChakraLink display="flex" alignItems="center" {...rest} w="full">
         <Icon
-          as={icon}
+          icon={icon}
           fontSize="20"
           color={href === asPath ? '#eeeef0' : '#656d86'}
         />

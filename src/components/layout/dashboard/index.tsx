@@ -10,7 +10,7 @@ interface LayoutProps {
 }
 
 export function LayoutDashboard({ children, title }: LayoutProps) {
-  const [hideSide, setHideSide] = useState(false);
+  const [hideSide, setHideSide] = useState(true);
   return (
     <Box w="full" color="#fff">
       <Flex overflowY="hidden" w="full">
@@ -45,7 +45,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
               {title}
             </Text>
             <Box
-              maxW="1700px"
+              maxW="2500px"
               mx="auto"
               // bg="#121626b2"
               borderRadius="8px"

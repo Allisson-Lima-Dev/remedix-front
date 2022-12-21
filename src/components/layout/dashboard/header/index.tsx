@@ -18,6 +18,7 @@ import {
   Text,
   useMediaQuery,
   Image,
+  Center,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
@@ -113,20 +114,15 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
       alignItems="center"
       borderBottom="1px solid #2C3045"
     >
-      <Box cursor="pointer" w="full">
-        <Flex w="full" align="center" h="100%">
-          <Link href="/">
-            <Image
-              src="https://avatars.githubusercontent.com/u/82707621?s=96&v=4"
-              width="50px"
-              height="40px"
-              loading="lazy"
-              mr="50px"
-              alt="logo"
-            />
-          </Link>
-        </Flex>
-      </Box>
+      <Center
+        cursor="pointer"
+        onClick={() => {
+          setClick(!click);
+          onPress(click);
+        }}
+      >
+        <Icon icon="material-symbols:menu-rounded" width={25} />
+      </Center>
 
       <Flex
         align="center"

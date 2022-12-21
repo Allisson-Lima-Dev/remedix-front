@@ -149,7 +149,9 @@ export function TabletRequests({
                 (item, key) =>
                   item?.trim() && (
                     <Th
-                      textAlign={key === 8 || key === 6 ? 'center' : 'left'}
+                      textAlign={
+                        key === 8 || key === 6 || key === 9 ? 'center' : 'left'
+                      }
                       key={key}
                     >
                       {item}

@@ -213,7 +213,7 @@ export default function Requests() {
         </Flex>
       </Box>
 
-      <Box bg="#121626b2">
+      <Box bg="#121626b2" borderRadius="10px">
         {viewList ? (
           <TabletRequests
             head_options={[
@@ -240,7 +240,7 @@ export default function Requests() {
             lastPage={data?.total_pages}
           />
         ) : (
-          <Box>
+          <Box py="20px">
             <SimpleGrid
               columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
               spacing={10}

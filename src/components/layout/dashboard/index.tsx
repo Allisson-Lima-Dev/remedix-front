@@ -15,7 +15,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
     <Box w="full" color="#fff">
       <Flex overflowY="hidden" w="full">
         <Box display={{ base: 'none', lg: 'flex' }}>
-          {/* <Sidebar hide={hideSide} /> */}
+          <Sidebar hide={hideSide} />
         </Box>
         <Box bg="#0A0D16" w="full" overflowY="hidden">
           <HeaderDashboard onPress={(click) => setHideSide(click)} />
@@ -36,8 +36,8 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
               },
             }}
             w="full"
-            p="25px"
-            px={{ base: '17px', md: '25px' }}
+            // p="10px"
+            p={{ base: '17px', md: '20px' }}
             h="calc(100vh - 70px)"
             overflowY="scroll"
           >
@@ -45,9 +45,9 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
               {title}
             </Text>
             <Box
-              maxW="1600px"
+              maxW="1700px"
               mx="auto"
-              bg="#121626b2"
+              // bg="#121626b2"
               borderRadius="8px"
               minH="calc(100vh - 130px)"
             >

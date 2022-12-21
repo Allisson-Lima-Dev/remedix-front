@@ -64,9 +64,9 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
   return (
     <Box
       as="aside"
-      maxW={hide ? '70px' : '250px'}
-      bg="#2A2F42"
-      p="15px"
+      maxW={hide ? '70px' : '220px'}
+      bg="#121626"
+      p="10px"
       borderRight="1px solid #2C3045"
     >
       <Flex

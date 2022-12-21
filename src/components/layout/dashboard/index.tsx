@@ -12,12 +12,12 @@ interface LayoutProps {
 export function LayoutDashboard({ children, title }: LayoutProps) {
   const [hideSide, setHideSide] = useState(true);
   return (
-    <Box w="full" color="#fff">
+    <Box w="full" color="#fff" transition="all 0.55s">
       <Flex overflowY="hidden" w="full">
         <Box display={{ base: 'none', lg: 'flex' }}>
           <Sidebar hide={hideSide} />
         </Box>
-        <Box bg="#0A0D16" w="full" overflowY="hidden">
+        <Box bg="#0A0D16" w="full" overflowY="hidden" transition="all 0.55s">
           <HeaderDashboard onPress={(click) => setHideSide(click)} />
           <Box
             __css={{
@@ -36,7 +36,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
               },
             }}
             w="full"
-            // p="10px"
+            transition="all 0.55s"
             p={{ base: '17px', md: '20px' }}
             h="calc(100vh - 70px)"
             overflowY="scroll"
@@ -47,6 +47,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
             <Box
               maxW="2500px"
               mx="auto"
+              transition="all 0.55s"
               // bg="#121626b2"
               borderRadius="8px"
               minH="calc(100vh - 130px)"

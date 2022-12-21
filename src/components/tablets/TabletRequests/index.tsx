@@ -140,7 +140,7 @@ export function TabletRequests({
             <Tr
               pos="sticky"
               top={0}
-              zIndex={1000}
+              zIndex={1}
               h="40px"
               bg="#1E2540"
               textAlign="center"

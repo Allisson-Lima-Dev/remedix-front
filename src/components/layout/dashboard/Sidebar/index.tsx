@@ -61,6 +61,8 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
     ],
   };
   const { asPath } = useRouter();
+  console.log(hide);
+
   return (
     <Box
       transition="all 0.5s"
@@ -88,7 +90,7 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
       </Flex>
       <Stack
         spacing="5"
-        align="flex-start"
+        align="center"
         pr={hide ? '0' : '5'}
         w="full"
         minW={hide ? '0' : '250px'}

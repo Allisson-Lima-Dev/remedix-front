@@ -2,6 +2,7 @@
 /* eslint-disable prefer-regex-literals */
 import React, { useEffect, useState } from 'react';
 import 'moment/locale/pt-br';
+import ptBR from 'date-fns/locale/pt-BR';
 import {
   Box,
   Flex,
@@ -11,20 +12,16 @@ import {
   Text,
   Input,
   useDisclosure,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   Center,
   SimpleGrid,
   Divider,
 } from '@chakra-ui/react';
+
 import { useForm } from 'react-hook-form';
 import { Icon } from '@iconify/react';
-import axios from 'axios';
 import moment from 'moment';
-import { Layout, Select, TabletRequests } from '~/components';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { Select, TabletRequests } from '~/components';
 import { useRequest } from '~/services/hooks/useRequests';
 import { CardRequest } from '~/components/cards/cardRequest';
 import { phonesFormat } from '~/utils/formatPhone';
@@ -37,6 +34,7 @@ export default function Requests() {
   const [perPage, setPerPage] = useState(3);
   const [viewList, setViewList] = useState(true);
   const [filterTab, setFilterTab] = useState(0);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenFilter,
@@ -45,8 +43,15 @@ export default function Requests() {
   } = useDisclosure();
   const [details, setDetails] = useState<any>();
   const { register, handleSubmit, reset } = useForm<any>();
-  let status =
-    filterTab === 0 ? 'analysis' : filterTab === 1 ? 'production' : 'concluded';
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState(null);
+  registerLocale('pt-br', ptBR);
+  const onChange = (dates: any) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
+
   const { data, refetch, isFetching } = useRequest({
     page,
     per_page: perPage,
@@ -73,7 +78,7 @@ export default function Requests() {
     },
   ];
 
-  console.log(filterTab, status);
+  console.log(startDate, endDate);
 
   return (
     <Box
@@ -172,7 +177,22 @@ export default function Requests() {
                 {/* <Text mb="2px" fontSize="14px">
                   Filtro:
                 </Text> */}
-                <Center
+                <Center zIndex={2000}>
+                  <DatePicker
+                    placeholderText="Filtro por data"
+                    dateFormat="dd/MM/yyyy"
+                    selected={startDate}
+                    onChange={onChange}
+                    startDate={startDate}
+                    endDate={endDate}
+                    selectsRange
+                    isClearable
+                    monthsShown={2}
+                    locale="pt-br"
+                  />
+                </Center>
+                {/* <InputRangeDate /> */}
+                {/* <Center
                   border="1px solid #29304D"
                   bg="#161A2E"
                   p="5px 10px"
@@ -183,7 +203,7 @@ export default function Requests() {
                 >
                   <Icon icon="fontisto:date" width={20} />
                   <Text ml="10px">Filtrar por data</Text>
-                </Center>
+                </Center> */}
               </Box>
             </Center>
             <Box>
@@ -212,7 +232,6 @@ export default function Requests() {
           </Flex>
         </Flex>
       </Box>
-
       <Box bg="#121626b2" borderRadius="10px">
         {viewList ? (
           <TabletRequests

@@ -1,0 +1,95 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: #5263C4 !important;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+  text-decoration: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  }
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #5263C4 !important;
+}
+.swiper-pagination-bullet{
+  background-color: #5263C4 !important;
+}
+.swiper-button-prev{
+  color: #5263C4 !important;
+  margin-left: -12px !important;
+}
+.swiper-button-next{
+  color: #5263C4 !important;
+  margin-right: -12px !important;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+.swiper-slide {
+  /* text-align: center; */
+  font-size: 18px;
+  width: 100%;
+  /* Center slide text vertically */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+
+}
+.mySwiper{
+  /* background: yellow; */
+  height: 280px;
+  margin-top: -30px;
+}
+
+option {
+  background: #252B3B !important;
+  color: white;
+}
+
+.paragraph {
+  text-indent: 2rem;
+}
+.react-datepicker__tab-loop{
+  z-index: 2;
+}
+.react-datepicker-wrapper{
+  color: #000000;
+}
+.react-datepicker__input-container input{
+  background-color: #0000000c;
+  height: 36px;
+  width: 240px;
+  border-radius: 5px;
+  color: #ffffff;
+  padding: 10px;
+  border: 1px solid #fff;
+}

@@ -29,7 +29,6 @@ export function Pagination({
   prev,
 }: INavigation) {
   const { pagination } = createPagination(5, lastPage, current);
-  console.log({ pagination });
 
   return (
     <Flex align="center" w="full" justify="center" my="40px">

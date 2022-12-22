@@ -1,6 +1,8 @@
+import '../styles/globals.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import type { AppProps } from 'next/app';
 import { CSSReset, ChakraProvider } from '@chakra-ui/react';
-import NextNprogress from 'nextjs-progressbar';
+import NextNprogress from 'nextjs-progressbar'; // theme css file
 import 'moment/locale/pt-br';
 import { QueryClientProvider } from 'react-query';
 import { Layout } from '~/components/layout';

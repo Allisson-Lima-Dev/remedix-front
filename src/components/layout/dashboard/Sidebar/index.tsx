@@ -61,7 +61,6 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
     ],
   };
   const { asPath } = useRouter();
-  console.log(hide);
 
   return (
     <Box

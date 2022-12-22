@@ -94,7 +94,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
   const { push, asPath } = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useContext(AuthContext);
-  const btnRef = React.useRef(null);
+
   const [click, setClick] = useState(false);
   function signOut() {
     destroyCookie(null, '@NeuralAnalyticsAccess_token', { path: '/' });

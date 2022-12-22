@@ -12,11 +12,6 @@ import {
   Text,
   Input,
   useDisclosure,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   Center,
   SimpleGrid,
   Divider,
@@ -24,10 +19,9 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { Icon } from '@iconify/react';
-import axios from 'axios';
 import moment from 'moment';
 import DatePicker, { registerLocale } from 'react-datepicker';
-import { Layout, Select, TabletRequests } from '~/components';
+import { Select, TabletRequests } from '~/components';
 import { useRequest } from '~/services/hooks/useRequests';
 import { CardRequest } from '~/components/cards/cardRequest';
 import { phonesFormat } from '~/utils/formatPhone';
@@ -57,8 +51,7 @@ export default function Requests() {
     setStartDate(start);
     setEndDate(end);
   };
-  let status =
-    filterTab === 0 ? 'analysis' : filterTab === 1 ? 'production' : 'concluded';
+
   const { data, refetch, isFetching } = useRequest({
     page,
     per_page: perPage,

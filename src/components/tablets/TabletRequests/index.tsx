@@ -162,7 +162,13 @@ export function TabletRequests({
           </Thead>
           <Tbody pos="relative">
             {data?.map((item: any, idx) => (
-              <Tr borderBottom="1px solid #32394e" key={idx}>
+              <Tr
+                borderBottom="1px solid #32394e"
+                key={idx}
+                _hover={{
+                  bg: '#282e3f',
+                }}
+              >
                 <Td>#{item.id}</Td>
                 <Td>
                   <Badge
@@ -270,6 +276,7 @@ export function TabletRequests({
                   <Td>
                     <Center justifyContent="flex-start">
                       <Text
+                        cursor="pointer"
                         bg="green.500"
                         border="1px solid #29304D"
                         p="7px"
@@ -286,6 +293,7 @@ export function TabletRequests({
                         Sim
                       </Text>
                       <Text
+                        cursor="pointer"
                         bg="red.500"
                         border="1px solid #29304D"
                         p="7px"
@@ -312,7 +320,7 @@ export function TabletRequests({
                       borderRadius="5px"
                       mr="5px"
                     >
-                      <Icon icon="material-symbols:edit-outline-rounded" />
+                      <Icon icon="material-symbols:edit-square-outline-rounded" />
                     </Center>
                     <Center
                       bg="#161A2E"

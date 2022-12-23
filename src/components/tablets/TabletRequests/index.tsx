@@ -117,7 +117,7 @@ export function TabletRequests({
   };
 
   return (
-    <>
+    <Box pb="10px">
       {docPdf && (
         <iframe
           ref={IframeRef}
@@ -133,7 +133,7 @@ export function TabletRequests({
         w="full"
         borderTopRadius="8px"
         overflowY="auto"
-        h="700px"
+        maxH="700px"
       >
         <Table variant="unstyled" size="sm">
           <Thead w="full" pos="relative">
@@ -164,7 +164,17 @@ export function TabletRequests({
             {data?.map((item: any, idx) => (
               <Tr borderBottom="1px solid #32394e" key={idx}>
                 <Td>#{item.id}</Td>
-                <Td>{item.type}</Td>
+                <Td>
+                  <Badge
+                    color="#fff"
+                    variant="outline"
+                    p="4px 6px"
+                    borderRadius="5px"
+                    fontSize="11px"
+                  >
+                    {item.type}
+                  </Badge>
+                </Td>
                 <Td>
                   <Box>
                     <Text> {item.userRequest.name}</Text>
@@ -191,9 +201,9 @@ export function TabletRequests({
                 <Td>
                   <Badge
                     variant={item?.status}
-                    p="5px 10px"
+                    p="4px"
                     borderRadius="5px"
-                    fontSize="12px"
+                    fontSize="11px"
                     colorScheme={
                       item.status === 'concluded'
                         ? 'green'
@@ -208,6 +218,7 @@ export function TabletRequests({
                       ? 'Em andamento'
                       : 'Pendente'}
                   </Badge>
+                  <Divider orientation="vertical" />
                 </Td>
                 <Td>
                   <Flex px="20px" justify="space-around" align="center">
@@ -341,17 +352,17 @@ export function TabletRequests({
             ))}
           </Tbody>
         </Table>
-        <Pagination
-          isFetching={isFetching}
-          setPage={setPage}
-          per_page={per_page}
-          lastPage={lastPage}
-          next={next}
-          prev={prev}
-          current={page}
-          total={total}
-        />
       </TableContainer>
+      <Pagination
+        isFetching={isFetching}
+        setPage={setPage}
+        per_page={per_page}
+        lastPage={lastPage}
+        next={next}
+        prev={prev}
+        current={page}
+        total={total}
+      />
       <ModalConfirmation
         isOpen={isOpenCofirm}
         onClose={onCloseCofirm}
@@ -359,6 +370,6 @@ export function TabletRequests({
         number_request={typeRequest.number_request}
       />
       <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
-    </>
+    </Box>
   );
 }

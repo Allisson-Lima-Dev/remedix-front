@@ -34,7 +34,8 @@ export function CardRequest({
       {...rest}
       boxShadow="base"
       border="1px solid #cccccc77"
-      w="300px"
+      w="90%"
+      maxW="350px"
       h="160px"
       p="15px"
       borderRadius="8px"

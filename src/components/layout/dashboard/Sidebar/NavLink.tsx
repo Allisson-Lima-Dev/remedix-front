@@ -44,7 +44,7 @@ export function NavLink({
     <Box p="4px 10px">
       <Accordion
         allowToggle
-        w="90%"
+        w="80%"
         defaultIndex={
           subMenu?.find((item) => item.route === asPath) ? [indiceSubMenu] : []
         }

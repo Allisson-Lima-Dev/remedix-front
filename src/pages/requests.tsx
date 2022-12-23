@@ -236,7 +236,7 @@ export default function Requests() {
         {viewList ? (
           <TabletRequests
             head_options={[
-              'N° Pedido',
+              'N°',
               'Tipo',
               'Cliente',
               'Data',

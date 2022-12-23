@@ -15,6 +15,8 @@ import {
   Center,
   SimpleGrid,
   Divider,
+  Button,
+  useMediaQuery,
 } from '@chakra-ui/react';
 
 import { useForm } from 'react-hook-form';
@@ -34,7 +36,10 @@ export default function Requests() {
   const [perPage, setPerPage] = useState(3);
   const [viewList, setViewList] = useState(true);
   const [filterTab, setFilterTab] = useState(0);
-
+  const [isLarge1300, isLarge1400] = useMediaQuery([
+    '(max-width: 1302px)',
+    '(max-width: 1552px)',
+  ]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenFilter,
@@ -95,7 +100,7 @@ export default function Requests() {
                   setFilterTab(idx);
                   setPage(1);
                 }}
-                p="5px"
+                p="3px 5px"
                 cursor="pointer"
                 transition="all linear .25s"
                 borderColor="transparent"
@@ -114,6 +119,17 @@ export default function Requests() {
               </Center>
             ))}
           </Center>
+          <Button
+            bg="#28a940"
+            _active={{ bg: '#0a8f22' }}
+            _hover={{ bg: '#31c64d', p: '20px' }}
+            transition="all linear .25s"
+            leftIcon={
+              <Icon icon="material-symbols:add-shopping-cart" width={25} />
+            }
+          >
+            Adicionar Pedido
+          </Button>
         </Flex>
         <Divider my="10px" borderColor="#ffffff3e" />
         <Flex align="center" alignItems="center" justify="space-between">
@@ -261,7 +277,12 @@ export default function Requests() {
         ) : (
           <Box py="20px">
             <SimpleGrid
-              columns={{ base: 1, md: 2, lg: 3, xl: 4 }}
+              columns={{
+                base: 1,
+                md: 2,
+                lg: isLarge1300 ? 2 : 3,
+                xl: isLarge1400 ? 3 : 4,
+              }}
               spacing={10}
               justifyItems="center"
               minH="250px"

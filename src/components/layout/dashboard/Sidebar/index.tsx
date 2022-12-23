@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Flex, Stack, Image, Text } from '@chakra-ui/react';
 import { Icon, Icon as IconName } from '@iconify/react';
 import { useRouter } from 'next/router';
@@ -11,7 +11,11 @@ interface IPropsSide {
   onCloseDrawer?: () => void;
 }
 
-export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
+export default function Sidebar({
+  hide: hideState,
+  onCloseDrawer,
+}: IPropsSide) {
+  const [hide, setHide] = useState(true);
   const subsMenu = {
     company: [
       {
@@ -62,11 +66,15 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
   };
   const { asPath } = useRouter();
 
+  useEffect(() => {
+    setHide(hideState ?? true);
+  }, [hideState]);
+
   return (
     <Box
       transition="all 0.5s"
       as="aside"
-      maxW={hide ? '70px' : '220px'}
+      maxW={hide ? '70px' : '200px'}
       bg="#121626"
       p="10px"
       borderRight="1px solid #2C3045"
@@ -96,7 +104,15 @@ export default function Sidebar({ hide, onCloseDrawer }: IPropsSide) {
       >
         {hide ? (
           subsMenu.company.map((item, idx) => (
-            <Link href={item.route} passHref key={idx} onClick={onCloseDrawer}>
+            <Link
+              href={item.route}
+              passHref
+              key={idx}
+              onClick={() => {
+                onCloseDrawer && onCloseDrawer();
+                idx === 0 ? setHide(false) : null;
+              }}
+            >
               <Flex w="full" justify="center" align="center" my="7px">
                 <Icon
                   icon={item.icon}

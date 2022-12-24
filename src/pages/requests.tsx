@@ -17,6 +17,7 @@ import {
   Divider,
   Button,
   useMediaQuery,
+  Tooltip,
 } from '@chakra-ui/react';
 
 import { useForm } from 'react-hook-form';
@@ -33,9 +34,10 @@ import { ModalFilter } from '~/components/modals/modalFilter';
 
 export default function Requests() {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(3);
+  const [perPage, setPerPage] = useState(5);
   const [viewList, setViewList] = useState(true);
   const [filterTab, setFilterTab] = useState(0);
+  const [search, setSearch] = useState('');
   const [isLarge1300, isLarge1400] = useMediaQuery([
     '(max-width: 1302px)',
     '(max-width: 1552px)',
@@ -65,7 +67,13 @@ export default function Requests() {
         ? 'analysis'
         : filterTab === 1
         ? 'production'
-        : 'concluded',
+        : filterTab === 2
+        ? 'concluded'
+        : 'canceled',
+    startDate:
+      startDate && endDate ? moment(startDate).format('YYYY-MM-DD') : '',
+    endDate: startDate && endDate ? moment(endDate).format('YYYY-MM-DD') : '',
+    search,
   });
 
   const tabsName = [
@@ -78,18 +86,26 @@ export default function Requests() {
       icon: 'ic:twotone-pending-actions',
     },
     {
-      name: 'Concluido',
-      icon: 'icon-park-solid:success',
+      name: 'Concluídos',
+      icon: 'mdi:store-check',
+    },
+    {
+      name: 'Cancelados',
+      icon: 'mdi:store-remove',
     },
   ];
 
-  console.log(startDate, endDate);
+  let timeoutId: any;
+
+  const debouncedSearch = (value: string) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      setSearch(value);
+    }, 1000);
+  };
 
   return (
-    <Box
-      w="full"
-      // p={{ base: '10px', md: '10px' }}
-    >
+    <Box w="full">
       <Box bg="#121626b2" p="15px 20px" mb="10px" borderRadius="10px">
         <Flex align="center" justify="space-between">
           <Center>
@@ -114,7 +130,7 @@ export default function Requests() {
                 }}
                 fontSize="18px"
               >
-                <Icon icon={item.icon} width={25} />{' '}
+                <Icon icon={item.icon} width={28} />{' '}
                 <Text ml="5px">{item.name}</Text>
               </Center>
             ))}
@@ -134,7 +150,6 @@ export default function Requests() {
         <Divider my="10px" borderColor="#ffffff3e" />
         <Flex align="center" alignItems="center" justify="space-between">
           <Box>
-            {/* <Text fontSize="14px">Exibir</Text> */}
             <Flex>
               <Center
                 mr="10px"
@@ -174,7 +189,7 @@ export default function Requests() {
                     setPage(1);
                   }}
                 >
-                  {['3', '10', '20', '30', '40', '50'].map((item) => (
+                  {['5', '10', '20', '30', '40', '50'].map((item) => (
                     <option
                       value={item}
                       style={{ background: '#161A2E' }}
@@ -190,9 +205,6 @@ export default function Requests() {
           <Flex align="center" alignItems="center">
             <Center mr="10px">
               <Box>
-                {/* <Text mb="2px" fontSize="14px">
-                  Filtro:
-                </Text> */}
                 <Center zIndex={2000}>
                   <DatePicker
                     placeholderText="Filtro por data"
@@ -207,27 +219,11 @@ export default function Requests() {
                     locale="pt-br"
                   />
                 </Center>
-                {/* <InputRangeDate /> */}
-                {/* <Center
-                  border="1px solid #29304D"
-                  bg="#161A2E"
-                  p="5px 10px"
-                  borderRadius="5px"
-                  h="36px"
-                  cursor="pointer"
-                  onClick={onOpenFilter}
-                >
-                  <Icon icon="fontisto:date" width={20} />
-                  <Text ml="10px">Filtrar por data</Text>
-                </Center> */}
               </Box>
             </Center>
             <Box>
-              {/* <Text mb="2px" fontSize="14px">
-                Pesquise
-              </Text> */}
-              <InputGroup w="270px">
-                <InputRightElement
+              <InputGroup w="290px">
+                <InputLeftElement
                   pointerEvents="none"
                   children={<Icon icon="ic:baseline-search" width={20} />}
                 />
@@ -237,11 +233,25 @@ export default function Requests() {
                   type="tel"
                   placeholder="Busque por N° Pedido, nome..."
                   variant="outline"
-                  // {...register('value', {
-                  //   onChange(event: React.ChangeEvent<HTMLInputElement>) {
-                  //     handleChange(event);
-                  //   },
-                  // })}
+                  onChange={(e) => {
+                    debouncedSearch(e.target.value);
+                  }}
+                />
+
+                <InputRightElement
+                  cursor="pointer"
+                  children={
+                    <Tooltip
+                      label="Pesquise pelo nome do cliente ou n° do Pedido"
+                      bg="yellow.500"
+                      mt="5px"
+                      mr="50px"
+                      closeDelay={500}
+                      color="#fff"
+                    >
+                      <Icon icon="lucide:alert-circle" color="#cccccc86" />
+                    </Tooltip>
+                  }
                 />
               </InputGroup>
             </Box>
@@ -251,6 +261,7 @@ export default function Requests() {
       <Box bg="#121626b2" borderRadius="10px">
         {viewList ? (
           <TabletRequests
+            refetch={refetch}
             head_options={[
               'N°',
               'Tipo',
@@ -259,7 +270,7 @@ export default function Requests() {
               'Total',
               'Status',
               'Comprovante',
-              filterTab === 0 ? 'Aceitar' : '',
+              filterTab === 0 ? 'Aceitar' : filterTab === 1 ? 'Concluir' : '',
               'Editar',
               'Detalhes',
             ]}

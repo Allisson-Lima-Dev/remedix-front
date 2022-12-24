@@ -39,9 +39,23 @@ async function getRequests({
     const { data } = await api.get(
       `/requests?per_page=${per_page || 100}&page=${page || 1}${
         status ? `&status=${status}` : ''
+      }${startDate && endDate ? `&data_between=${startDate},${endDate}` : ''}${
+        search ? `&search=${search}` : ''
       }`
     );
     return data;
+  } catch (error) {
+    console.log();
+  }
+}
+
+export async function updateRequest(
+  id: string,
+  status: 'analysis' | 'production' | 'concluded' | 'canceled'
+) {
+  try {
+    const { data } = await api.put(`/requests/${id}?status=${status}`);
+    console.log(data);
   } catch (error) {
     console.log();
   }
@@ -57,7 +71,7 @@ export function useRequest({
 }: IRequests) {
   return useQuery(
     ['AllRequests', { page, per_page, endDate, search, startDate, status }],
-    () => getRequests({ page, per_page, status }),
+    () => getRequests({ page, per_page, status, startDate, endDate, search }),
     {
       // staleTime: 1000 * 1,
       // refetchInterval: 1000 * 10,

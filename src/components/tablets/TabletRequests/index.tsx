@@ -1,6 +1,10 @@
 /* eslint-disable no-shadow */
 import React, { useEffect, useRef, useState } from 'react';
-
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from 'react-query';
 import {
   Badge,
   Box,
@@ -49,6 +53,9 @@ interface ITabletRequestsProps {
   per_page: number;
   next: boolean;
   prev: boolean;
+  refetch?: (
+    options?: RefetchOptions & RefetchQueryFilters
+  ) => Promise<QueryObserverResult>;
 }
 
 export function TabletRequests({
@@ -63,6 +70,7 @@ export function TabletRequests({
   next,
   prev,
   currentTab,
+  refetch,
 }: ITabletRequestsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -210,19 +218,16 @@ export function TabletRequests({
                     p="4px"
                     borderRadius="5px"
                     fontSize="11px"
-                    colorScheme={
-                      item.status === 'concluded'
-                        ? 'green'
-                        : item.status === 'production'
-                        ? 'blue'
-                        : 'yellow'
-                    }
                   >
                     {item.status === 'concluded'
                       ? 'Concluido'
                       : item.status === 'production'
                       ? 'Em andamento'
-                      : 'Pendente'}
+                      : item?.status === 'analysis'
+                      ? 'Pendente'
+                      : item?.status === 'canceled'
+                      ? 'Cancelado'
+                      : ''}
                   </Badge>
                   <Divider orientation="vertical" />
                 </Td>
@@ -272,7 +277,7 @@ export function TabletRequests({
                     </Flex>
                   </Flex>
                 </Td>
-                {currentTab === 0 && (
+                {(currentTab === 0 || currentTab === 1) && (
                   <Td>
                     <Center justifyContent="flex-start">
                       <Text
@@ -290,7 +295,7 @@ export function TabletRequests({
                           });
                         }}
                       >
-                        Sim
+                        <Icon icon="material-symbols:check" width={18} />
                       </Text>
                       <Text
                         cursor="pointer"
@@ -306,7 +311,10 @@ export function TabletRequests({
                           });
                         }}
                       >
-                        Não
+                        <Icon
+                          icon="material-symbols:close-rounded"
+                          width={18}
+                        />
                       </Text>
                     </Center>
                   </Td>
@@ -376,6 +384,15 @@ export function TabletRequests({
         onClose={onCloseCofirm}
         type={typeRequest.type}
         number_request={typeRequest.number_request}
+        status={
+          currentTab === 0
+            ? 'production'
+            : currentTab === 1
+            ? 'concluded'
+            : 'canceled'
+        }
+        refetch={refetch}
+        currentTab={currentTab}
       />
       <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
     </Box>

@@ -13,8 +13,8 @@ const Badge = {
       color: 'green.100',
     },
     canceled: {
-      bg: 'red.100',
-      color: 'red.600',
+      bg: 'red.500',
+      color: 'red.100',
     },
     analysis: {
       bg: 'yellow.500',

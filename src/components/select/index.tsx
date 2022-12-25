@@ -39,8 +39,9 @@ const SelectBase: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
         <FormLabel
           fontWeight="bold"
           htmlFor={name}
-          color={colorLabel || '#000'}
-          fontSize={labelFontSize}
+          color="#fff"
+          textTransform="capitalize"
+          fontSize={{ base: '12px', md: '14px', lg: '14px' }}
           mr="0"
         >
           {label}
@@ -49,7 +50,6 @@ const SelectBase: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
       <ChakraSelect
         id={name}
         name={name}
-        size="lg"
         fontSize="14px"
         iconColor="primary"
         disabled={disabled}

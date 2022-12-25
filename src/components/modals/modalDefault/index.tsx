@@ -21,6 +21,7 @@ interface ModalProps extends ModalChakraModal {
   title?: string;
   padding?: string;
   width?: string;
+  onClickButtonClose?: () => void;
   refetch?: (
     options?: RefetchOptions & RefetchQueryFilters
   ) => Promise<QueryObserverResult>;
@@ -32,6 +33,7 @@ export function Modal({
   isOpen,
   refetch,
   onClose,
+  onClickButtonClose,
   padding,
   width,
   ...rest
@@ -51,7 +53,7 @@ export function Modal({
             {title}
           </Text>
         </ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton onClick={onClickButtonClose} />
         <Divider borderColor="#cccccc3e" mt="-6px" />
         <ModalBody
           zIndex={3000}

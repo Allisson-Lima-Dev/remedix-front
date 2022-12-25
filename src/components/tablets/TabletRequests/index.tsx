@@ -30,6 +30,7 @@ import { phonesFormat } from '~/utils/formatPhone';
 import { Pagination } from '~/components/pagination';
 import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalConfirmation } from '~/components/modals/modalConfirmation';
+import { ModalEditRequest } from '~/components/modals/modalEditRequest';
 
 export interface IDataRequests {
   number_request: string;
@@ -77,6 +78,11 @@ export function TabletRequests({
     isOpen: isOpenCofirm,
     onOpen: onOpenCofirm,
     onClose: onCloseCofirm,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenEdit,
+    onOpen: onOpenEdit,
+    onClose: onCloseEdit,
   } = useDisclosure();
   const [type, setType] = useState<'download' | 'print'>();
   const [typeRequest, setTypeRequest] = useState({
@@ -327,6 +333,14 @@ export function TabletRequests({
                       p="7px"
                       borderRadius="5px"
                       mr="5px"
+                      cursor="pointer"
+                      onClick={() => {
+                        onOpenEdit();
+                        setTypeRequest({
+                          type: 'Edit',
+                          number_request: item?.id,
+                        });
+                      }}
                     >
                       <Icon icon="material-symbols:edit-square-outline-rounded" />
                     </Center>
@@ -393,6 +407,11 @@ export function TabletRequests({
         }
         refetch={refetch}
         currentTab={currentTab}
+      />
+      <ModalEditRequest
+        onClose={onCloseEdit}
+        isOpen={isOpenEdit}
+        number_request={typeRequest.number_request}
       />
       <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
     </Box>

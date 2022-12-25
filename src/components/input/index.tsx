@@ -39,61 +39,55 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
 ) => {
   const [visible, setVisible] = useState(false);
   return (
-    <Box>
-      <FormControl isInvalid={!!error}>
-        {!!label && (
-          <FormLabel
-            fontWeight="bold"
-            htmlFor={name}
-            color={labelColor || '#667'}
-            textTransform="capitalize"
-            fontSize={{ base: '12px', md: '14px', lg: '14px' }}
-          >
-            {label}
-          </FormLabel>
-        )}
-        <ChakraInput
-          name={name}
-          id={name}
+    <FormControl isInvalid={!!error}>
+      {!!label && (
+        <FormLabel
+          fontWeight="bold"
+          htmlFor={name}
+          color={labelColor || '#fff'}
+          // textTransform="capitalize"
           fontSize={{ base: '12px', md: '14px', lg: '14px' }}
-          variant="filled"
-          _hover={{
-            bg: bgHover,
-          }}
-          _focus={{
-            bg: bgFocus,
-          }}
-          _placeholder={{
-            color: bgPlaceholder,
-          }}
-          ref={ref}
-          {...rest}
-          type={
-            rest.type === 'password'
-              ? visible
-                ? 'text'
-                : 'password'
-              : rest.type
-          }
-        />
-        {rest.type === 'password' && (
-          <Flex position="absolute" right="10px" top={error ? '43%' : '60%'}>
-            <Icon
-              width="20px"
-              cursor="pointer"
-              color={seePasswordButtonColor || '#cacaca'}
-              onClick={() => setVisible((previous) => !previous)}
-              icon={
-                visible ? 'ant-design:eye-invisible-outlined' : 'akar-icons:eye'
-              }
-            />
-          </Flex>
-        )}
-        {!!error && (
-          <FormErrorMessage mb="10px">{error.message}</FormErrorMessage>
-        )}
-      </FormControl>
-    </Box>
+        >
+          {label}
+        </FormLabel>
+      )}
+      <ChakraInput
+        name={name}
+        id={name}
+        fontSize={{ base: '12px', md: '14px', lg: '14px' }}
+        variant="filled"
+        _hover={{
+          bg: bgHover,
+        }}
+        _focus={{
+          bg: bgFocus,
+        }}
+        _placeholder={{
+          color: bgPlaceholder,
+        }}
+        ref={ref}
+        type={
+          rest.type === 'password' ? (visible ? 'text' : 'password') : rest.type
+        }
+        {...rest}
+      />
+      {rest.type === 'password' && (
+        <Flex position="absolute" right="10px" top={error ? '43%' : '60%'}>
+          <Icon
+            width="20px"
+            cursor="pointer"
+            color={seePasswordButtonColor || '#cacaca'}
+            onClick={() => setVisible((previous) => !previous)}
+            icon={
+              visible ? 'ant-design:eye-invisible-outlined' : 'akar-icons:eye'
+            }
+          />
+        </Flex>
+      )}
+      {!!error && (
+        <FormErrorMessage mb="10px">{error.message}</FormErrorMessage>
+      )}
+    </FormControl>
   );
 };
 

@@ -97,16 +97,16 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
 
   const [click, setClick] = useState(false);
   function signOut() {
-    destroyCookie(null, '@NeuralAnalyticsAccess_token', { path: '/' });
-    destroyCookie(null, '@NeuralAnalyticsRefresh_token', { path: '/' });
+    destroyCookie(null, '@RemedixAccess_token', { path: '/' });
     clearLocalStorage();
-    Router.push('/');
+    Router.push('/login');
   }
 
   return (
     <Flex
       justify="space-between"
-      bg="#121626"
+      // bg="#121626"
+      bg="#13192b"
       boxShadow="base"
       color="#fff"
       px="30px"
@@ -231,27 +231,15 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
               justify="center"
               alignItems="center"
               ml="7px"
-              color="#eeeef0"
+              // color="#eeeef0"
             >
               <Text>{user?.name.split(' ')[0]}</Text>
               <Icon icon="material-symbols:keyboard-arrow-down-rounded" />
             </Flex>
           </MenuButton>
-          <MenuList bg="#2A2F42" color="#fff" border="none" zIndex={3000}>
-            <MenuItem
-              _hover={{ bg: '#222633' }}
-              _focus={{ bg: '#222633' }}
-              onClick={() => push('/profile')}
-            >
-              Perfil
-            </MenuItem>
-            <MenuItem
-              _hover={{ bg: '#222633' }}
-              _focus={{ bg: '#222633' }}
-              onClick={signOut}
-            >
-              Logout
-            </MenuItem>
+          <MenuList>
+            <MenuItem onClick={() => push('/profile')}>Perfil</MenuItem>
+            <MenuItem onClick={signOut}>Logout</MenuItem>
           </MenuList>
         </Menu>
       </Flex>

@@ -7,22 +7,9 @@ export async function authPageProps({ Component, ctx, router }: AppContext) {
   let pageProps = {};
   const api = getAPIClient();
 
-  const FREE_ROUTES = [
-    '/login',
-    '/receipt',
-    '/register',
-    '/link-account',
-    `/activate/[hash]`,
-    `/link-account/result`,
-    '/recovery',
-    '/recovery-password/[hash]',
-    '/register-complete/[hash]',
-  ];
+  const FREE_ROUTES = ['/login', '/register'];
 
-  const {
-    '@NeuralAnalyticsAccess_token': token,
-    '@NeuralAnalyticsRefresh_token': refresh,
-  } = parseCookies(ctx);
+  const { '@RemedixAccess_token': token } = parseCookies(ctx);
 
   if (Component.getInitialProps) {
     pageProps = await Component.getInitialProps(ctx);
@@ -37,23 +24,23 @@ export async function authPageProps({ Component, ctx, router }: AppContext) {
     return { pageProps };
   }
 
-  if (refresh) {
-    try {
-      // when refresh token is valid
-      const response = await api.post('auth/refresh', {
-        headers: {
-          authorization: `Bearer ${refresh}`,
-        },
-      });
-      const { access_token, refresh_token } = response.data;
-      setCookie(ctx, '@NeuralAnalyticsAccess_token', access_token);
-      setCookie(ctx, '@NeuralAnalyticsRefresh_token', refresh_token);
-      return { pageProps };
-    } catch (error) {
-      redirectTo('/login', { res: ctx.res, status: 301 });
-      return {};
-    }
-  }
+  // if (refresh) {
+  //   try {
+  //     // when refresh token is valid
+  //     const response = await api.post('auth/refresh', {
+  //       headers: {
+  //         authorization: `Bearer ${refresh}`,
+  //       },
+  //     });
+  //     const { access_token, refresh_token } = response.data;
+  //     setCookie(ctx, '@NeuralAnalyticsAccess_token', access_token);
+  //     setCookie(ctx, '@NeuralAnalyticsRefresh_token', refresh_token);
+  //     return { pageProps };
+  //   } catch (error) {
+  //     redirectTo('/login', { res: ctx.res, status: 301 });
+  //     return {};
+  //   }
+  // }
   redirectTo('/login', { res: ctx.res, status: 301 });
   return {};
 }

@@ -26,50 +26,6 @@ a {
   }
 }
 
-.swiper-pagination-bullet-active {
-  background-color: #5263C4 !important;
-}
-.swiper-pagination-bullet{
-  background-color: #5263C4 !important;
-}
-.swiper-button-prev{
-  color: #5263C4 !important;
-  margin-left: -12px !important;
-}
-.swiper-button-next{
-  color: #5263C4 !important;
-  margin-right: -12px !important;
-}
-
-.swiper {
-  width: 100%;
-  height: 100%;
-}
-.swiper-slide {
-  /* text-align: center; */
-  font-size: 18px;
-  width: 100%;
-  /* Center slide text vertically */
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  -webkit-align-items: center;
-  align-items: center;
-
-}
-.mySwiper{
-  /* background: yellow; */
-  height: 280px;
-  margin-top: -30px;
-}
-
 option {
   background: #252B3B !important;
   color: white;

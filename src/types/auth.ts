@@ -3,9 +3,7 @@ export interface SignInRequestData {
   password: string;
 }
 export interface authToken {
-  refresh: string;
-  access: string;
-  claims: any;
+  token: string;
 }
 
 export interface ActiveUser {

@@ -75,7 +75,8 @@ export default function Sidebar({
       transition="all 0.5s"
       as="aside"
       maxW={hide ? '70px' : '200px'}
-      bg="#121626"
+      bg="#13192b"
+      // bg="#121626"
       p="10px"
       borderRight="1px solid #2C3045"
     >
@@ -87,7 +88,14 @@ export default function Sidebar({
         mt={hide ? '7px' : '0'}
         justify="center"
       >
-        <Text>Logo</Text>
+        <Image
+          // display={{ base: 'flex', lg: 'none' }}
+          src="/assets/logo.png"
+          // mx="auto"
+          // w="45px"
+          // h="40px"
+          mb="10px"
+        />
         {/* <Image
           src="https://avatars.githubusercontent.com/u/82707621?s=96&v=4"
           w="70px"
@@ -100,7 +108,7 @@ export default function Sidebar({
         align="center"
         pr={hide ? '0' : '5'}
         w="full"
-        minW={hide ? '0' : '250px'}
+        minW={hide ? '0' : '200px'}
       >
         {hide ? (
           subsMenu.company.map((item, idx) => (

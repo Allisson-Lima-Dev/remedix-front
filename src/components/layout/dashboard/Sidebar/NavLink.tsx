@@ -41,19 +41,27 @@ export function NavLink({
 }: NavLinkProps) {
   const { asPath } = useRouter();
   return activeDrawer ? (
-    <Box p="4px 10px">
+    <Box w="full">
       <Accordion
         allowToggle
-        w="80%"
+        // w="80%"
+        w="full"
         defaultIndex={
           subMenu?.find((item) => item.route === asPath) ? [indiceSubMenu] : []
         }
       >
         <AccordionItem w="full" borderY="none" isFocusable>
           <AccordionButton
+            _hover={{
+              bg: subMenu?.find((item) => item.route === asPath)
+                ? '#3c7df4'
+                : '',
+            }}
+            bg={subMenu?.find((item) => item.route === asPath) ? '#4988FA' : ''}
+            borderRadius="5px"
+            p="5px 10px"
             w="full"
-            p="0"
-            _hover={{ bg: 'transparent' }}
+            // p="0"
             transition="all linear .55s"
           >
             <ChakraLink display="flex" alignItems="center" {...rest} w="full">
@@ -114,7 +122,14 @@ export function NavLink({
     </Box>
   ) : (
     <ActiveLink href={href} passHref checkHref={href}>
-      <ChakraLink display="flex" alignItems="center" {...rest} w="full">
+      <ChakraLink
+        display="flex"
+        alignItems="center"
+        bg={href === asPath ? '#4988FA' : ''}
+        borderRadius="5px"
+        p="5px 10px"
+        {...rest}
+      >
         <Icon
           icon={icon}
           fontSize="20"

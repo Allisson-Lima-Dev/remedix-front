@@ -12,16 +12,12 @@ interface FailedRequestQueue {
   onFailure: (err: AxiosError) => void;
 }
 const signOut = () => {
-  destroyCookie(null, '@NeuralAnalyticsAccess_token', { path: '/' });
-  destroyCookie(null, '@NeuralAnalyticsRefresh_token', { path: '/' });
+  destroyCookie(null, '@RemedixAccess_token', { path: '/' });
   router.push('/login');
 };
 
 export function getAPIClient(ctx?: any) {
-  const {
-    ['@NeuralAnalyticsAccess_token']: access,
-    ['@NeuralAnalyticsRefresh_token']: refresh,
-  } = parseCookies(ctx);
+  const { ['@RemedixAccess_token']: access } = parseCookies(ctx);
 
   let isRefreshing = false;
 

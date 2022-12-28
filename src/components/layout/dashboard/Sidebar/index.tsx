@@ -19,8 +19,13 @@ export default function Sidebar({
   const subsMenu = {
     company: [
       {
-        title: 'Pedidos',
+        title: 'Painel',
         route: '/',
+        icon: 'material-symbols:dashboard-outline',
+      },
+      {
+        title: 'Pedidos',
+        route: '/requests',
         icon: 'ic:outline-pending-actions',
         subMenu: [
           {
@@ -38,9 +43,18 @@ export default function Sidebar({
         ],
       },
       {
-        title: 'Painel',
-        route: '/',
-        icon: 'material-symbols:dashboard-outline',
+        title: 'Chat',
+        route: '/chat',
+        // path: ['/payment', '/payment/review'],
+        icon: 'teenyicons:chat-outline',
+        // subMenu: [],
+      },
+      {
+        title: 'Gestão',
+        route: '/financial',
+        // path: ['/payment', '/payment/review'],
+        icon: 'grommet-icons:money',
+        // subMenu: [],
       },
     ],
     menu1: [
@@ -118,14 +132,14 @@ export default function Sidebar({
               key={idx}
               onClick={() => {
                 onCloseDrawer && onCloseDrawer();
-                idx === 0 ? setHide(false) : null;
+                setHide(false);
               }}
             >
               <Flex w="full" justify="center" align="center" my="7px">
                 <Icon
                   icon={item.icon}
                   fontSize="23"
-                  color={item.route === asPath ? '#eeeef0' : '#656d86'}
+                  color={item.route === asPath ? '#4988FA' : '#656d86'}
                   style={{ cursor: 'pointer' }}
                 />
               </Flex>

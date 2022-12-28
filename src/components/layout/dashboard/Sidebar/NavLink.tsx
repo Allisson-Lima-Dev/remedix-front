@@ -123,6 +123,7 @@ export function NavLink({
   ) : (
     <ActiveLink href={href} passHref checkHref={href}>
       <ChakraLink
+        cursor={href === '/chat' ? 'not-allowed' : 'pointer'}
         display="flex"
         alignItems="center"
         bg={href === asPath ? '#4988FA' : ''}

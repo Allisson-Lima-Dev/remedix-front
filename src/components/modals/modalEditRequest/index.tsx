@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Box,
   Input as InputChakra,
@@ -36,9 +36,11 @@ import { Modal } from '../modalDefault';
 import { Input } from '~/components/input';
 import { formatCalcValue } from '~/utils/formatValue';
 import { Select } from '~/components/select';
+import { useMenuCompany } from '~/services/hooks/useMenuCompany';
+import { useMenuItems } from '~/services/hooks/useMenuItems';
 
 interface ModalProps extends Omit<ModalChakraModal, 'children'> {
-  number_request: number;
+  number_request?: number;
   refetch?: (
     options?: RefetchOptions & RefetchQueryFilters
   ) => Promise<QueryObserverResult>;
@@ -54,6 +56,7 @@ interface IITemsRequestMenu {
 interface IRequestEdit {
   name: string;
   type: string;
+  from_phone?: string;
   amount: string;
   requestMenu: IITemsRequestMenu[];
 }
@@ -65,22 +68,28 @@ export function ModalEditRequest({
   refetch,
   ...rest
 }: ModalProps) {
+  const { data } = useMenuCompany();
+  const [category_id, setCategory_id] = useState(
+    data?.menu_company[0]?.id || ''
+  );
+  const { data: dataMenuItems } = useMenuItems(category_id);
   function formatDobleFloatValue(value: string, fixed?: number) {
     let formatValue = +String(value).replace(/\D/g, '');
     return parseFloat(formatValue.toFixed(fixed || 2)) / 100;
   }
   const emptyData = {
-    category: 'Massas',
+    category: data?.menu_company[0].id,
     name: 'hot-dog',
     quantity: '1',
     observation: '',
   };
   //   const value = formatDobleFloatValue(String(getValues('value')), 2);
-  const { register, handleSubmit, reset, control } = useForm<IRequestEdit>({
-    defaultValues: {
-      requestMenu: [emptyData],
-    },
-  });
+  const { register, handleSubmit, reset, control, getValues } =
+    useForm<IRequestEdit>({
+      defaultValues: {
+        requestMenu: [emptyData],
+      },
+    });
 
   let numbers: number[] = [];
   Array.from({ length: 50 })?.map((_, idx) => numbers.push(idx));
@@ -89,6 +98,8 @@ export function ModalEditRequest({
     name: 'requestMenu',
     control,
   });
+
+  console.log({ fields });
 
   return (
     <Modal
@@ -101,11 +112,11 @@ export function ModalEditRequest({
         })
       }
       title={`Editar Pedido #${number_request}`}
-      width="660px"
+      width="580px"
       {...rest}
     >
       <Flex w="full" justify="space-between">
-        <Box w="full">
+        <Box w="60%">
           <Input
             {...register('name')}
             variant="outline"
@@ -113,14 +124,23 @@ export function ModalEditRequest({
             placeholder="Ex: João"
           />
         </Box>
-        <Box mx="20px" w="60%" {...register('type')}>
+        <Box ml="20px" w="40%" {...register('type')}>
           <Select name="" label="Tipo" h="40px">
             <option value="1">Entrega</option>
             <option value="1">Retirada</option>
           </Select>
         </Box>
-
-        <Box w="50%">
+      </Flex>
+      <Flex w="full" justify="space-between" mt="10px">
+        <Box w="60%">
+          <Input
+            {...register('from_phone')}
+            variant="outline"
+            label="Telefone"
+            placeholder="Ex: 98 99999-9999"
+          />
+        </Box>
+        <Box w="40%" ml="20px">
           <Input
             variant="outline"
             label="Valor"
@@ -201,24 +221,50 @@ export function ModalEditRequest({
                     align="center"
                     mt="10px"
                   >
-                    <Box w="90%">
+                    <Box w="50%">
                       <Select
                         label="Categoria:"
+                        placeholder="Selecione"
                         h="40px"
-                        {...register(`requestMenu.${idx}.category`)}
+                        {...register(`requestMenu.${idx}.category`, {
+                          onChange(event) {
+                            setCategory_id(event.target.value);
+                          },
+                        })}
                       >
-                        <option value="1">Entrega</option>
-                        <option value="1">Retirada</option>
+                        {data &&
+                          data?.menu_company?.map((itemMenu, key) => (
+                            <option value={itemMenu.id} key={key}>
+                              {itemMenu.menu_name}
+                            </option>
+                          ))}
                       </Select>
                     </Box>
                     <Box w="60%" ml="20px">
                       <Select
                         label="Pedido:"
+                        placeholder="Selecione"
+                        disabled={
+                          getValues(`requestMenu.${idx}.category`) === ''
+                        }
                         h="40px"
                         {...register(`requestMenu.${idx}.name`)}
                       >
-                        <option value="1">Entrega</option>
-                        <option value="1">Retirada</option>
+                        {dataMenuItems?.items_menu
+                          ?.filter(
+                            (filter) =>
+                              filter.category_menu_id ===
+                              getValues(`requestMenu.${idx}.category`)
+                          )
+                          ?.map((itemsMenu, key) => (
+                            <option
+                              placeholder="Selecione"
+                              value={itemsMenu.uuid}
+                              key={key}
+                            >
+                              {itemsMenu.title}
+                            </option>
+                          ))}
                       </Select>
                     </Box>
                   </Flex>
@@ -275,7 +321,7 @@ export function ModalEditRequest({
           leftIcon={<Icon icon="material-symbols:add" width={25} />}
           onClick={() => {
             append({
-              category: '',
+              category: data?.menu_company[0]?.id || '',
               name: '',
               observation: '',
               quantity: '',

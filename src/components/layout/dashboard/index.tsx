@@ -36,7 +36,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
                 width: '6px',
               },
               '&::-webkit-scrollbar-thumb': {
-                background: '#4988FA',
+                background: '#5e94f9af',
                 width: '5px',
                 borderRadius: '24px',
               },
@@ -44,7 +44,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
             w="full"
             transition="all 0.55s"
             p={{ base: '17px', md: '20px' }}
-            h="calc(100vh - 70px)"
+            h="calc(100vh - 65px)"
             overflowY="scroll"
           >
             <Text as="h3" mb="10px" textTransform="uppercase" fontWeight="600">

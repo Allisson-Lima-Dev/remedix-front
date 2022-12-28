@@ -34,6 +34,7 @@ export default function Home() {
         </Box>
         <InputGroup w="300px">
           <InputRightElement
+            zIndex={1}
             pointerEvents="none"
             children={<Icon icon="ic:baseline-search" width={20} />}
           />

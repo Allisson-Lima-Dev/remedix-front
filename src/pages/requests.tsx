@@ -31,7 +31,7 @@ import { phonesFormat } from '~/utils/formatPhone';
 import { Pagination } from '~/components/pagination';
 import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalFilter } from '~/components/modals/modalFilter';
-import { ModalEditRequest } from '~/components/modals/modalEditRequest';
+import { ModalEditRequest as ModalCreateRequest } from '~/components/modals/modalEditRequest';
 
 export default function Requests() {
   const [page, setPage] = useState(1);
@@ -44,6 +44,11 @@ export default function Requests() {
     '(max-width: 1552px)',
   ]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenCreateRequest,
+    onOpen: onOpenCreateRequest,
+    onClose: onCloseCreateRequest,
+  } = useDisclosure();
   const {
     isOpen: isOpenFilter,
     onOpen: onOpenFilter,
@@ -141,6 +146,7 @@ export default function Requests() {
             _active={{ bg: '#0a8f22' }}
             _hover={{ bg: '#31c64d', p: '20px' }}
             transition="all linear .25s"
+            onClick={onOpenCreateRequest}
             leftIcon={
               <Icon icon="material-symbols:add-shopping-cart" width={25} />
             }
@@ -334,6 +340,10 @@ export default function Requests() {
         )}
       </Box>
       <ModalFilter isOpen={isOpenFilter} onClose={onCloseFilter} />
+      <ModalCreateRequest
+        onClose={onCloseCreateRequest}
+        isOpen={isOpenCreateRequest}
+      />
     </Box>
   );
 }

@@ -9,27 +9,29 @@ import { Layout } from '~/components/layout';
 import { queryClient } from '~/services/queryClient';
 import { authPageProps } from '~/utils/authPageProps';
 import { theme } from '~/styles/theme';
+import { AuthProvider } from '~/context/AuthContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <CSSReset />
       <NextNprogress
-        color="#4774fb"
+        color="#4988FA"
         startPosition={0.3}
         stopDelayMs={200}
         height={3}
         showOnShallow
       />
-      <ChakraProvider theme={theme}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+      <ChakraProvider theme={theme} resetCSS>
+        <AuthProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthProvider>
       </ChakraProvider>
     </QueryClientProvider>
   );
 }
 
-// MyApp.getInitialProps = authPageProps;
+MyApp.getInitialProps = authPageProps;
 
 export default MyApp;

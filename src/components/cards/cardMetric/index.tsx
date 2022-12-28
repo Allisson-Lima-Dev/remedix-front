@@ -69,7 +69,8 @@ export function CardMetric({ amount, title, type, bgIcon }: ICardMetricProps) {
     <Flex
       minH="70px"
       w="200px"
-      bg="#161A2E"
+      // bg="#161A2E"
+      bg="#1a1c32"
       borderRadius="8px"
       border="1px solid #29304D"
       p="15px"

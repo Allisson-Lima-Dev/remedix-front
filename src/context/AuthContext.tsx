@@ -56,16 +56,13 @@ export function AuthProvider({ children }: Component) {
 
   async function signIn(credentials: SignInRequestData) {
     try {
-      const { access, refresh } = await signInRequest(credentials);
-      setCookie(undefined, '@RemedixAccess_token', access, {
-        maxAge: 60 * 60 * 1, // 1 hour
+      const { token } = await signInRequest(credentials);
+      setCookie(undefined, '@RemedixAccess_token', token, {
+        maxAge: 60 * 60 * 24, // 24 hour
         path: '/',
       });
-      setCookie(undefined, '@RemedixRefresh_token', refresh, {
-        maxAge: 60 * 60 * 2, // 2 hour
-        path: '/',
-      });
-      api.defaults.headers.common.Authorization = `Bearer ${access}`;
+
+      api.defaults.headers.common.Authorization = `Bearer ${token}`;
       await getMeInformations();
       // setUser(financial);
       // setIsAuthenticated(true);

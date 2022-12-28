@@ -17,7 +17,13 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
         <Box display={{ base: 'none', lg: 'flex' }}>
           <Sidebar hide={hideSide} />
         </Box>
-        <Box bg="#0A0D16" w="full" overflowY="hidden" transition="all 0.55s">
+        <Box
+          // bg="#0A0D16"
+          bg="#0a0f1e"
+          w="full"
+          overflowY="hidden"
+          transition="all 0.55s"
+        >
           <HeaderDashboard onPress={(click) => setHideSide(click)} />
           <Box
             __css={{
@@ -30,7 +36,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
                 width: '6px',
               },
               '&::-webkit-scrollbar-thumb': {
-                background: '#485EC4',
+                background: '#5e94f9af',
                 width: '5px',
                 borderRadius: '24px',
               },
@@ -38,7 +44,7 @@ export function LayoutDashboard({ children, title }: LayoutProps) {
             w="full"
             transition="all 0.55s"
             p={{ base: '17px', md: '20px' }}
-            h="calc(100vh - 70px)"
+            h="calc(100vh - 65px)"
             overflowY="scroll"
           >
             <Text as="h3" mb="10px" textTransform="uppercase" fontWeight="600">

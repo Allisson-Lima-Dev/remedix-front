@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import {
   Avatar,
   Box,
@@ -19,6 +20,10 @@ import {
   useMediaQuery,
   Image,
   Center,
+  Icon as IconChakra,
+  Switch,
+  useColorMode,
+  HStack,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import React, { useContext, useEffect, useState } from 'react';
@@ -28,6 +33,7 @@ import { destroyCookie } from 'nookies';
 import Sidebar from '../Sidebar';
 import { AuthContext } from '~/context/AuthContext';
 import { clearLocalStorage } from '~/utils/localStorageFormat';
+import { useAdmin } from '~/services/hooks/me';
 
 interface IMenuProps {
   name: string;
@@ -39,78 +45,32 @@ interface IPropsHeader {
   onPress: (click: boolean) => void;
 }
 
-const routes: IMenuProps[] = [
-  {
-    name: 'Painel',
-    path: '/',
-    // path: ['/payment', '/payment/review'],
-    icon: 'material-symbols:dashboard-outline',
-    // subMenu: [],
-  },
-  {
-    name: 'Pedidos',
-    path: '/requests',
-    // path: ['/payment', '/payment/review'],
-    icon: 'ic:outline-pending-actions',
-    // subMenu: [],
-  },
-  {
-    name: 'Chat',
-    path: '/chat',
-    // path: ['/payment', '/payment/review'],
-    icon: 'teenyicons:chat-outline',
-    // subMenu: [],
-  },
-  {
-    name: 'Gestão',
-    path: '/financial',
-    // path: ['/payment', '/payment/review'],
-    icon: 'grommet-icons:money',
-    // subMenu: [],
-  },
-  // {
-  //   name: 'Clientes',
-  //   path: '/',
-  //   icon: 'ant-design:bank-outlined',
-  //   subMenu: [
-  //     {
-  //       name: 'Clientes',
-  //       path: '/',
-  //     },
-  //     {
-  //       name: 'Adicionar Cliente',
-  //       path: '/batch-customer',
-  //     },
-  //     {
-  //       name: 'Links',
-  //       path: '/links',
-  //     },
-  //   ],
-  // },
-];
-
 export default function HeaderDashboard({ onPress }: IPropsHeader) {
   const [lg] = useMediaQuery('(min-width: 990px)');
   const { push, asPath } = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useContext(AuthContext);
+  const { colorMode, toggleColorMode } = useColorMode();
+  const [isChecked, setIsChecked] = useState(true);
+  const [click, setClick] = useState(true);
 
-  const [click, setClick] = useState(false);
+  const { data } = useAdmin();
+
   function signOut() {
-    destroyCookie(null, '@NeuralAnalyticsAccess_token', { path: '/' });
-    destroyCookie(null, '@NeuralAnalyticsRefresh_token', { path: '/' });
+    destroyCookie(null, '@RemedixAccess_token', { path: '/' });
     clearLocalStorage();
-    Router.push('/');
+    Router.push('/login');
   }
 
   return (
     <Flex
       justify="space-between"
-      bg="#121626"
+      // bg="#121626"
+      bg="#13192b"
       boxShadow="base"
       color="#fff"
       px="30px"
-      h="70px"
+      h="65px"
       alignItems="center"
       borderBottom="1px solid #2C3045"
     >
@@ -123,138 +83,80 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
       >
         <Icon icon="material-symbols:menu-rounded" width={25} />
       </Center>
-
-      <Flex
-        align="center"
-        w="full"
-        // mr="50px"
-        display={{ base: 'none', lg: 'flex' }}
-        justify="right"
-      >
-        {routes.map((item, idx) => {
-          const route = item.name === 'PAGAMENTOS' ? item.path[0] : item.path;
-          return item.subMenu ? (
-            <Link
-              href={route as string}
-              key={idx}
-              // style={{ background: 'red' }}
-            >
-              <Flex mr="20px" align="center">
-                <Icon
-                  icon={item.icon}
-                  color={item.path === asPath ? '#eeeef0' : '#4e4ee971'}
-                  width={25}
-                />
-                <Text
-                  ml="10px"
-                  color={item.path === asPath ? '#eeeef0' : '#2f2f98'}
-                  size="1rem"
-                  fontWeight="700"
-                >
-                  {item.name}
-                </Text>
-                <Icon icon="bx:chevron-down" color="#eeeef0" width={20} />
-              </Flex>
-            </Link>
-          ) : idx === 2 ? (
-            <Box cursor="not-allowed" key={idx}>
-              <Flex mr="20px" align="center">
-                <Icon
-                  icon={item.icon}
-                  color={item.path === asPath ? '#eeeef0' : '#eeeef032'}
-                  width={25}
-                />
-                <Text
-                  ml="10px"
-                  color={item.path === asPath ? '#eeeef0' : '#eeeef033'}
-                  size="1rem"
-                  fontWeight="700"
-                >
-                  {item.name}
-                </Text>
-              </Flex>
-            </Box>
-          ) : (
-            <Link
-              href={idx === 2 ? '' : (route as string)}
-              key={idx}
-              style={{ cursor: 'pointer' }}
-            >
-              <Flex
-                mr="28px"
-                cursor="pointer"
-                align="center"
-                pb="5px"
-                borderBottom={item.path === asPath ? '3px solid #fff' : ''}
-              >
-                <Icon
-                  icon={item.icon}
-                  color={item.path === asPath ? '#eeeef0' : '#eeeef099'}
-                  width={25}
-                />
-                <Text
-                  ml="10px"
-                  color={item.path === asPath ? '#eeeef0' : '#eeeef099'}
-                  size="1rem"
-                  fontWeight="700"
-                >
-                  {item.name}
-                </Text>
-              </Flex>
-            </Link>
-          );
-        })}
-      </Flex>
-      <Flex align="center" mr="10px">
-        <Avatar
-          size="sm"
-          name={user?.name}
-          // src="https://bit.ly/sage-adebayo"
-          display={{ base: 'none', md: 'flex' }}
-        />
-        <Menu>
-          <MenuButton
-            transition="all 0.2s"
-            borderRadius="md"
-            w={{ base: '', md: 'full' }}
-            fontSize="14px"
-            border="none"
+      <HStack>
+        <Flex
+          w="47px"
+          h="26px"
+          borderRadius="20px"
+          onClick={() => {
+            setIsChecked(!isChecked);
+            toggleColorMode();
+          }}
+          bg="#5e94f9af"
+          cursor="pointer"
+          pos="relative"
+        >
+          <Flex
+            pl="2px"
+            ml={isChecked ? '45%' : '0%'}
+            transition="all linear 0.25s"
+            borderRadius="20px"
+            align="center"
+            w="full"
+            bg={isChecked ? '' : '#484747c5'}
           >
-            <Avatar
-              size="sm"
-              name={user?.name}
-              // src="https://bit.ly/sage-adebayo"
-              display={{ base: 'flex', md: 'none' }}
-            />
-            <Flex
-              display={{ base: 'none', md: 'flex' }}
-              justify="center"
-              alignItems="center"
-              ml="7px"
-              color="#eeeef0"
+            <Box borderRadius="20px" bg="#1a365e" p="1px">
+              <Icon
+                icon={!isChecked ? 'ph:cloud-sun' : 'ph:moon-stars'}
+                color="#fff"
+                width={21}
+              />
+            </Box>
+          </Flex>
+        </Flex>
+        <Center w="30px">
+          <Icon icon="clarity:notification-solid" width={20} />
+        </Center>
+
+        <Flex align="center" mr="10px">
+          <Avatar
+            size="sm"
+            name={data?.user_admin?.name}
+            src={data?.user_admin?.avatarUrl}
+            display={{ base: 'none', md: 'flex' }}
+          />
+          <Menu>
+            <MenuButton
+              transition="all 0.2s"
+              borderRadius="md"
+              w={{ base: '', md: 'full' }}
+              fontSize="14px"
+              border="none"
             >
-              <Text>{user?.name.split(' ')[0]}</Text>
-              <Icon icon="material-symbols:keyboard-arrow-down-rounded" />
-            </Flex>
-          </MenuButton>
-          <MenuList bg="#2A2F42" color="#fff" border="none" zIndex={3000}>
-            <MenuItem
-              _hover={{ bg: '#222633' }}
-              _focus={{ bg: '#222633' }}
-              onClick={() => push('/profile')}
-            >
-              Perfil
-            </MenuItem>
-            <MenuItem
-              _hover={{ bg: '#222633' }}
-              _focus={{ bg: '#222633' }}
-              onClick={signOut}
-            >
-              Logout
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </Flex>
+              <Avatar
+                size="sm"
+                name={data?.user_admin?.name}
+                src={data?.user_admin?.avatarUrl}
+                display={{ base: 'flex', md: 'none' }}
+              />
+              <Flex
+                display={{ base: 'none', md: 'flex' }}
+                justify="center"
+                alignItems="center"
+                ml="7px"
+                // color="#eeeef0"
+              >
+                <Text>{data?.user_admin?.name.split(' ')[0]}</Text>
+                <Icon icon="material-symbols:keyboard-arrow-down-rounded" />
+              </Flex>
+            </MenuButton>
+            <MenuList zIndex={2}>
+              <MenuItem onClick={() => push('/profile')}>Perfil</MenuItem>
+              <MenuItem onClick={signOut}>Logout</MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+      </HStack>
       <Box
         // ref={btnRef}
         // ml="15px"

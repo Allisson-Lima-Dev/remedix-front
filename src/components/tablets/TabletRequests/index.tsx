@@ -183,7 +183,7 @@ export function TabletRequests({
                   bg: '#282e3f',
                 }}
               >
-                <Td>#{item.id}</Td>
+                <Td>#{item?.id}</Td>
                 <Td>
                   <Badge
                     color="#fff"
@@ -192,13 +192,13 @@ export function TabletRequests({
                     borderRadius="5px"
                     fontSize="11px"
                   >
-                    {item.type}
+                    {item?.type}
                   </Badge>
                 </Td>
                 <Td>
                   <Box>
-                    <Text> {item.userRequest.name}</Text>
-                    <Text>{phonesFormat(item.userRequest.from)}</Text>
+                    <Text> {item.user_request?.name}</Text>
+                    <Text>{phonesFormat(item?.user_request?.from)}</Text>
                   </Box>
                 </Td>
                 <Td fontSize="14px">
@@ -212,7 +212,7 @@ export function TabletRequests({
                   </Box>
                 </Td>
                 <Td>
-                  {parseFloat(item.amount).toLocaleString('pt-BR', {
+                  {parseFloat(item.total_amount).toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL',
                   })}

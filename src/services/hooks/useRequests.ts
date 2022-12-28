@@ -37,7 +37,7 @@ async function getRequests({
 }: IRequests) {
   try {
     const { data } = await api.get(
-      `/requests?per_page=${per_page || 100}&page=${page || 1}${
+      `/admin/requests?per_page=${per_page || 100}&page=${page || 1}${
         status ? `&status=${status}` : ''
       }${startDate && endDate ? `&data_between=${startDate},${endDate}` : ''}${
         search ? `&search=${search}` : ''

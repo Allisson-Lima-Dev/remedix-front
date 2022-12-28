@@ -19,8 +19,13 @@ export default function Sidebar({
   const subsMenu = {
     company: [
       {
-        title: 'Pedidos',
+        title: 'Painel',
         route: '/',
+        icon: 'material-symbols:dashboard-outline',
+      },
+      {
+        title: 'Pedidos',
+        route: '/requests',
         icon: 'ic:outline-pending-actions',
         subMenu: [
           {
@@ -38,9 +43,18 @@ export default function Sidebar({
         ],
       },
       {
-        title: 'Painel',
-        route: '/',
-        icon: 'material-symbols:dashboard-outline',
+        title: 'Chat',
+        route: '/chat',
+        // path: ['/payment', '/payment/review'],
+        icon: 'teenyicons:chat-outline',
+        // subMenu: [],
+      },
+      {
+        title: 'Gestão',
+        route: '/financial',
+        // path: ['/payment', '/payment/review'],
+        icon: 'grommet-icons:money',
+        // subMenu: [],
       },
     ],
     menu1: [
@@ -75,7 +89,8 @@ export default function Sidebar({
       transition="all 0.5s"
       as="aside"
       maxW={hide ? '70px' : '200px'}
-      bg="#121626"
+      bg="#13192b"
+      // bg="#121626"
       p="10px"
       borderRight="1px solid #2C3045"
     >
@@ -87,7 +102,14 @@ export default function Sidebar({
         mt={hide ? '7px' : '0'}
         justify="center"
       >
-        <Text>Logo</Text>
+        <Image
+          // display={{ base: 'flex', lg: 'none' }}
+          src="/assets/logo.png"
+          // mx="auto"
+          // w="45px"
+          // h="40px"
+          mb="10px"
+        />
         {/* <Image
           src="https://avatars.githubusercontent.com/u/82707621?s=96&v=4"
           w="70px"
@@ -100,7 +122,7 @@ export default function Sidebar({
         align="center"
         pr={hide ? '0' : '5'}
         w="full"
-        minW={hide ? '0' : '250px'}
+        minW={hide ? '0' : '200px'}
       >
         {hide ? (
           subsMenu.company.map((item, idx) => (
@@ -110,14 +132,14 @@ export default function Sidebar({
               key={idx}
               onClick={() => {
                 onCloseDrawer && onCloseDrawer();
-                idx === 0 ? setHide(false) : null;
+                setHide(false);
               }}
             >
               <Flex w="full" justify="center" align="center" my="7px">
                 <Icon
                   icon={item.icon}
                   fontSize="23"
-                  color={item.route === asPath ? '#eeeef0' : '#656d86'}
+                  color={item.route === asPath ? '#4988FA' : '#656d86'}
                   style={{ cursor: 'pointer' }}
                 />
               </Flex>

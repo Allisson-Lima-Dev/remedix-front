@@ -43,6 +43,13 @@ export default function Sidebar({
         ],
       },
       {
+        title: 'Menu Digital',
+        route: '/menu_digital',
+        // path: ['/payment', '/payment/review'],
+        icon: 'material-symbols:format-list-bulleted-rounded',
+        // subMenu: [],
+      },
+      {
         title: 'Chat',
         route: '/chat',
         // path: ['/payment', '/payment/review'],

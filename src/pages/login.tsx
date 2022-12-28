@@ -5,6 +5,7 @@ import {
   Flex,
   Image,
   Text,
+  useMediaQuery,
   useToast,
 } from '@chakra-ui/react';
 import Link from 'next/link';
@@ -26,14 +27,15 @@ const userAuth = {
   password: process.env.NEXT_PUBLIC_PASSWORD,
 };
 export default function Login() {
+  const [isLarge1300] = useMediaQuery(['(max-width: 1400px)']);
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
   const { signIn } = useAuthContext();
   const { register, handleSubmit, formState } = useForm<SignInRequestData>({
     resolver: yupResolver(signInFormSchema),
     defaultValues: userAuth,
   });
 
-  const toast = useToast();
   async function handleSignIn(data: SignInRequestData) {
     setLoading(true);
     console.log(data);
@@ -114,8 +116,8 @@ export default function Login() {
           onSubmit={handleSubmit(handleSignIn)}
           mt="25px"
           direction="column"
-          maxW="600px"
-          w={{ base: '90%', lg: '55%' }}
+          // maxW="600px"
+          w={{ base: '90%', lg: isLarge1300 ? '80%' : '55%' }}
           mx="auto"
           pl="25px"
           pr="25px"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import {
   Box,
@@ -22,24 +22,54 @@ import {
   Tooltip,
   Input,
   useDisclosure,
+  TableContainer,
+  Table,
+  Tbody,
+  Thead,
+  Tr,
+  Th,
+  Td,
+  Divider,
+  Avatar,
 } from '@chakra-ui/react';
 import { ModalCreateCategory } from '~/components/modals/modalCreateCategory';
 import { useMenuCompany } from '~/services/hooks/useMenuCompany';
+import { ModalCreateItems } from '~/components/modals/modalCreateItems';
 
 export default function MenuDigital() {
+  const [id_category, setId_category] = useState('');
+  const [type, setType] = useState<'new' | 'existing'>('new');
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: dataMenuCategory } = useMenuCompany();
+  const {
+    isOpen: isOpenCreateItem,
+    onOpen: onOpenCreateItem,
+    onClose: onCloseCreateItem,
+  } = useDisclosure();
+  const { data: dataMenuCategory, refetch } = useMenuCompany();
   return (
     <Box h="full" w="full">
       <Text>Menu Digital</Text>
       <Flex w="full" align="center" justify="space-between">
-        <Button
-          mt="20px"
-          leftIcon={<Icon icon="material-symbols:add" />}
-          onClick={onOpen}
-        >
-          Cadastrar Categoria
-        </Button>
+        <HStack mt="20px">
+          <Button
+            // mt="20px"
+            leftIcon={<Icon icon="material-symbols:add" />}
+            onClick={onOpen}
+          >
+            Cadastrar Categoria
+          </Button>
+          <Button
+            // mt="20px"
+            leftIcon={<Icon icon="material-symbols:add" />}
+            onClick={() => {
+              setId_category('');
+              setType('existing');
+              onOpenCreateItem();
+            }}
+          >
+            Cadastrar Item
+          </Button>
+        </HStack>
 
         <Box>
           <InputGroup w="290px">
@@ -86,7 +116,9 @@ export default function MenuDigital() {
           <Button
             mt="20px"
             leftIcon={<Icon icon="material-symbols:add" />}
-            onClick={onOpen}
+            onClick={() => {
+              onOpen();
+            }}
           >
             Inserir Categoria
           </Button>
@@ -115,7 +147,11 @@ export default function MenuDigital() {
                     <Text color="#fff" fontSize="18px">
                       {item.menu_name}
                     </Text>
-                    <Text color="#cccc">Nenhum Item</Text>
+                    <Text color="#cccc">
+                      {item.items_menu?.length
+                        ? `${item.items_menu?.length} Items`
+                        : 'Nenhum Item'}
+                    </Text>
                   </Box>
                   <HStack>
                     <Center mr="5px">
@@ -142,27 +178,135 @@ export default function MenuDigital() {
                   </HStack>
                 </Flex>
               </AccordionButton>
-              <AccordionPanel p={4} maxH="400px">
-                <VStack my="20px" color="#ccc">
-                  <Text textAlign="center">
-                    Não existem itens listados nesta categoria no momento.
-                  </Text>
-                  <Text textAlign="center">
-                    Portanto, ela não está disponível para os clientes
-                    visualizarem no Menu Digital. Está atualmente vazia.
-                  </Text>
-                  <Button
-                    mt="20px"
-                    leftIcon={<Icon icon="material-symbols:add" />}
+              <AccordionPanel p="0" maxH="400px">
+                {item.items_menu?.length ? (
+                  <TableContainer
+                    whiteSpace="nowrap"
+                    w="full"
+                    // borderTopRadius="8px"
+                    overflowY="auto"
+                    maxH="700px"
+                    // mt="10px"
                   >
-                    Inserir Item
-                  </Button>
-                </VStack>
+                    <Table variant="unstyled" size="sm">
+                      <Thead w="full" pos="relative">
+                        <Tr
+                          pos="sticky"
+                          top={0}
+                          zIndex={1}
+                          h="40px"
+                          bg="#1E2540"
+                          textAlign="center"
+                        >
+                          {[
+                            'nome',
+                            'Imagem',
+                            'Valor',
+                            'Descrição',
+                            'Ativar',
+                            'Datelhes',
+                          ]?.map(
+                            (name, key) =>
+                              name?.trim() && (
+                                <Th
+                                  textAlign={
+                                    key === 8 || key === 6 || key === 9
+                                      ? 'center'
+                                      : 'left'
+                                  }
+                                  key={key}
+                                >
+                                  {name}
+                                </Th>
+                              )
+                          )}
+                        </Tr>
+                      </Thead>
+                      <Tbody pos="relative">
+                        {item.items_menu?.map((items, idx) => (
+                          <Tr
+                            borderBottom="1px solid #32394e"
+                            key={idx}
+                            _hover={{
+                              bg: '#282e3f',
+                            }}
+                          >
+                            <Td>{items?.title}</Td>
+                            <Td>
+                              {items?.image_product ? (
+                                <Avatar
+                                  size="md"
+                                  src={
+                                    items?.image_product ||
+                                    'https://bit.ly/broken-link'
+                                  }
+                                />
+                              ) : (
+                                <Icon
+                                  icon="majesticons:image-circle-line"
+                                  width={35}
+                                />
+                              )}
+                            </Td>
+                            <Td>{items.amount}</Td>
+                            <Td>{items.description}</Td>
+                            <Td>
+                              <Switch />
+                            </Td>
+                            <Td justifyContent="center">
+                              <Flex
+                                border="1px solid #cccccc39"
+                                boxShadow="2xl"
+                                borderRadius="5px"
+                                w="-webkit-fit-content"
+                                p="5px"
+                              >
+                                <Icon icon="circum:menu-kebab" width={22} />
+                              </Flex>
+                            </Td>
+                          </Tr>
+                        ))}
+                      </Tbody>
+                    </Table>
+                  </TableContainer>
+                ) : (
+                  <VStack my="20px" color="#ccc">
+                    <Text textAlign="center">
+                      Não existem itens listados nesta categoria no momento.
+                    </Text>
+                    <Text textAlign="center">
+                      Portanto, ela não está disponível para os clientes
+                      visualizarem no Menu Digital. Está atualmente vazia.
+                    </Text>
+                    <Button
+                      mt="20px"
+                      onClick={() => {
+                        setId_category(item.id);
+                        setType('new');
+                        onOpenCreateItem();
+                      }}
+                      leftIcon={<Icon icon="material-symbols:add" />}
+                    >
+                      Inserir Item
+                    </Button>
+                  </VStack>
+                )}
               </AccordionPanel>
             </AccordionItem>
           ))}
       </Accordion>
-      <ModalCreateCategory isOpen={isOpen} onClose={onClose} />
+      <ModalCreateCategory
+        isOpen={isOpen}
+        onClose={onClose}
+        refetch={refetch}
+      />
+      <ModalCreateItems
+        id={id_category}
+        type={type}
+        isOpen={isOpenCreateItem}
+        onClose={onCloseCreateItem}
+        refetch={refetch}
+      />
     </Box>
   );
 }

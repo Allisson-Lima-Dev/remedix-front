@@ -52,10 +52,11 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
         </FormLabel>
       )}
       <ChakraInput
+        {...rest}
         name={name}
         id={name}
         fontSize={{ base: '12px', md: '14px', lg: '14px' }}
-        variant="filled"
+        // variant="filled"
         _hover={{
           bg: bgHover,
         }}
@@ -69,7 +70,6 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
         type={
           rest.type === 'password' ? (visible ? 'text' : 'password') : rest.type
         }
-        {...rest}
       />
       {rest.type === 'password' && (
         <Flex position="absolute" right="10px" top={error ? '43%' : '60%'}>

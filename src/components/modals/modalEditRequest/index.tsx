@@ -41,7 +41,7 @@ import { Input } from '~/components/input';
 import { formatCalcValue } from '~/utils/formatValue';
 import { Select } from '~/components/select';
 import { useMenuCompany } from '~/services/hooks/useMenuCompany';
-import { useMenuItems } from '~/services/hooks/useMenuItems';
+import { useAllMenuItems, useMenuItems } from '~/services/hooks/useMenuItems';
 
 interface ModalProps extends Omit<ModalChakraModal, 'children'> {
   number_request?: number;
@@ -77,13 +77,13 @@ export function ModalEditRequest({
   const [category_id, setCategory_id] = useState(
     data?.menu_company[0]?.id || ''
   );
-  const { data: dataMenuItems } = useMenuItems(category_id);
+  const { data: dataMenuItems } = useAllMenuItems();
   function formatDobleFloatValue(value: string, fixed?: number) {
     let formatValue = +String(value).replace(/\D/g, '');
     return parseFloat(formatValue.toFixed(fixed || 2)) / 100;
   }
   const emptyData = {
-    category: data?.menu_company[0].id,
+    category: data?.menu_company[0]?.id,
     name: '',
     quantity: '1',
     note: '',
@@ -298,8 +298,18 @@ export function ModalEditRequest({
                     }}
                   >
                     <Stack spacing={4} direction="row">
-                      <Radio value="1">Descrição</Radio>
-                      <Radio value="2">Observação</Radio>
+                      <Radio
+                        value="1"
+                        isDisabled={!watch(`requestMenu.${idx}.name`)}
+                      >
+                        Descrição
+                      </Radio>
+                      <Radio
+                        value="2"
+                        isDisabled={!watch(`requestMenu.${idx}.name`)}
+                      >
+                        Observação
+                      </Radio>
                     </Stack>
                   </RadioGroup>
                   {!watch(`requestMenu.${idx}.accept_note`) &&

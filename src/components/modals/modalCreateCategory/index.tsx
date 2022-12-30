@@ -32,15 +32,17 @@ export function ModalCreateCategory({
     console.log(data);
     await api
       .post('/admin/menu/company', data)
-      .then(() =>
+      .then(() => {
         toast({
           title: 'Criado com sucesso',
           status: 'success',
           variant: 'solid',
           isClosable: true,
-        })
-      )
+        });
+        reset();
+      })
       .finally(() => {
+        refetch && refetch();
         setLoading(false);
         onClose();
       });

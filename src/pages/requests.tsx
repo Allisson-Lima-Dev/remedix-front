@@ -31,11 +31,11 @@ import { phonesFormat } from '~/utils/formatPhone';
 import { Pagination } from '~/components/pagination';
 import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalFilter } from '~/components/modals/modalFilter';
-import { ModalEditRequest as ModalCreateRequest } from '~/components/modals/modalEditRequest';
+import { ModalCreateRequest } from '~/components/modals/modalCreateRequest';
 
 export default function Requests() {
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [perPage, setPerPage] = useState(10);
   const [viewList, setViewList] = useState(true);
   const [filterTab, setFilterTab] = useState(0);
   const [search, setSearch] = useState('');
@@ -191,12 +191,13 @@ export default function Requests() {
                 <Select
                   variant="unstyled"
                   name=""
+                  defaultValue={1}
                   onChange={(e) => {
                     setPerPage(+e.target.value);
                     setPage(1);
                   }}
                 >
-                  {['5', '10', '20', '30', '40', '50'].map((item) => (
+                  {['10', '20', '30', '40', '50'].map((item) => (
                     <option
                       value={item}
                       style={{ background: '#161A2E' }}
@@ -310,7 +311,7 @@ export default function Requests() {
                   key={key}
                   onClick={() => {
                     setDetails(item);
-                    if (!item?.details) {
+                    if (!item?.request_details) {
                       return;
                     }
                     onOpen();
@@ -343,6 +344,7 @@ export default function Requests() {
       <ModalCreateRequest
         onClose={onCloseCreateRequest}
         isOpen={isOpenCreateRequest}
+        refetch={refetch}
       />
     </Box>
   );

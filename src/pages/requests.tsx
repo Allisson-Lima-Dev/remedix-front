@@ -31,7 +31,7 @@ import { phonesFormat } from '~/utils/formatPhone';
 import { Pagination } from '~/components/pagination';
 import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalFilter } from '~/components/modals/modalFilter';
-import { ModalEditRequest as ModalCreateRequest } from '~/components/modals/modalEditRequest';
+import { ModalCreateRequest } from '~/components/modals/modalCreateRequest';
 
 export default function Requests() {
   const [page, setPage] = useState(1);

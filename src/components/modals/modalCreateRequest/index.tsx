@@ -27,7 +27,18 @@ import {
   Radio,
   Switch,
   useToast,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
 } from '@chakra-ui/react';
+import {
+  AsyncCreatableSelect,
+  AsyncSelect,
+  CreatableSelect,
+  GroupBase,
+  OptionBase,
+  Select as SelectLib,
+} from 'chakra-react-select';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -45,6 +56,8 @@ import { Select } from '~/components/select';
 import { useMenuCompany } from '~/services/hooks/useMenuCompany';
 import { useAllMenuItems, useMenuItems } from '~/services/hooks/useMenuItems';
 import { api } from '~/services/api';
+import { useOptions } from '~/services/hooks/useOptions';
+import { phonesFormat } from '~/utils/formatPhone';
 
 interface ModalProps extends Omit<ModalChakraModal, 'children'> {
   number_request?: number;
@@ -53,10 +66,18 @@ interface ModalProps extends Omit<ModalChakraModal, 'children'> {
   ) => Promise<QueryObserverResult>;
 }
 
+interface FlavorOrColorOption extends OptionBase {
+  label: string;
+  value: string;
+  color?: string;
+  rating?: string;
+}
+
 interface IITemsRequestMenu {
   id_menu_company: string;
   id_item: string;
   unity: number;
+  amount?: number;
   note?: string;
   accept_note?: boolean;
 }
@@ -78,13 +99,13 @@ export function ModalCreateRequest({
 }: ModalProps) {
   const createRequestFormSchema = yup.object().shape({
     name_client: yup.string().required('Nome Obrigatório'),
-    type: yup.string().required('Tipo Obrigatório'),
-    client_from: yup.string().required('Descrição Obrigatória'),
-    total_amount: yup.number().required('Descrição Obrigatória'),
+    type: yup.string().required('Tipo da entrega Obrigatório'),
+    client_from: yup.string().notRequired(),
+    total_amount: yup.number().required('Valor Obrigatória'),
     requests: yup.array().of(
       yup.object().shape({
-        id_menu_company: yup.string().required('Nome Obrigatório'),
-        id_item: yup.string().required('Nome Obrigatório'),
+        id_menu_company: yup.string().required('Categoria Obrigatório'),
+        id_item: yup.string().required('Item Obrigatório'),
         unity: yup.number().required('Nome Obrigatório'),
         note: yup.string().notRequired(),
         accept_note: yup.string().notRequired(),
@@ -98,6 +119,7 @@ export function ModalCreateRequest({
     data?.menu_company[0]?.id || ''
   );
   const { data: dataMenuItems } = useAllMenuItems();
+  const { data: data_options, refetch: refetchOptions } = useOptions();
   function formatDobleFloatValue(value: string, fixed?: number) {
     let formatValue = +String(value).replace(/\D/g, '');
     return parseFloat(formatValue.toFixed(fixed || 2)) / 100;
@@ -106,6 +128,7 @@ export function ModalCreateRequest({
     id_menu_company: data?.menu_company[0]?.id,
     id_item: '',
     unity: 1,
+    amount: 0,
     note: '',
     accept_note: true,
   };
@@ -120,6 +143,7 @@ export function ModalCreateRequest({
     watch,
     resetField,
     formState,
+    clearErrors,
   } = useForm<IRequestEdit>({
     resolver: yupResolver(createRequestFormSchema),
     defaultValues: {
@@ -149,13 +173,17 @@ export function ModalCreateRequest({
           isClosable: true,
         });
         reset();
+        refetchOptions();
+        refetch && refetch();
       })
       .finally(() => {
-        refetch && refetch();
         setLoading(false);
         onClose();
       });
   }
+  console.log('ARRAY', fields);
+
+  // console.log(watch('requests').reduce((acc, value) => acc + value?.amount, 0));
 
   return (
     <Modal
@@ -173,7 +201,30 @@ export function ModalCreateRequest({
     >
       <Box as="form" onSubmit={handleSubmit(handleCreateCategory)}>
         <Flex w="full" justify="space-between">
-          <Box w="60%">
+          <FormControl isInvalid={!!formState?.errors?.name_client} w="70%">
+            <FormLabel>Nome do Cliente:</FormLabel>
+            <CreatableSelect
+              onChange={(e) => {
+                setValue('name_client', e?.value || '');
+                clearErrors('name_client');
+
+                if (e?.from) {
+                  return setValue('client_from', e?.from);
+                }
+                resetField('client_from');
+              }}
+              options={data_options}
+              formatCreateLabel={(userInput) => `📝: "${userInput}"`}
+              placeholder="Select some colors..."
+              // closeMenuOnSelect={false}
+            />
+            {formState?.errors?.name_client && (
+              <FormErrorMessage>
+                {formState?.errors?.name_client?.message}
+              </FormErrorMessage>
+            )}
+          </FormControl>
+          {/* <Box w="60%">
             <Input
               {...register('name_client')}
               variant="outline"
@@ -181,11 +232,11 @@ export function ModalCreateRequest({
               placeholder="Ex: João"
               error={formState?.errors?.name_client}
             />
-          </Box>
-          <Box ml="20px" w="40%">
+          </Box> */}
+          <Box ml="20px" w="30%">
             <Select
-              label="Tipo"
-              h="40px"
+              label="Tipo:"
+              h="44px"
               {...register('type')}
               error={formState?.errors?.type}
             >
@@ -195,29 +246,57 @@ export function ModalCreateRequest({
           </Box>
         </Flex>
         <Flex w="full" justify="space-between" mt="10px">
-          <Box w="60%">
+          <Box w="70%">
             <Input
-              {...register('client_from')}
+              {...register('client_from', {
+                onChange(event) {
+                  const { value } = event.currentTarget;
+                  event.currentTarget.value = phonesFormat(value) || '';
+                },
+              })}
               variant="outline"
-              label="Telefone"
+              label="Telefone:"
               placeholder="Ex: 98 99999-9999"
               error={formState?.errors?.client_from}
             />
           </Box>
-          <Box w="40%" ml="20px">
+          <Box w="30%" ml="20px">
             <Input
               variant="outline"
-              label="Valor"
+              label="Valor:"
               placeholder="0,00"
-              onChange={(event) => {
-                const { value } = event.currentTarget;
-                event.currentTarget.value = formatCalcValue(value) || '';
-                setValue(
-                  'total_amount',
-                  Number(formatCalcValue(value)?.replace(',', '.'))
-                );
-              }}
-              name="total_amount"
+              isDisabled
+              name=""
+              value={parseFloat(
+                String(
+                  watch('requests').reduce(
+                    (acc, value) => acc + (value?.amount || 0),
+                    0
+                  ) as number
+                ) || '0'
+              ).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              })}
+              // {...register('total_amount', {
+              // onChange(event) {
+              //   const { value } = event.currentTarget;
+              //   event.currentTarget.value = formatCalcValue(value) || '';
+              //   setValue(
+              //     'total_amount',
+              //     Number(formatCalcValue(value)?.replace(',', '.'))
+              //   );
+              // },
+              // })}
+              // onChange={(event) => {
+              //   const { value } = event.currentTarget;
+              //   event.currentTarget.value = formatCalcValue(value) || '';
+              //   setValue(
+              //     'total_amount',
+              //     Number(formatCalcValue(value)?.replace(',', '.'))
+              //   );
+              // }}
+              // name="total_amount"
               error={formState?.errors?.total_amount}
             />
           </Box>
@@ -286,7 +365,7 @@ export function ModalCreateRequest({
                     <Flex
                       w="full"
                       justify="space-between"
-                      align="center"
+                      align="baseline"
                       mt="10px"
                     >
                       <Box w="50%">
@@ -315,13 +394,32 @@ export function ModalCreateRequest({
                       </Box>
                       <Box w="60%" ml="20px">
                         <Select
-                          label="Pedido:"
+                          label="Item:"
                           placeholder="Selecione"
                           disabled={
                             getValues(`requests.${idx}.id_menu_company`) === ''
                           }
                           h="40px"
-                          {...register(`requests.${idx}.id_item`)}
+                          {...register(`requests.${idx}.id_item`, {
+                            onChange(event) {
+                              setValue(
+                                `requests.${idx}.amount`,
+                                ((dataMenuItems?.items_menu?.find(
+                                  (itemMenu) =>
+                                    itemMenu.uuid === event.target.value
+                                )?.amount || 0) *
+                                  watch(`requests.${idx}.unity`)) as number
+                              );
+                              setValue(
+                                'total_amount',
+
+                                watch('requests').reduce(
+                                  (acc, value) => acc + (value?.amount || 0),
+                                  0
+                                ) as number
+                              );
+                            },
+                          })}
                           error={
                             formState?.errors?.requests &&
                             formState?.errors?.requests[idx]?.id_item
@@ -422,30 +520,69 @@ export function ModalCreateRequest({
                       </Flex>
                     )}
 
-                    <Text
-                      mt="10px"
-                      mb="6px"
-                      fontWeight="bold"
-                      fontSize={{ base: '12px', md: '14px', lg: '14px' }}
-                    >
-                      Unidades:
-                    </Text>
-                    <NumberInput
-                      step={1}
-                      defaultValue={1}
-                      min={1}
-                      max={30}
-                      w="100px"
-                      onChange={(e, value) => {
-                        setValue(`requests.${idx}.unity`, value);
-                      }}
-                    >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper color="#fff" />
-                        <NumberDecrementStepper color="#fff" />
-                      </NumberInputStepper>
-                    </NumberInput>
+                    <Flex w="full" justify="space-between">
+                      <Box>
+                        <Text
+                          mt="10px"
+                          mb="6px"
+                          fontWeight="bold"
+                          fontSize={{ base: '12px', md: '14px', lg: '14px' }}
+                        >
+                          Unidades:
+                        </Text>
+                        <NumberInput
+                          step={1}
+                          defaultValue={1}
+                          min={1}
+                          max={30}
+                          w="100px"
+                          onChange={(e, value) => {
+                            setValue(`requests.${idx}.unity`, value);
+                            setValue(
+                              `requests.${idx}.amount`,
+                              (dataMenuItems?.items_menu?.find(
+                                (itemMenu) =>
+                                  itemMenu.uuid ===
+                                  getValues(`requests.${idx}.id_item`)
+                              )?.amount || 0) * value
+                              // (watch(`requests.${idx}.amount`) || 0) * value
+                            );
+                            setValue(
+                              'total_amount',
+
+                              watch('requests').reduce(
+                                (acc, val) => acc + (val?.amount || 0),
+                                0
+                              ) as number
+                            );
+                            // setValue(
+                            //   'total_amount',
+                            //   (watch(`requests.${idx}.unity`) *
+                            //     watch('requests').reduce(
+                            //       (acc, val) => acc + (val?.amount || 0),
+                            //       0
+                            //     )) as number
+                            // );
+                          }}
+                        >
+                          <NumberInputField />
+                          <NumberInputStepper>
+                            <NumberIncrementStepper color="#fff" />
+                            <NumberDecrementStepper color="#fff" />
+                          </NumberInputStepper>
+                        </NumberInput>
+                      </Box>
+                      <Text>
+                        R${' '}
+                        {
+                          dataMenuItems?.items_menu?.find(
+                            (itemMenu) =>
+                              itemMenu.uuid ===
+                              getValues(`requests.${idx}.id_item`)
+                          )?.amount
+                        }
+                      </Text>
+                    </Flex>
                   </AccordionPanel>
                 </AccordionItem>
               ))}
@@ -465,6 +602,13 @@ export function ModalCreateRequest({
                 note: '',
                 accept_note: true,
               });
+              setValue(
+                'total_amount',
+                watch('requests').reduce(
+                  (acc, value) => acc + (value?.amount || 0),
+                  0
+                ) as number
+              );
             }}
           >
             Adicionar

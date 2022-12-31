@@ -54,7 +54,7 @@ export async function updateRequest(
   status: 'analysis' | 'production' | 'concluded' | 'canceled'
 ) {
   try {
-    const { data } = await api.put(`/requests/${id}?status=${status}`);
+    const { data } = await api.put(`/admin/request/${id}?status=${status}`);
     console.log(data);
   } catch (error) {
     console.log();

@@ -361,7 +361,7 @@ export function TabletRequests({
                     cursor="pointer"
                     onClick={() => {
                       setDetails(item);
-                      if (!item?.details) {
+                      if (!item?.request_details) {
                         return;
                       }
                       onOpen();

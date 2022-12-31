@@ -70,7 +70,7 @@ export function CardMetric({ amount, title, type, bgIcon }: ICardMetricProps) {
       minH="70px"
       w="200px"
       // bg="#161A2E"
-      bg="#1a1c32"
+      bg="#121626b2"
       borderRadius="8px"
       border="1px solid #29304D"
       p="15px"

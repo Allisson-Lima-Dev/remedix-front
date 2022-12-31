@@ -22,6 +22,10 @@ import {
   AccordionButton,
   AccordionIcon,
   AccordionPanel,
+  RadioGroup,
+  Stack,
+  Radio,
+  Switch,
 } from '@chakra-ui/react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -37,7 +41,7 @@ import { Input } from '~/components/input';
 import { formatCalcValue } from '~/utils/formatValue';
 import { Select } from '~/components/select';
 import { useMenuCompany } from '~/services/hooks/useMenuCompany';
-import { useMenuItems } from '~/services/hooks/useMenuItems';
+import { useAllMenuItems, useMenuItems } from '~/services/hooks/useMenuItems';
 
 interface ModalProps extends Omit<ModalChakraModal, 'children'> {
   number_request?: number;
@@ -47,10 +51,11 @@ interface ModalProps extends Omit<ModalChakraModal, 'children'> {
 }
 
 interface IITemsRequestMenu {
-  category: string;
-  name: string;
-  quantity: string;
-  observation: string;
+  id_menu_company: string;
+  id_item: string;
+  unity: string;
+  note?: string;
+  accept_note?: boolean;
 }
 
 interface IRequestEdit {
@@ -58,7 +63,7 @@ interface IRequestEdit {
   type: string;
   from_phone?: string;
   amount: string;
-  requestMenu: IITemsRequestMenu[];
+  requests: IITemsRequestMenu[];
 }
 
 export function ModalEditRequest({
@@ -72,30 +77,39 @@ export function ModalEditRequest({
   const [category_id, setCategory_id] = useState(
     data?.menu_company[0]?.id || ''
   );
-  const { data: dataMenuItems } = useMenuItems(category_id);
+  const { data: dataMenuItems } = useAllMenuItems();
   function formatDobleFloatValue(value: string, fixed?: number) {
     let formatValue = +String(value).replace(/\D/g, '');
     return parseFloat(formatValue.toFixed(fixed || 2)) / 100;
   }
   const emptyData = {
-    category: data?.menu_company[0].id,
-    name: 'hot-dog',
-    quantity: '1',
-    observation: '',
+    id_menu_company: data?.menu_company[0]?.id,
+    id_item: '',
+    unity: '1',
+    note: '',
+    accept_note: true,
   };
   //   const value = formatDobleFloatValue(String(getValues('value')), 2);
-  const { register, handleSubmit, reset, control, getValues } =
-    useForm<IRequestEdit>({
-      defaultValues: {
-        requestMenu: [emptyData],
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    getValues,
+    setValue,
+    watch,
+    resetField,
+  } = useForm<IRequestEdit>({
+    defaultValues: {
+      requests: [emptyData],
+    },
+  });
 
   let numbers: number[] = [];
   Array.from({ length: 50 })?.map((_, idx) => numbers.push(idx));
 
   const { fields, append, remove } = useFieldArray({
-    name: 'requestMenu',
+    name: 'requests',
     control,
   });
 
@@ -108,7 +122,7 @@ export function ModalEditRequest({
       closeOnOverlayClick={false}
       onClickButtonClose={() =>
         reset({
-          requestMenu: [emptyData],
+          requests: [emptyData],
         })
       }
       title={`Editar Pedido #${number_request}`}
@@ -226,8 +240,9 @@ export function ModalEditRequest({
                         label="Categoria:"
                         placeholder="Selecione"
                         h="40px"
-                        {...register(`requestMenu.${idx}.category`, {
+                        {...register(`requests.${idx}.id_menu_company`, {
                           onChange(event) {
+                            resetField(`requests.${idx}.id_item`);
                             setCategory_id(event.target.value);
                           },
                         })}
@@ -245,16 +260,16 @@ export function ModalEditRequest({
                         label="Pedido:"
                         placeholder="Selecione"
                         disabled={
-                          getValues(`requestMenu.${idx}.category`) === ''
+                          getValues(`requests.${idx}.id_menu_company`) === ''
                         }
                         h="40px"
-                        {...register(`requestMenu.${idx}.name`)}
+                        {...register(`requests.${idx}.id_item`)}
                       >
                         {dataMenuItems?.items_menu
                           ?.filter(
                             (filter) =>
                               filter.category_menu_id ===
-                              getValues(`requestMenu.${idx}.category`)
+                              getValues(`requests.${idx}.id_menu_company`)
                           )
                           ?.map((itemsMenu, key) => (
                             <option
@@ -268,24 +283,81 @@ export function ModalEditRequest({
                       </Select>
                     </Box>
                   </Flex>
-                  <Text
-                    color="#fff"
-                    mt="10px"
-                    mb="6px"
-                    fontWeight="bold"
-                    fontSize={{ base: '12px', md: '14px', lg: '14px' }}
-                  >
-                    Observação:
-                  </Text>
-                  <Textarea
-                    //   value={value}
-                    //   onChange={handleInputChange}
 
-                    borderRadius="7px"
-                    maxLength={250}
-                    placeholder="Here is a sample placeholder"
-                    size="sm"
-                  />
+                  <RadioGroup
+                    defaultValue="1"
+                    mt="10px"
+                    onChange={(e) => {
+                      console.log('CHECK', e);
+
+                      setValue(`requests.${idx}.accept_note`, e === '1');
+                      console.log(
+                        'Accept_note',
+                        getValues(`requests.${idx}.accept_note`)
+                      );
+                    }}
+                  >
+                    <Stack spacing={4} direction="row">
+                      <Radio
+                        value="1"
+                        isDisabled={!watch(`requests.${idx}.id_item`)}
+                      >
+                        Descrição
+                      </Radio>
+                      <Radio
+                        value="2"
+                        isDisabled={!watch(`requests.${idx}.id_item`)}
+                      >
+                        Observação
+                      </Radio>
+                    </Stack>
+                  </RadioGroup>
+                  {!watch(`requests.${idx}.accept_note`) &&
+                  watch(`requests.${idx}.id_item`) ? (
+                    <Box>
+                      <Text
+                        color="#fff"
+                        mt="10px"
+                        mb="6px"
+                        fontWeight="bold"
+                        fontSize={{ base: '12px', md: '14px', lg: '14px' }}
+                      >
+                        Observação:
+                      </Text>
+                      <Textarea
+                        //   value={value}
+                        //   onChange={handleInputChange}
+
+                        borderRadius="7px"
+                        maxLength={250}
+                        placeholder="Descreva a observação"
+                        size="sm"
+                      />
+                    </Box>
+                  ) : (
+                    <Flex
+                      mt="10px"
+                      border="1px solid #cccccc45"
+                      fontStyle="italic"
+                      p="10px"
+                      borderRadius="5px"
+                      align="center"
+                      minH="50px"
+                    >
+                      <Icon
+                        icon="fluent:text-description-20-regular"
+                        width={20}
+                      />
+                      <Text ml="5px">
+                        {
+                          dataMenuItems?.items_menu?.find(
+                            (request) =>
+                              watch(`requests.${idx}.id_item`) === request.uuid
+                          )?.description
+                        }
+                      </Text>
+                    </Flex>
+                  )}
 
                   <Text
                     mt="10px"
@@ -321,10 +393,11 @@ export function ModalEditRequest({
           leftIcon={<Icon icon="material-symbols:add" width={25} />}
           onClick={() => {
             append({
-              category: data?.menu_company[0]?.id || '',
-              name: '',
-              observation: '',
-              quantity: '',
+              id_menu_company: data?.menu_company[0]?.id || '',
+              id_item: '',
+              unity: '',
+              note: '',
+              accept_note: true,
             });
           }}
         >
@@ -344,7 +417,7 @@ export function ModalEditRequest({
             variant="outline"
             onClick={() => {
               reset({
-                requestMenu: [emptyData],
+                requests: [emptyData],
               });
               onClose();
             }}

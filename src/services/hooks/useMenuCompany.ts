@@ -9,6 +9,20 @@ interface IMenuCompany {
     id: string;
     active: boolean;
     coupon_id: string | null;
+    items_menu: {
+      uuid: string;
+      title: string;
+      description: string;
+      amount: number;
+      amount_promotion: number | null;
+      accept_note: boolean;
+      unity: number;
+      size: string | null;
+      image_product: string | null;
+      category_menu_id: string;
+      coupon_request_menu_id: string | null;
+      company_id: string;
+    }[];
   }[];
 }
 

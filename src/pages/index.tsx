@@ -48,7 +48,8 @@ export default function Home() {
       </Flex>
       <Flex minH="400px" w="full" justify="space-between" mt="30px">
         <Box
-          bg="#161A2E"
+          // bg="#161A2E"
+          bg="#121626b2"
           borderRadius="8px"
           border="1px solid #29304D"
           p="20px"
@@ -166,7 +167,8 @@ export default function Home() {
         </Box>
         <Box
           w="55%"
-          bg="#161A2E"
+          // bg="#161A2E"
+          bg="#121626b2"
           borderRadius="8px"
           border="1px solid #29304D"
           ml="20px"
@@ -186,7 +188,8 @@ export default function Home() {
         </Box>
       </Flex>
       <Box
-        bg="#161A2E"
+        // bg="#161A2E"
+        bg="#121626b2"
         borderRadius="8px"
         border="1px solid #29304D"
         p="20px"

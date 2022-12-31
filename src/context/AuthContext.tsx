@@ -61,12 +61,13 @@ export function AuthProvider({ children }: Component) {
         maxAge: 60 * 60 * 24, // 24 hour
         path: '/',
       });
-
-      api.defaults.headers.common.Authorization = `Bearer ${token}`;
-      await getMeInformations();
-      // setUser(financial);
-      // setIsAuthenticated(true);
-      Router.push('/');
+      if (token) {
+        api.defaults.headers.common.Authorization = `Bearer ${token}`;
+        await getMeInformations();
+        // setUser(financial);
+        // setIsAuthenticated(true);
+        Router.push('/');
+      }
     } catch (error) {
       console.log(error);
       throw error;

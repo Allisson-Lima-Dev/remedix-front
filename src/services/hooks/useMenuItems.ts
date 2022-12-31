@@ -22,6 +22,14 @@ interface IMenuItems {
 
 export async function getMenuItems(id: string) {
   try {
+    const { data } = await api.get<IMenuItems>(`/admin/menu/items/${id}`);
+    return data;
+  } catch (error) {
+    throw new HandleError(error);
+  }
+}
+export async function getAllMenuItems() {
+  try {
     const { data } = await api.get<IMenuItems>(`/admin/menu/items/count`);
     return data;
   } catch (error) {
@@ -29,13 +37,15 @@ export async function getMenuItems(id: string) {
   }
 }
 
+export function useAllMenuItems() {
+  return useQuery<IMenuItems>(['menu_item_alls'], () => getAllMenuItems(), {
+    // staleTime: 1000 * 5,
+    // refetchOnWindowFocus: false,
+  });
+}
 export function useMenuItems(id: string) {
-  return useQuery<IMenuItems>(
-    ['menu_company', { id }],
-    () => getMenuItems(id),
-    {
-      // staleTime: 1000 * 5,
-      // refetchOnWindowFocus: false,
-    }
-  );
+  return useQuery<IMenuItems>(['menu_items', { id }], () => getMenuItems(id), {
+    // staleTime: 1000 * 5,
+    // refetchOnWindowFocus: false,
+  });
 }

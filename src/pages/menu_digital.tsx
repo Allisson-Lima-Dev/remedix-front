@@ -155,7 +155,15 @@ export default function MenuDigital() {
                   </Box>
                   <HStack>
                     <Center mr="5px">
-                      <Switch size="md" />
+                      <Switch
+                        size="md"
+                        defaultChecked={item.active}
+                        onChange={(e) => {
+                          console.log(e.target.checked);
+
+                          e.target.checked = !e.target.checked;
+                        }}
+                      />
                       <Text ml="5px">Ativo</Text>
                     </Center>
                     <IconButton
@@ -248,7 +256,16 @@ export default function MenuDigital() {
                                 />
                               )}
                             </Td>
-                            <Td>{items.amount}</Td>
+
+                            <Td>
+                              {parseFloat(String(items.amount)).toLocaleString(
+                                'pt-BR',
+                                {
+                                  style: 'currency',
+                                  currency: 'BRL',
+                                }
+                              )}
+                            </Td>
                             <Td>{items.description}</Td>
                             <Td>
                               <Switch />

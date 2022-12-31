@@ -319,8 +319,8 @@ export default function Requests() {
                   date={moment(item.createdAt)
                     .locale('pt-br')
                     .format('DD/MM/YYYY - LT')}
-                  name={item.userRequest.name}
-                  phone={phonesFormat(item.userRequest.from)}
+                  name={item.user_request.name}
+                  phone={phonesFormat(item.user_request.from)}
                   status={item?.status}
                 />
               ))}

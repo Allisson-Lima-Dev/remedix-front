@@ -51,9 +51,9 @@ interface ModalProps extends Omit<ModalChakraModal, 'children'> {
 }
 
 interface IITemsRequestMenu {
-  category: string;
-  name: string;
-  quantity: string;
+  id_menu_company: string;
+  id_item: string;
+  unity: string;
   note?: string;
   accept_note?: boolean;
 }
@@ -63,7 +63,7 @@ interface IRequestEdit {
   type: string;
   from_phone?: string;
   amount: string;
-  requestMenu: IITemsRequestMenu[];
+  requests: IITemsRequestMenu[];
 }
 
 export function ModalEditRequest({
@@ -83,9 +83,9 @@ export function ModalEditRequest({
     return parseFloat(formatValue.toFixed(fixed || 2)) / 100;
   }
   const emptyData = {
-    category: data?.menu_company[0]?.id,
-    name: '',
-    quantity: '1',
+    id_menu_company: data?.menu_company[0]?.id,
+    id_item: '',
+    unity: '1',
     note: '',
     accept_note: true,
   };
@@ -101,7 +101,7 @@ export function ModalEditRequest({
     resetField,
   } = useForm<IRequestEdit>({
     defaultValues: {
-      requestMenu: [emptyData],
+      requests: [emptyData],
     },
   });
 
@@ -109,7 +109,7 @@ export function ModalEditRequest({
   Array.from({ length: 50 })?.map((_, idx) => numbers.push(idx));
 
   const { fields, append, remove } = useFieldArray({
-    name: 'requestMenu',
+    name: 'requests',
     control,
   });
 
@@ -122,7 +122,7 @@ export function ModalEditRequest({
       closeOnOverlayClick={false}
       onClickButtonClose={() =>
         reset({
-          requestMenu: [emptyData],
+          requests: [emptyData],
         })
       }
       title={`Editar Pedido #${number_request}`}
@@ -240,9 +240,9 @@ export function ModalEditRequest({
                         label="Categoria:"
                         placeholder="Selecione"
                         h="40px"
-                        {...register(`requestMenu.${idx}.category`, {
+                        {...register(`requests.${idx}.id_menu_company`, {
                           onChange(event) {
-                            resetField(`requestMenu.${idx}.name`);
+                            resetField(`requests.${idx}.id_item`);
                             setCategory_id(event.target.value);
                           },
                         })}
@@ -260,16 +260,16 @@ export function ModalEditRequest({
                         label="Pedido:"
                         placeholder="Selecione"
                         disabled={
-                          getValues(`requestMenu.${idx}.category`) === ''
+                          getValues(`requests.${idx}.id_menu_company`) === ''
                         }
                         h="40px"
-                        {...register(`requestMenu.${idx}.name`)}
+                        {...register(`requests.${idx}.id_item`)}
                       >
                         {dataMenuItems?.items_menu
                           ?.filter(
                             (filter) =>
                               filter.category_menu_id ===
-                              getValues(`requestMenu.${idx}.category`)
+                              getValues(`requests.${idx}.id_menu_company`)
                           )
                           ?.map((itemsMenu, key) => (
                             <option
@@ -290,30 +290,30 @@ export function ModalEditRequest({
                     onChange={(e) => {
                       console.log('CHECK', e);
 
-                      setValue(`requestMenu.${idx}.accept_note`, e === '1');
+                      setValue(`requests.${idx}.accept_note`, e === '1');
                       console.log(
                         'Accept_note',
-                        getValues(`requestMenu.${idx}.accept_note`)
+                        getValues(`requests.${idx}.accept_note`)
                       );
                     }}
                   >
                     <Stack spacing={4} direction="row">
                       <Radio
                         value="1"
-                        isDisabled={!watch(`requestMenu.${idx}.name`)}
+                        isDisabled={!watch(`requests.${idx}.id_item`)}
                       >
                         Descrição
                       </Radio>
                       <Radio
                         value="2"
-                        isDisabled={!watch(`requestMenu.${idx}.name`)}
+                        isDisabled={!watch(`requests.${idx}.id_item`)}
                       >
                         Observação
                       </Radio>
                     </Stack>
                   </RadioGroup>
-                  {!watch(`requestMenu.${idx}.accept_note`) &&
-                  watch(`requestMenu.${idx}.name`) ? (
+                  {!watch(`requests.${idx}.accept_note`) &&
+                  watch(`requests.${idx}.id_item`) ? (
                     <Box>
                       <Text
                         color="#fff"
@@ -352,7 +352,7 @@ export function ModalEditRequest({
                         {
                           dataMenuItems?.items_menu?.find(
                             (request) =>
-                              watch(`requestMenu.${idx}.name`) === request.uuid
+                              watch(`requests.${idx}.id_item`) === request.uuid
                           )?.description
                         }
                       </Text>
@@ -393,9 +393,9 @@ export function ModalEditRequest({
           leftIcon={<Icon icon="material-symbols:add" width={25} />}
           onClick={() => {
             append({
-              category: data?.menu_company[0]?.id || '',
-              name: '',
-              quantity: '',
+              id_menu_company: data?.menu_company[0]?.id || '',
+              id_item: '',
+              unity: '',
               note: '',
               accept_note: true,
             });
@@ -417,7 +417,7 @@ export function ModalEditRequest({
             variant="outline"
             onClick={() => {
               reset({
-                requestMenu: [emptyData],
+                requests: [emptyData],
               });
               onClose();
             }}

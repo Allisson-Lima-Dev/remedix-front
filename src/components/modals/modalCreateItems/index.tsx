@@ -59,8 +59,8 @@ export function ModalCreateItems({
         : yup.string().optional(),
   });
   const [loading, setLoading] = useState(false);
-  const { data: dataMenuCompany } = useMenuCompany();
   const toast = useToast();
+  const { data: dataMenuCompany } = useMenuCompany();
   const { register, handleSubmit, reset, formState, setValue } = useForm<IData>(
     {
       resolver: yupResolver(createItemFormSchema),

@@ -340,6 +340,7 @@ export function ModalCreateRequest({
                       bg: '#373f58',
                     }}
                   >
+                    <AccordionIcon fontSize="27px" mr="10px" />
                     <Flex align="center" w="full" justify="space-between">
                       <Text color="#fff" fontSize="18px">
                         Pedido n° {idx + 1}
@@ -356,7 +357,6 @@ export function ModalCreateRequest({
                             />
                           }
                         />
-                        <AccordionIcon />
                       </HStack>
                     </Flex>
                   </AccordionButton>
@@ -520,7 +520,7 @@ export function ModalCreateRequest({
                       </Flex>
                     )}
 
-                    <Flex w="full" justify="space-between">
+                    <Flex w="full" justify="space-between" align="center">
                       <Box>
                         <Text
                           mt="10px"
@@ -573,14 +573,18 @@ export function ModalCreateRequest({
                         </NumberInput>
                       </Box>
                       <Text>
-                        R${' '}
-                        {
-                          dataMenuItems?.items_menu?.find(
-                            (itemMenu) =>
-                              itemMenu.uuid ===
-                              getValues(`requests.${idx}.id_item`)
-                          )?.amount
-                        }
+                        {parseFloat(
+                          String(
+                            dataMenuItems?.items_menu?.find(
+                              (itemMenu) =>
+                                itemMenu.uuid ===
+                                getValues(`requests.${idx}.id_item`)
+                            )?.amount || '0'
+                          )
+                        ).toLocaleString('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
                       </Text>
                     </Flex>
                   </AccordionPanel>

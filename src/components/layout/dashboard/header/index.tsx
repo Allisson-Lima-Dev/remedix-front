@@ -34,6 +34,7 @@ import Sidebar from '../Sidebar';
 import { AuthContext } from '~/context/AuthContext';
 import { clearLocalStorage } from '~/utils/localStorageFormat';
 import { useAdmin } from '~/services/hooks/me';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface IMenuProps {
   name: string;
@@ -51,6 +52,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useContext(AuthContext);
   const { colorMode, toggleColorMode } = useColorMode();
+  const { bg, text_color } = useColorModeDefault();
   const [isChecked, setIsChecked] = useState(true);
   const [click, setClick] = useState(true);
 
@@ -66,13 +68,14 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
     <Flex
       justify="space-between"
       // bg="#121626"
-      bg="#13192b"
+      // bg="#13192b"
+      bg={bg}
       boxShadow="base"
-      color="#fff"
+      color={text_color}
       px="30px"
       h="65px"
       alignItems="center"
-      borderBottom="1px solid #2C3045"
+      borderBottom={`1px solid ${bg}`}
     >
       <Center
         cursor="pointer"
@@ -182,9 +185,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
           <DrawerCloseButton />
           <DrawerHeader />
 
-          <DrawerBody>
-            <Sidebar />
-          </DrawerBody>
+          <DrawerBody>{/* <Sidebar /> */}</DrawerBody>
 
           <DrawerFooter />
         </DrawerContent>

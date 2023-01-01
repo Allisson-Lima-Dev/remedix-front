@@ -31,6 +31,7 @@ import { Pagination } from '~/components/pagination';
 import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalConfirmation } from '~/components/modals/modalConfirmation';
 import { ModalEditRequest } from '~/components/modals/modalEditRequest';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 export interface IDataRequests {
   number_request: string;
@@ -73,6 +74,8 @@ export function TabletRequests({
   currentTab,
   refetch,
 }: ITabletRequestsProps) {
+  const { bg_container, text_color, bg_tablet, bg, hover_tablet } =
+    useColorModeDefault();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isOpenCofirm,
@@ -131,7 +134,7 @@ export function TabletRequests({
   };
 
   return (
-    <Box pb="10px">
+    <Box pb="10px" color={text_color}>
       {docPdf && (
         <iframe
           ref={IframeRef}
@@ -156,7 +159,8 @@ export function TabletRequests({
               top={0}
               zIndex={1}
               h="40px"
-              bg="#1E2540"
+              // bg="#1E2540"
+              bg={bg_tablet}
               textAlign="center"
             >
               {head_options?.map(
@@ -177,20 +181,21 @@ export function TabletRequests({
           <Tbody pos="relative">
             {data?.map((item: any, idx) => (
               <Tr
-                borderBottom="1px solid #32394e"
+                borderBottom={`1px solid ${bg}`}
                 key={idx}
                 _hover={{
-                  bg: '#282e3f',
+                  bg: hover_tablet,
                 }}
               >
                 <Td>#{item?.id}</Td>
                 <Td>
                   <Badge
                     color="#fff"
-                    variant="outline"
+                    // variant="outline"
                     p="4px 6px"
                     borderRadius="5px"
                     fontSize="11px"
+                    border={`1px solid ${bg}`}
                   >
                     {item?.type}
                   </Badge>
@@ -289,7 +294,7 @@ export function TabletRequests({
                       <Text
                         cursor="pointer"
                         bg="green.500"
-                        border="1px solid #29304D"
+                        border={`1px solid ${bg}`}
                         p="7px"
                         borderRadius="5px"
                         mr="5px"
@@ -306,7 +311,7 @@ export function TabletRequests({
                       <Text
                         cursor="pointer"
                         bg="red.500"
-                        border="1px solid #29304D"
+                        border={`1px solid ${bg}`}
                         p="7px"
                         borderRadius="5px"
                         onClick={() => {

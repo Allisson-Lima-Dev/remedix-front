@@ -5,9 +5,10 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { NavLink } from './NavLink';
 import { NavSection } from './NavSection';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface IPropsSide {
-  hide?: boolean;
+  hide: boolean;
   onCloseDrawer?: () => void;
 }
 
@@ -15,7 +16,8 @@ export default function Sidebar({
   hide: hideState,
   onCloseDrawer,
 }: IPropsSide) {
-  const [hide, setHide] = useState(true);
+  const [hide, setHide] = useState(false);
+  const { bg } = useColorModeDefault();
   const subsMenu = {
     company: [
       {
@@ -88,7 +90,7 @@ export default function Sidebar({
   const { asPath } = useRouter();
 
   useEffect(() => {
-    setHide(hideState ?? true);
+    setHide(hideState);
   }, [hideState]);
 
   return (
@@ -96,10 +98,11 @@ export default function Sidebar({
       transition="all 0.5s"
       as="aside"
       maxW={hide ? '70px' : '200px'}
-      bg="#13192b"
+      bg={bg}
       // bg="#121626"
       p="10px"
-      borderRight="1px solid #2C3045"
+      boxShadow="base"
+      borderRight={`1px solid ${bg}`}
     >
       <Flex
         transition="all 0.55s"

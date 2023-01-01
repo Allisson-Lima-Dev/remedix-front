@@ -151,7 +151,7 @@ export default function Requests() {
               <Icon icon="material-symbols:add-shopping-cart" width={25} />
             }
           >
-            Adicionar Pedido
+            Criar Pedido
           </Button>
         </Flex>
         <Divider my="10px" borderColor="#ffffff3e" />

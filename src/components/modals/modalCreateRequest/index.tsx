@@ -214,7 +214,7 @@ export function ModalCreateRequest({
               }}
               options={data_options}
               formatCreateLabel={(userInput) => `📝: "${userInput}"`}
-              placeholder="Select some colors..."
+              placeholder="Selecione um cliente ou crie um novo"
               // closeMenuOnSelect={false}
             />
             {formState?.errors?.name_client && (

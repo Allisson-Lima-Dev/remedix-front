@@ -8,17 +8,21 @@ import {
   InputRightElement,
   Text,
   Input,
+  useColorMode,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import dynamic from 'next/dynamic';
 import { CardMetric } from '~/components';
 import { TabletEmpaty } from '~/components/tablets/TabletEmpaty';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 export default function Home() {
+  const { text_color, bg_container, bg } = useColorModeDefault();
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <Box w="full" p="30px">
+    <Box w="full" p="30px" color={text_color}>
       <Flex>
         <Box w="80%">
           <Text mb="20px" fontSize="3xl">
@@ -49,9 +53,12 @@ export default function Home() {
       <Flex minH="400px" w="full" justify="space-between" mt="30px">
         <Box
           // bg="#161A2E"
-          bg="#121626b2"
+          // bg="#121626b2"
+          color={text_color}
+          bg={bg_container}
           borderRadius="8px"
-          border="1px solid #29304D"
+          borderBottom={`1px solid ${bg}`}
+          boxShadow="base"
           p="20px"
           w="45%"
         >
@@ -133,7 +140,7 @@ export default function Home() {
                 },
               },
               theme: {
-                mode: 'dark',
+                mode: colorMode,
               },
               title: { text: 'Relatório Semanal' },
 
@@ -168,9 +175,12 @@ export default function Home() {
         <Box
           w="55%"
           // bg="#161A2E"
-          bg="#121626b2"
+          // bg="#121626b2"
+          bg={bg_container}
+          color={text_color}
           borderRadius="8px"
-          border="1px solid #29304D"
+          borderBottom={`1px solid ${bg}`}
+          boxShadow="base"
           ml="20px"
         >
           <TabletEmpaty
@@ -189,9 +199,12 @@ export default function Home() {
       </Flex>
       <Box
         // bg="#161A2E"
-        bg="#121626b2"
+        // bg="#121626b2"
+        bg={bg_container}
+        color={text_color}
         borderRadius="8px"
-        border="1px solid #29304D"
+        borderBottom={`1px solid ${bg}`}
+        boxShadow="base"
         p="20px"
         w="full"
         h="250px"
@@ -228,7 +241,7 @@ export default function Home() {
             //   enabled: false,
             // },
             theme: {
-              mode: 'dark',
+              mode: colorMode,
             },
             title: { text: 'Top List Pedidos' },
 

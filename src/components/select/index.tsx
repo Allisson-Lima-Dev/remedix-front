@@ -7,6 +7,7 @@ import {
   SelectProps as ChakraSelectProps,
 } from '@chakra-ui/react';
 import { FieldError } from 'react-hook-form';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface SelectProps extends ChakraSelectProps {
   name: string;
@@ -33,13 +34,15 @@ const SelectBase: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
   },
   ref
 ) => {
+  const { bg_container, text_color, bg_tablet, bg, divider_color } =
+    useColorModeDefault();
   return (
     <FormControl isInvalid={!!error} w={widthDefault || 'full'}>
       {!!label && (
         <FormLabel
           fontWeight="bold"
           htmlFor={name}
-          color="#fff"
+          color={text_color}
           textTransform="capitalize"
           fontSize={{ base: '12px', md: '14px', lg: '14px' }}
           mr="0"

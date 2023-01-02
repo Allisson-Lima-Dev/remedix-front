@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Flex, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface ICardMetricProps {
   type:
@@ -17,6 +18,7 @@ interface ICardMetricProps {
 }
 
 export function CardMetric({ amount, title, type, bgIcon }: ICardMetricProps) {
+  const { text_color, bg_container, bg } = useColorModeDefault();
   function getVariantCard() {
     switch (type) {
       case 'concluded':
@@ -70,9 +72,11 @@ export function CardMetric({ amount, title, type, bgIcon }: ICardMetricProps) {
       minH="70px"
       w="200px"
       // bg="#161A2E"
-      bg="#121626b2"
+      // bg="#121626b2"
+      bg={bg_container}
+      borderBottom={`1px solid ${bg}`}
+      boxShadow="base"
       borderRadius="8px"
-      border="1px solid #29304D"
       p="15px"
       align="center"
     >
@@ -87,7 +91,7 @@ export function CardMetric({ amount, title, type, bgIcon }: ICardMetricProps) {
         >
           {amount}
         </Text>
-        <Text fontSize="12px" mt="10px" color="#D0D0DA" fontWeight={400}>
+        <Text fontSize="12px" mt="10px" fontWeight={400}>
           {getVariantCard()?.title}
         </Text>
       </Box>

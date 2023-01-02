@@ -47,6 +47,7 @@ export function NavLink({
       <Accordion
         allowToggle
         // w="80%"
+        transition="all 0.5s"
         w="full"
         defaultIndex={
           subMenu?.find((item) => item.route === asPath) ? [indiceSubMenu] : []
@@ -108,9 +109,9 @@ export function NavLink({
                       my="5px"
                       fontWeight="medium"
                       fontSize="14px"
-                      color={item.route === asPath ? text_color : '#656d8694'}
+                      color={item.route === asPath ? '#eeeef0' : '#656d8694'}
                       transition="all linear .55s"
-                      _hover={{ color: text_color }}
+                      _hover={{ color: '#eeeef0' }}
                     >
                       {item.title}
                     </Text>

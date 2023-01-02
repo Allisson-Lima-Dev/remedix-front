@@ -52,7 +52,7 @@ export function Modal({
         // bg="#121626f8"
         color={text_color}
       >
-        <ModalHeader bg={bg} borderTopRadius="6px">
+        <ModalHeader bg={bg_container} borderTopRadius="6px">
           <Text textAlign="left" fontSize="18px">
             {title}
           </Text>
@@ -62,7 +62,7 @@ export function Modal({
         <ModalBody
           zIndex={3000}
           // bg="#121626b2"
-          bg={bg}
+          bg={bg_container}
           borderBottomRadius="6px"
           padding={padding || ''}
         >

@@ -97,12 +97,13 @@ export default function Sidebar({
     <Box
       transition="all 0.5s"
       as="aside"
-      maxW={hide ? '70px' : '200px'}
-      bg={bg}
-      // bg="#121626"
+      maxW={hide ? '70px' : '210px'}
+      // bg={bg}
+      bg="#121626"
       p="10px"
       boxShadow="base"
-      borderRight={`1px solid ${bg}`}
+      borderRight="1px solid #00f0f"
+      // borderRight={`1px solid ${bg}`}
     >
       <Flex
         transition="all 0.55s"
@@ -132,7 +133,8 @@ export default function Sidebar({
         align="center"
         pr={hide ? '0' : '5'}
         w="full"
-        minW={hide ? '0' : '200px'}
+        minW={hide ? '0' : '210px'}
+        transition="all 0.5s"
       >
         {hide ? (
           subsMenu.company.map((item, idx) => (
@@ -145,7 +147,13 @@ export default function Sidebar({
                 setHide(false);
               }}
             >
-              <Flex w="full" justify="center" align="center" my="7px">
+              <Flex
+                w="full"
+                justify="center"
+                align="center"
+                my="7px"
+                transition="all 0.5s"
+              >
                 <Icon
                   icon={item.icon}
                   fontSize="23"

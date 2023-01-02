@@ -10,6 +10,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface ITabletEmpatyProps {
   head_options: string[];
@@ -17,6 +18,7 @@ interface ITabletEmpatyProps {
 }
 
 export function TabletEmpaty({ head_options, imageSrc }: ITabletEmpatyProps) {
+  const { text_color, bg_tablet } = useColorModeDefault();
   return (
     <>
       <TableContainer
@@ -32,8 +34,8 @@ export function TabletEmpaty({ head_options, imageSrc }: ITabletEmpatyProps) {
               top={0}
               zIndex={1000}
               h="40px"
-              bg="#1E2540
-"
+              // bg="#1E2540
+              bg={bg_tablet}
             >
               {head_options?.map((item, key) => (
                 <Th key={key}>{item}</Th>

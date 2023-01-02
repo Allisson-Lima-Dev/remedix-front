@@ -63,7 +63,6 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
     clearLocalStorage();
     Router.push('/login');
   }
-  console.log({ forced });
 
   return (
     <Flex

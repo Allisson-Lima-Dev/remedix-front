@@ -51,9 +51,9 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
   const { push, asPath } = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useContext(AuthContext);
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode, toggleColorMode, forced } = useColorMode();
   const { bg, text_color } = useColorModeDefault();
-  const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState(colorMode === 'light');
   const [click, setClick] = useState(true);
 
   const { data } = useAdmin();
@@ -63,6 +63,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
     clearLocalStorage();
     Router.push('/login');
   }
+  console.log({ forced });
 
   return (
     <Flex
@@ -101,16 +102,16 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
         >
           <Flex
             pl="2px"
-            ml={isChecked ? '45%' : '0%'}
+            ml={colorMode === 'light' ? '45%' : '0%'}
             transition="all linear 0.25s"
             borderRadius="20px"
             align="center"
             w="full"
-            bg={isChecked ? '' : '#484747c5'}
+            bg={colorMode === 'light' ? '' : '#484747c5'}
           >
             <Box borderRadius="20px" bg="#1a365e" p="1px">
               <Icon
-                icon={!isChecked ? 'ph:cloud-sun' : 'ph:moon-stars'}
+                icon={colorMode === 'light' ? 'ph:cloud-sun' : 'ph:moon-stars'}
                 color="#fff"
                 width={21}
               />

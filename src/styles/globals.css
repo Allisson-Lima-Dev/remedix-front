@@ -7,7 +7,7 @@ body {
 }
 
 a {
-  color: #5263C4 !important;
+  color: #5263c4 !important;
   text-decoration: none;
 }
 
@@ -16,7 +16,7 @@ a {
   text-decoration: none !important;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
@@ -27,20 +27,20 @@ a {
 }
 
 option {
-  background: #252B3B !important;
+  background: #252b3b !important;
   color: white;
-}
+} */
 
 .paragraph {
   text-indent: 2rem;
 }
-.react-datepicker__tab-loop{
+.react-datepicker__tab-loop {
   z-index: 2;
 }
-.react-datepicker-wrapper{
+.react-datepicker-wrapper {
   color: #000000;
 }
-.react-datepicker__input-container input{
+.react-datepicker__input-container input {
   background-color: #0000000c;
   height: 36px;
   width: 222px;

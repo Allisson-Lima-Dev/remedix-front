@@ -17,7 +17,7 @@ export default function Sidebar({
   onCloseDrawer,
 }: IPropsSide) {
   const [hide, setHide] = useState(false);
-  const { bg } = useColorModeDefault();
+  const { bg, text_color } = useColorModeDefault();
   const subsMenu = {
     company: [
       {

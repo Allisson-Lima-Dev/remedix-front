@@ -35,7 +35,8 @@ import { ModalCreateRequest } from '~/components/modals/modalCreateRequest';
 import { useColorModeDefault } from '~/styles/colorMode';
 
 export default function Requests() {
-  const { bg_container, text_color, tab_text, bg } = useColorModeDefault();
+  const { bg_container, text_color, tab_text, bg, divider_color } =
+    useColorModeDefault();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [viewList, setViewList] = useState(true);
@@ -120,6 +121,7 @@ export default function Requests() {
         mb="20px"
         borderRadius="10px"
         color={text_color}
+        boxShadow="base"
       >
         <Flex align="center" justify="space-between">
           <Center>
@@ -163,7 +165,7 @@ export default function Requests() {
             Criar Pedido
           </Button>
         </Flex>
-        <Divider my="10px" borderColor="#ffffff3e" />
+        <Divider my="10px" borderColor={divider_color} />
         <Flex align="center" alignItems="center" justify="space-between">
           <Box>
             <Flex>
@@ -209,7 +211,7 @@ export default function Requests() {
                   {['10', '20', '30', '40', '50'].map((item) => (
                     <option
                       value={item}
-                      style={{ background: '#161A2E' }}
+                      // style={{ background: '#161A2E' }}
                       key={item}
                     >
                       {item}
@@ -275,7 +277,7 @@ export default function Requests() {
           </Flex>
         </Flex>
       </Box>
-      <Box bg={bg_container} borderRadius="10px">
+      <Box bg={bg_container} borderRadius="10px" boxShadow="base">
         {viewList ? (
           <TabletRequests
             refetch={refetch}
@@ -288,7 +290,7 @@ export default function Requests() {
               'Status',
               'Comprovante',
               filterTab === 0 ? 'Aceitar' : filterTab === 1 ? 'Concluir' : '',
-              'Editar',
+              'Ações',
               'Detalhes',
             ]}
             currentTab={filterTab}

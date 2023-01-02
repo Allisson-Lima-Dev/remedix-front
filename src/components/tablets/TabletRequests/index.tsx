@@ -190,7 +190,7 @@ export function TabletRequests({
                 <Td>#{item?.id}</Td>
                 <Td>
                   <Badge
-                    color="#fff"
+                    // color="#fff"
                     // variant="outline"
                     p="4px 6px"
                     borderRadius="5px"
@@ -333,8 +333,8 @@ export function TabletRequests({
                 <Td>
                   <Center>
                     <Center
-                      bg="#161A2E"
-                      border="1px solid #29304D"
+                      bg={bg}
+                      border={`1px solid ${bg}`}
                       p="7px"
                       borderRadius="5px"
                       mr="5px"
@@ -347,15 +347,18 @@ export function TabletRequests({
                         });
                       }}
                     >
-                      <Icon icon="material-symbols:edit-square-outline-rounded" />
+                      <Icon
+                        icon="material-symbols:edit-square-outline-rounded"
+                        width={18}
+                      />
                     </Center>
                     <Center
-                      bg="#161A2E"
-                      border="1px solid #29304D"
+                      bg={bg}
+                      border={`1px solid ${bg}`}
                       p="7px"
                       borderRadius="5px"
                     >
-                      <Icon icon="ic:outline-delete" />
+                      <Icon icon="ic:outline-delete" width={18} />
                     </Center>
                   </Center>
                 </Td>

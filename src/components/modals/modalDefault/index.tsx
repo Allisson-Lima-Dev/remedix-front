@@ -16,6 +16,7 @@ import {
   RefetchOptions,
   RefetchQueryFilters,
 } from 'react-query';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface ModalProps extends ModalChakraModal {
   title?: string;
@@ -38,6 +39,8 @@ export function Modal({
   width,
   ...rest
 }: ModalProps) {
+  const { bg_container, text_color, bg_tablet, bg, divider_color } =
+    useColorModeDefault();
   return (
     <ChakraModal isOpen={isOpen} onClose={onClose} {...rest}>
       <ModalOverlay />
@@ -45,19 +48,21 @@ export function Modal({
         maxW="max-content"
         minW={{ base: '', md: width || '500px' }}
         shadow="none"
-        bg="#121626f8"
-        color="#fff"
+        // bg={bg}
+        // bg="#121626f8"
+        color={text_color}
       >
-        <ModalHeader bg="#121626b2" borderTopRadius="6px">
+        <ModalHeader bg={bg} borderTopRadius="6px">
           <Text textAlign="left" fontSize="18px">
             {title}
           </Text>
         </ModalHeader>
         <ModalCloseButton onClick={onClickButtonClose} />
-        <Divider borderColor="#cccccc3e" mt="-6px" />
+        <Divider borderColor={divider_color} mt="-6px" />
         <ModalBody
           zIndex={3000}
-          bg="#121626b2"
+          // bg="#121626b2"
+          bg={bg}
           borderBottomRadius="6px"
           padding={padding || ''}
         >

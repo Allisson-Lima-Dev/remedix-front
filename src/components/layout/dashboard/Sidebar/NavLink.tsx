@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { ElementType, Fragment } from 'react';
 import { ActiveLink } from '../ActiveLink';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface IPropsSubMenu<T = string> {
   title: T;
@@ -40,6 +41,7 @@ export function NavLink({
   ...rest
 }: NavLinkProps) {
   const { asPath } = useRouter();
+  const { bg, text_color } = useColorModeDefault();
   return activeDrawer ? (
     <Box w="full">
       <Accordion
@@ -106,9 +108,9 @@ export function NavLink({
                       my="5px"
                       fontWeight="medium"
                       fontSize="14px"
-                      color={item.route === asPath ? '#eeeef0' : '#656d86'}
+                      color={item.route === asPath ? text_color : '#656d8694'}
                       transition="all linear .55s"
-                      _hover={{ color: '#eeeef0' }}
+                      _hover={{ color: text_color }}
                     >
                       {item.title}
                     </Text>

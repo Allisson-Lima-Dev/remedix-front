@@ -35,8 +35,10 @@ import {
 import { ModalCreateCategory } from '~/components/modals/modalCreateCategory';
 import { useMenuCompany } from '~/services/hooks/useMenuCompany';
 import { ModalCreateItems } from '~/components/modals/modalCreateItems';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 export default function MenuDigital() {
+  const { bg_container, text_color, bg_tablet } = useColorModeDefault();
   const [id_category, setId_category] = useState('');
   const [type, setType] = useState<'new' | 'existing'>('new');
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,7 +49,7 @@ export default function MenuDigital() {
   } = useDisclosure();
   const { data: dataMenuCategory, refetch } = useMenuCompany();
   return (
-    <Box h="full" w="full">
+    <Box h="full" w="full" color={text_color}>
       <Text>Menu Digital</Text>
       <Flex w="full" align="center" justify="space-between">
         <HStack mt="20px">
@@ -129,7 +131,9 @@ export default function MenuDigital() {
         {dataMenuCategory &&
           dataMenuCategory?.menu_company?.map((item) => (
             <AccordionItem
-              bg="#121626b2"
+              // bg="#121626b2"
+              bg={bg_container}
+              color={text_color}
               border="none"
               my="20px"
               borderRadius="2px"
@@ -144,7 +148,7 @@ export default function MenuDigital() {
                 <AccordionIcon fontSize={30} />
                 <Flex align="center" w="full" justify="space-between" ml="7px">
                   <Box textAlign="left">
-                    <Text color="#fff" fontSize="18px">
+                    <Text color={text_color} fontSize="18px">
                       {item.menu_name}
                     </Text>
                     <Text color="#cccc">
@@ -203,7 +207,8 @@ export default function MenuDigital() {
                           top={0}
                           zIndex={1}
                           h="40px"
-                          bg="#1E2540"
+                          bg={bg_tablet}
+                          // bg="#1E2540"
                           textAlign="center"
                         >
                           {[

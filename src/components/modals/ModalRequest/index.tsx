@@ -2,8 +2,10 @@
 import React from 'react';
 import { Box, Divider, Flex, Text } from '@chakra-ui/react';
 import { Modal } from '../modalDefault';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 export function ModalRequest({ details, isOpen, onClose }: any) {
+  const { divider_color } = useColorModeDefault();
   return (
     <Modal
       isOpen={isOpen}
@@ -24,7 +26,7 @@ export function ModalRequest({ details, isOpen, onClose }: any) {
         </Flex>
         <Text>Tipo: {details?.type}</Text>
         <Divider
-          borderColor="#cccccc3e"
+          borderColor={divider_color}
           my="6px"
           borderStyle="dashed"
           borderWidth="1.5px"
@@ -36,7 +38,7 @@ export function ModalRequest({ details, isOpen, onClose }: any) {
           Rua: {details?.address[0]?.street}, {details?.address[0]?.number_home}
         </Text>
         <Divider
-          borderColor="#cccccc3e"
+          borderColor={divider_color}
           mt="6px"
           borderStyle="dashed"
           borderWidth="1.5px"

@@ -6,6 +6,7 @@ import React from 'react';
 import { createPagination } from './createPagination';
 import { api } from '~/services/api';
 import { setLocalStorage } from '~/utils/localStorageFormat';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface INavigation {
   current?: number;
@@ -28,14 +29,16 @@ export function Pagination({
   next,
   prev,
 }: INavigation) {
+  const { button_pagination_inative, button_pagination_active } =
+    useColorModeDefault();
   const { pagination } = createPagination(5, lastPage, current);
 
   return (
     <Flex align="center" w="full" justify="center" my="40px">
       <Flex
         cursor={prev ? 'pointer' : 'not-allowed'}
-        bg={prev ? '#363C4F' : '#2A3042'}
-        _hover={{ bg: '#1461f1', color: '#ffffff' }}
+        bg={prev ? button_pagination_active : button_pagination_inative}
+        _hover={{ bg: prev ? '#1461f1' : '', color: '#ffffff' }}
         borderRadius="6px"
         w="38px"
         h="38px"
@@ -86,9 +89,9 @@ export function Pagination({
       </Flex>
       <Flex
         cursor={next ? 'pointer' : 'not-allowed'}
-        bg={next ? '#363C4F' : '#2A3042'}
+        bg={next ? button_pagination_active : button_pagination_inative}
         color={next ? '#C4CDD5' : '#A6B0CF'}
-        _hover={{ bg: '#1461f1', color: '#ffffff' }}
+        _hover={{ bg: next ? '#1461f1' : '', color: '#ffffff' }}
         borderRadius="6px"
         w="38px"
         h="38px"

@@ -34,6 +34,7 @@ import Sidebar from '../Sidebar';
 import { AuthContext } from '~/context/AuthContext';
 import { clearLocalStorage } from '~/utils/localStorageFormat';
 import { useAdmin } from '~/services/hooks/me';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface IMenuProps {
   name: string;
@@ -50,8 +51,9 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
   const { push, asPath } = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useContext(AuthContext);
-  const { colorMode, toggleColorMode } = useColorMode();
-  const [isChecked, setIsChecked] = useState(true);
+  const { colorMode, toggleColorMode, forced } = useColorMode();
+  const { bg, text_color } = useColorModeDefault();
+  const [isChecked, setIsChecked] = useState(colorMode === 'light');
   const [click, setClick] = useState(true);
 
   const { data } = useAdmin();
@@ -61,18 +63,20 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
     clearLocalStorage();
     Router.push('/login');
   }
+  console.log({ forced });
 
   return (
     <Flex
       justify="space-between"
       // bg="#121626"
-      bg="#13192b"
+      // bg="#13192b"
+      bg={bg}
       boxShadow="base"
-      color="#fff"
+      color={text_color}
       px="30px"
       h="65px"
       alignItems="center"
-      borderBottom="1px solid #2C3045"
+      borderBottom={`1px solid ${bg}`}
     >
       <Center
         cursor="pointer"
@@ -98,16 +102,16 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
         >
           <Flex
             pl="2px"
-            ml={isChecked ? '45%' : '0%'}
+            ml={colorMode === 'light' ? '45%' : '0%'}
             transition="all linear 0.25s"
             borderRadius="20px"
             align="center"
             w="full"
-            bg={isChecked ? '' : '#484747c5'}
+            bg={colorMode === 'light' ? '' : '#484747c5'}
           >
             <Box borderRadius="20px" bg="#1a365e" p="1px">
               <Icon
-                icon={!isChecked ? 'ph:cloud-sun' : 'ph:moon-stars'}
+                icon={colorMode === 'light' ? 'ph:cloud-sun' : 'ph:moon-stars'}
                 color="#fff"
                 width={21}
               />
@@ -182,9 +186,7 @@ export default function HeaderDashboard({ onPress }: IPropsHeader) {
           <DrawerCloseButton />
           <DrawerHeader />
 
-          <DrawerBody>
-            <Sidebar />
-          </DrawerBody>
+          <DrawerBody>{/* <Sidebar /> */}</DrawerBody>
 
           <DrawerFooter />
         </DrawerContent>

@@ -32,8 +32,11 @@ import { Pagination } from '~/components/pagination';
 import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalFilter } from '~/components/modals/modalFilter';
 import { ModalCreateRequest } from '~/components/modals/modalCreateRequest';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 export default function Requests() {
+  const { bg_container, text_color, tab_text, bg, divider_color } =
+    useColorModeDefault();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [viewList, setViewList] = useState(true);
@@ -112,7 +115,14 @@ export default function Requests() {
 
   return (
     <Box w="full">
-      <Box bg="#121626b2" p="15px 20px" mb="10px" borderRadius="10px">
+      <Box
+        bg={bg_container}
+        p="15px 20px"
+        mb="20px"
+        borderRadius="10px"
+        color={text_color}
+        boxShadow="base"
+      >
         <Flex align="center" justify="space-between">
           <Center>
             {tabsName?.map((item, idx) => (
@@ -128,7 +138,7 @@ export default function Requests() {
                 borderColor="transparent"
                 borderWidth="1.5px"
                 mr="10px"
-                color={filterTab === idx ? '#fff' : '#cccccc49'}
+                color={filterTab === idx ? '#fff' : tab_text}
                 bg={filterTab === idx ? '#4988FA' : ''}
                 _hover={{
                   border: filterTab !== idx ? '1.5px solid #4988FA' : '',
@@ -147,6 +157,7 @@ export default function Requests() {
             _hover={{ bg: '#31c64d', p: '20px' }}
             transition="all linear .25s"
             onClick={onOpenCreateRequest}
+            color="#fff"
             leftIcon={
               <Icon icon="material-symbols:add-shopping-cart" width={25} />
             }
@@ -154,7 +165,7 @@ export default function Requests() {
             Criar Pedido
           </Button>
         </Flex>
-        <Divider my="10px" borderColor="#ffffff3e" />
+        <Divider my="10px" borderColor={divider_color} />
         <Flex align="center" alignItems="center" justify="space-between">
           <Box>
             <Flex>
@@ -162,8 +173,8 @@ export default function Requests() {
                 mr="10px"
                 cursor="pointer"
                 transition="all linear .55s"
-                border={viewList ? '1px solid #29304D' : ''}
-                bg={viewList ? '#161A2E' : 'transparent'}
+                border={viewList ? `1px solid ${bg}` : ''}
+                bg={viewList ? bg : 'transparent'}
                 p="5px 10px"
                 borderRadius="5px"
                 onClick={() => {
@@ -175,8 +186,8 @@ export default function Requests() {
               </Center>
               <Center
                 mr="10px"
-                border={!viewList ? '1px solid #29304D' : ''}
-                bg={!viewList ? '#161A2E' : 'transparent'}
+                border={!viewList ? `1px solid ${bg}` : ''}
+                bg={!viewList ? bg : 'transparent'}
                 p="5px 10px"
                 borderRadius="5px"
                 cursor="pointer"
@@ -200,7 +211,7 @@ export default function Requests() {
                   {['10', '20', '30', '40', '50'].map((item) => (
                     <option
                       value={item}
-                      style={{ background: '#161A2E' }}
+                      // style={{ background: '#161A2E' }}
                       key={item}
                     >
                       {item}
@@ -266,7 +277,7 @@ export default function Requests() {
           </Flex>
         </Flex>
       </Box>
-      <Box bg="#121626b2" borderRadius="10px">
+      <Box bg={bg_container} borderRadius="10px" boxShadow="base">
         {viewList ? (
           <TabletRequests
             refetch={refetch}
@@ -279,7 +290,7 @@ export default function Requests() {
               'Status',
               'Comprovante',
               filterTab === 0 ? 'Aceitar' : filterTab === 1 ? 'Concluir' : '',
-              'Editar',
+              'Ações',
               'Detalhes',
             ]}
             currentTab={filterTab}

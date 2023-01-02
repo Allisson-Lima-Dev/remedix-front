@@ -58,6 +58,7 @@ import { useAllMenuItems, useMenuItems } from '~/services/hooks/useMenuItems';
 import { api } from '~/services/api';
 import { useOptions } from '~/services/hooks/useOptions';
 import { phonesFormat } from '~/utils/formatPhone';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface ModalProps extends Omit<ModalChakraModal, 'children'> {
   number_request?: number;
@@ -112,6 +113,7 @@ export function ModalCreateRequest({
       })
     ),
   });
+  const { divider_color, bg_tablet } = useColorModeDefault();
   const { data } = useMenuCompany();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -132,7 +134,6 @@ export function ModalCreateRequest({
     note: '',
     accept_note: true,
   };
-  //   const value = formatDobleFloatValue(String(getValues('value')), 2);
   const {
     register,
     handleSubmit,
@@ -183,8 +184,6 @@ export function ModalCreateRequest({
   }
   console.log('ARRAY', fields);
 
-  // console.log(watch('requests').reduce((acc, value) => acc + value?.amount, 0));
-
   return (
     <Modal
       isOpen={isOpen}
@@ -224,15 +223,6 @@ export function ModalCreateRequest({
               </FormErrorMessage>
             )}
           </FormControl>
-          {/* <Box w="60%">
-            <Input
-              {...register('name_client')}
-              variant="outline"
-              label="Nome do Cliente"
-              placeholder="Ex: João"
-              error={formState?.errors?.name_client}
-            />
-          </Box> */}
           <Box ml="20px" w="30%">
             <Select
               label="Tipo:"
@@ -278,25 +268,6 @@ export function ModalCreateRequest({
                 style: 'currency',
                 currency: 'BRL',
               })}
-              // {...register('total_amount', {
-              // onChange(event) {
-              //   const { value } = event.currentTarget;
-              //   event.currentTarget.value = formatCalcValue(value) || '';
-              //   setValue(
-              //     'total_amount',
-              //     Number(formatCalcValue(value)?.replace(',', '.'))
-              //   );
-              // },
-              // })}
-              // onChange={(event) => {
-              //   const { value } = event.currentTarget;
-              //   event.currentTarget.value = formatCalcValue(value) || '';
-              //   setValue(
-              //     'total_amount',
-              //     Number(formatCalcValue(value)?.replace(',', '.'))
-              //   );
-              // }}
-              // name="total_amount"
               error={formState?.errors?.total_amount}
             />
           </Box>
@@ -334,7 +305,8 @@ export function ModalCreateRequest({
                 <AccordionItem key={idx}>
                   <AccordionButton
                     alignItems="center"
-                    _expanded={{ bg: '#282e3f', color: 'white' }}
+                    _expanded={{ bg: bg_tablet, color: 'white' }}
+                    // _expanded={{ bg: '#282e3f', color: 'white' }}
                     h="50px"
                     _hover={{
                       bg: '#373f58',

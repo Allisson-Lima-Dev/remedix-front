@@ -113,7 +113,7 @@ export function ModalCreateRequest({
       })
     ),
   });
-  const { divider_color, bg_tablet } = useColorModeDefault();
+  const { hover_accordion, expanded_color, text_color } = useColorModeDefault();
   const { data } = useMenuCompany();
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -305,18 +305,19 @@ export function ModalCreateRequest({
                 <AccordionItem key={idx}>
                   <AccordionButton
                     alignItems="center"
-                    _expanded={{ bg: bg_tablet, color: 'white' }}
+                    _expanded={{ bg: expanded_color, color: text_color }}
                     // _expanded={{ bg: '#282e3f', color: 'white' }}
+                    bg="#f8f9fa"
+                    color="#000"
+                    borderRadius="5px"
                     h="50px"
                     _hover={{
-                      bg: '#373f58',
+                      bg: hover_accordion,
                     }}
                   >
                     <AccordionIcon fontSize="27px" mr="10px" />
                     <Flex align="center" w="full" justify="space-between">
-                      <Text color="#fff" fontSize="18px">
-                        Pedido n° {idx + 1}
-                      </Text>
+                      <Text fontSize="18px">Pedido n° {idx + 1}</Text>
                       <HStack>
                         <IconButton
                           variant="unstyled"

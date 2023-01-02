@@ -21,7 +21,7 @@ export const theme = extendTheme({
     global: (props: Dict<any>) => ({
       body: {
         color: mode('#000000', '#ffffff')(props),
-        bg: mode('#ECECEC', '#0a0f1e')(props),
+        bg: mode('#f2f2f2', '#0a0f1e')(props),
         overflowX: 'hidden',
         transitionProperty: 'all',
         transitionDuration: 'normal',

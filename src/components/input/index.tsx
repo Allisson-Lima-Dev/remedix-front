@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { FieldError } from 'react-hook-form';
 import { Icon } from '@iconify/react';
+import { useColorModeDefault } from '~/styles/colorMode';
 // import { FieldError } from 'react-hook-form';
 
 interface IInputProps extends ChakraInputProps {
@@ -38,13 +39,15 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
   ref
 ) => {
   const [visible, setVisible] = useState(false);
+  const { bg_container, text_color, bg_tablet, bg, divider_color } =
+    useColorModeDefault();
   return (
     <FormControl isInvalid={!!error}>
       {!!label && (
         <FormLabel
           fontWeight="bold"
           htmlFor={name}
-          color={labelColor || '#fff'}
+          color={labelColor || text_color}
           // textTransform="capitalize"
           fontSize={{ base: '12px', md: '14px', lg: '14px' }}
         >

@@ -32,20 +32,21 @@ import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalConfirmation } from '~/components/modals/modalConfirmation';
 import { ModalEditRequest } from '~/components/modals/modalEditRequest';
 import { useColorModeDefault } from '~/styles/colorMode';
+import { IDataRequests } from '~/types/requests';
 
-export interface IDataRequests {
-  number_request: string;
-  type: string;
-  name: string;
-  phone: string;
-  date: string;
-  amount: number;
-  status: string;
-}
+// export interface IDataRequests {
+//   number_request: string;
+//   type: string;
+//   name: string;
+//   phone: string;
+//   date: string;
+//   amount: number;
+//   status: string;
+// }
 
 interface ITabletRequestsProps {
   head_options: string[];
-  data: any[];
+  data: IDataRequests[];
   currentTab?: number;
   total?: number;
   lastPage: number;
@@ -93,10 +94,10 @@ export function TabletRequests({
     number_request: 0,
   });
 
-  const [id, setId] = useState();
+  const [id, setId] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [docPdf, setDocpdf] = useState('');
-  const [details, setDetails] = useState<any>();
+  const [details, setDetails] = useState<IDataRequests>();
   const IframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const printIframe = async (Type: 'download' | 'print', id: string) => {
@@ -179,215 +180,222 @@ export function TabletRequests({
             </Tr>
           </Thead>
           <Tbody pos="relative">
-            {data?.map((item: any, idx) => (
-              <Tr
-                borderBottom={`1px solid ${bg}`}
-                key={idx}
-                _hover={{
-                  bg: hover_tablet,
-                }}
-              >
-                <Td>#{item?.id}</Td>
-                <Td>
-                  <Badge
-                    // color="#fff"
-                    // variant="outline"
-                    p="4px 6px"
-                    borderRadius="5px"
-                    fontSize="11px"
-                    border={`1px solid ${bg}`}
-                  >
-                    {item?.type}
-                  </Badge>
-                </Td>
-                <Td>
-                  <Box>
-                    <Text> {item.user_request?.name}</Text>
-                    <Text>{phonesFormat(item?.user_request?.from)}</Text>
-                  </Box>
-                </Td>
-                <Td fontSize="14px">
-                  <Box>
-                    <Text>
-                      {moment(item.createdAt)
-                        .locale('pt-br')
-                        .format('DD/MM/YYYY')}
-                    </Text>
-                    <Text>{moment(item.createdAt).format('LTS')}</Text>
-                  </Box>
-                </Td>
-                <Td>
-                  {parseFloat(item.total_amount).toLocaleString('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
-                </Td>
-
-                <Td>
-                  <Badge
-                    variant={item?.status}
-                    p="4px"
-                    borderRadius="5px"
-                    fontSize="11px"
-                  >
-                    {item.status === 'concluded'
-                      ? 'Concluido'
-                      : item.status === 'production'
-                      ? 'Em andamento'
-                      : item?.status === 'analysis'
-                      ? 'Pendente'
-                      : item?.status === 'canceled'
-                      ? 'Cancelado'
-                      : ''}
-                  </Badge>
-                  <Divider orientation="vertical" />
-                </Td>
-                <Td>
-                  <Flex px="20px" justify="space-around" align="center">
-                    <Flex
-                      border="1px solid #cccccc39"
-                      boxShadow="2xl"
-                      borderRadius="5px"
-                      justify="center"
-                      p="3px"
-                      cursor="pointer"
-                      onClick={() => {
-                        setType('print');
-                        setId(item?.id);
-                        printIframe('print', item?.id);
-                      }}
-                    >
-                      {loading && type === 'print' && id === item.id ? (
-                        <Spinner />
-                      ) : (
-                        <Icon
-                          icon="material-symbols:print-outline-rounded"
-                          width={25}
-                        />
-                      )}
-                    </Flex>
-                    <Flex
-                      ml="5px"
-                      border="1px solid #cccccc39"
-                      boxShadow="2xl"
-                      borderRadius="5px"
-                      justify="center"
-                      p="3px"
-                      cursor="pointer"
-                      onClick={() => {
-                        setType('download');
-                        setId(item?.id);
-                        printIframe('download', item?.id);
-                      }}
-                    >
-                      {loading && type === 'download' && id === item.id ? (
-                        <Spinner />
-                      ) : (
-                        <Icon icon="material-symbols:download" width={25} />
-                      )}
-                    </Flex>
-                  </Flex>
-                </Td>
-                {(currentTab === 0 || currentTab === 1) && (
-                  <Td>
-                    <Center justifyContent="flex-start">
-                      <Text
-                        cursor="pointer"
-                        bg="green.500"
-                        border={`1px solid ${bg}`}
-                        p="7px"
-                        borderRadius="5px"
-                        mr="5px"
-                        onClick={() => {
-                          onOpenCofirm();
-                          setTypeRequest({
-                            type: 'confirm',
-                            number_request: item?.id,
-                          });
-                        }}
-                      >
-                        <Icon icon="material-symbols:check" width={18} />
-                      </Text>
-                      <Text
-                        cursor="pointer"
-                        bg="red.500"
-                        border={`1px solid ${bg}`}
-                        p="7px"
-                        borderRadius="5px"
-                        onClick={() => {
-                          onOpenCofirm();
-                          setTypeRequest({
-                            type: 'canceled',
-                            number_request: item?.id,
-                          });
-                        }}
-                      >
-                        <Icon
-                          icon="material-symbols:close-rounded"
-                          width={18}
-                        />
-                      </Text>
-                    </Center>
-                  </Td>
-                )}
-                <Td>
-                  <Center>
-                    <Center
-                      bg={bg}
-                      border={`1px solid ${bg}`}
-                      p="7px"
-                      borderRadius="5px"
-                      mr="5px"
-                      cursor="pointer"
-                      onClick={() => {
-                        onOpenEdit();
-                        setTypeRequest({
-                          type: 'Edit',
-                          number_request: item?.id,
-                        });
-                      }}
-                    >
-                      <Icon
-                        icon="material-symbols:edit-square-outline-rounded"
-                        width={18}
-                      />
-                    </Center>
-                    <Center
-                      bg={bg}
-                      border={`1px solid ${bg}`}
-                      p="7px"
-                      borderRadius="5px"
-                    >
-                      <Icon icon="ic:outline-delete" width={18} />
-                    </Center>
-                  </Center>
-                </Td>
-                <Td justifyContent="center">
-                  <Flex
-                    align="center"
-                    justify="center"
-                    cursor="pointer"
-                    onClick={() => {
-                      setDetails(item);
-                      if (!item?.request_details) {
-                        return;
-                      }
-                      onOpen();
+            {data?.map(
+              (item, idx) =>
+                item && (
+                  <Tr
+                    borderBottom={`1px solid ${bg}`}
+                    key={idx}
+                    _hover={{
+                      bg: hover_tablet,
                     }}
                   >
-                    <Flex
-                      border="1px solid #cccccc39"
-                      boxShadow="2xl"
-                      borderRadius="5px"
-                      w="-webkit-fit-content"
-                      p="5px"
-                    >
-                      <Icon icon="circum:menu-kebab" width={22} />
-                    </Flex>
-                  </Flex>
-                </Td>
-              </Tr>
-            ))}
+                    <Td>#{item?.id}</Td>
+                    <Td>
+                      <Badge
+                        // color="#fff"
+                        // variant="outline"
+                        p="4px 6px"
+                        borderRadius="5px"
+                        fontSize="11px"
+                        border={`1px solid ${bg}`}
+                      >
+                        {item?.type}
+                      </Badge>
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text> {item.user_request?.name}</Text>
+                        <Text>
+                          {phonesFormat(item?.user_request?.from || '')}
+                        </Text>
+                      </Box>
+                    </Td>
+                    <Td fontSize="14px">
+                      <Box>
+                        <Text>
+                          {moment(item.createdAt)
+                            .locale('pt-br')
+                            .format('DD/MM/YYYY')}
+                        </Text>
+                        <Text>{moment(item.createdAt).format('LTS')}</Text>
+                      </Box>
+                    </Td>
+                    <Td>
+                      {parseFloat(
+                        String(item?.total_amount) || '0'
+                      ).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })}
+                    </Td>
+
+                    <Td>
+                      <Badge
+                        variant={item?.status}
+                        p="4px"
+                        borderRadius="5px"
+                        fontSize="11px"
+                      >
+                        {item.status === 'concluded'
+                          ? 'Concluido'
+                          : item.status === 'production'
+                          ? 'Em andamento'
+                          : item?.status === 'analysis'
+                          ? 'Pendente'
+                          : item?.status === 'canceled'
+                          ? 'Cancelado'
+                          : ''}
+                      </Badge>
+                      <Divider orientation="vertical" />
+                    </Td>
+                    <Td>
+                      <Flex px="20px" justify="space-around" align="center">
+                        <Flex
+                          border="1px solid #cccccc39"
+                          boxShadow="2xl"
+                          borderRadius="5px"
+                          justify="center"
+                          p="3px"
+                          cursor="pointer"
+                          onClick={() => {
+                            setType('print');
+                            setId(item?.id);
+                            printIframe('print', String(item?.id));
+                          }}
+                        >
+                          {loading && type === 'print' && id === item.id ? (
+                            <Spinner />
+                          ) : (
+                            <Icon
+                              icon="material-symbols:print-outline-rounded"
+                              width={25}
+                            />
+                          )}
+                        </Flex>
+                        <Flex
+                          ml="5px"
+                          border="1px solid #cccccc39"
+                          boxShadow="2xl"
+                          borderRadius="5px"
+                          justify="center"
+                          p="3px"
+                          cursor="pointer"
+                          onClick={() => {
+                            setType('download');
+                            setId(item?.id);
+                            printIframe('download', String(item?.id));
+                          }}
+                        >
+                          {loading && type === 'download' && id === item.id ? (
+                            <Spinner />
+                          ) : (
+                            <Icon icon="material-symbols:download" width={25} />
+                          )}
+                        </Flex>
+                      </Flex>
+                    </Td>
+                    {(currentTab === 0 || currentTab === 1) && (
+                      <Td>
+                        <Center justifyContent="flex-start">
+                          <Text
+                            cursor="pointer"
+                            bg="green.500"
+                            border={`1px solid ${bg}`}
+                            p="7px"
+                            borderRadius="5px"
+                            mr="5px"
+                            onClick={() => {
+                              onOpenCofirm();
+                              setTypeRequest({
+                                type: 'confirm',
+                                number_request: item?.id,
+                              });
+                            }}
+                          >
+                            <Icon icon="material-symbols:check" width={18} />
+                          </Text>
+                          <Text
+                            cursor="pointer"
+                            bg="red.500"
+                            border={`1px solid ${bg}`}
+                            p="7px"
+                            borderRadius="5px"
+                            onClick={() => {
+                              onOpenCofirm();
+                              setTypeRequest({
+                                type: 'canceled',
+                                number_request: item?.id,
+                              });
+                            }}
+                          >
+                            <Icon
+                              icon="material-symbols:close-rounded"
+                              width={18}
+                            />
+                          </Text>
+                        </Center>
+                      </Td>
+                    )}
+                    <Td>
+                      <Center>
+                        <Center
+                          bg={bg}
+                          border={`1px solid ${bg}`}
+                          p="7px"
+                          borderRadius="5px"
+                          mr="5px"
+                          cursor="pointer"
+                          onClick={() => {
+                            onOpenEdit();
+                            setTypeRequest({
+                              type: 'Edit',
+                              number_request: item?.id,
+                            });
+                          }}
+                        >
+                          <Icon
+                            icon="material-symbols:edit-square-outline-rounded"
+                            width={18}
+                          />
+                        </Center>
+                        <Center
+                          bg={bg}
+                          border={`1px solid ${bg}`}
+                          p="7px"
+                          borderRadius="5px"
+                        >
+                          <Icon icon="ic:outline-delete" width={18} />
+                        </Center>
+                      </Center>
+                    </Td>
+                    <Td justifyContent="center">
+                      <Flex
+                        align="center"
+                        justify="center"
+                        cursor="pointer"
+                        onClick={() => {
+                          setDetails(item);
+                          if (!item?.request_details) {
+                            return;
+                          }
+                          onOpen();
+                        }}
+                      >
+                        <Flex
+                          border="1px solid #cccccc39"
+                          boxShadow="2xl"
+                          borderRadius="5px"
+                          w="-webkit-fit-content"
+                          p="5px"
+                        >
+                          <Icon icon="circum:menu-kebab" width={22} />
+                        </Flex>
+                      </Flex>
+                    </Td>
+                  </Tr>
+                )
+            )}
           </Tbody>
         </Table>
       </TableContainer>

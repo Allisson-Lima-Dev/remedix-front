@@ -45,8 +45,14 @@ import { useColorModeDefault } from '~/styles/colorMode';
 import { IDataRequests } from '~/types/requests';
 
 export default function Requests() {
-  const { bg_container, text_color, tab_text, bg, divider_color } =
-    useColorModeDefault();
+  const {
+    bg_container,
+    text_color,
+    tab_text,
+    bg,
+    divider_color,
+    header_table,
+  } = useColorModeDefault();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [viewList, setViewList] = useState(true);
@@ -122,6 +128,10 @@ export default function Requests() {
       setSearch(value);
     }, 1000);
   };
+
+  useEffect(() => {
+    setDetails(data?.data[0]);
+  }, []);
 
   return (
     <Box w="full">
@@ -315,7 +325,7 @@ export default function Requests() {
             lastPage={data?.total_pages}
           />
         ) : (
-          <Box py="20px" w="full">
+          <Box py="20px" w="full" color={text_color}>
             <Flex w="full">
               <SimpleGrid
                 maxH="600px"
@@ -352,13 +362,70 @@ export default function Requests() {
                     name={item.user_request.name}
                     phone={phonesFormat(item.user_request.from)}
                     status={item?.status}
+                    bg={item.id === details?.id ? '#4988FA' : ''}
+                    color={item.id === details?.id ? '#fff' : ''}
+                    _active={{ bg: '#2b73fa' }}
                   />
                 ))}
               </SimpleGrid>
-              <Box w="70%" mx="auto">
-                <Box textAlign="center">
+              <Box w="70%" mx="auto" pr="10px">
+                <Flex w="ful" justify="space-between" color="#ffffff">
+                  <Text>Whatsapp</Text>
+                  <Center justifyContent="flex-start">
+                    <Button
+                      cursor="pointer"
+                      bg="green.500"
+                      border={`1px solid ${bg}`}
+                      p="7px"
+                      borderRadius="5px"
+                      mr="5px"
+                      onClick={() => {
+                        // onOpenCofirm();
+                        // setTypeRequest({
+                        //   type: 'confirm',
+                        //   number_request: item?.id,
+                        // });
+                      }}
+                      leftIcon={
+                        <Icon icon="material-symbols:check" width={20} />
+                      }
+                    >
+                      Aceitar
+                    </Button>
+
+                    <Button
+                      cursor="pointer"
+                      bg="red.500"
+                      border={`1px solid ${bg}`}
+                      p="7px"
+                      borderRadius="5px"
+                      onClick={() => {
+                        // onOpenCofirm();
+                        // setTypeRequest({
+                        //   type: 'canceled',
+                        //   number_request: item?.id,
+                        // });
+                      }}
+                      leftIcon={
+                        <Icon
+                          icon="material-symbols:close-rounded"
+                          width={20}
+                        />
+                      }
+                    >
+                      Recusar
+                    </Button>
+                  </Center>
+                </Flex>
+                <Divider
+                  borderStyle="dashed"
+                  borderWidth="1.5px"
+                  my="10px"
+                  borderColor={divider_color}
+                />
+                <Box textAlign="center" my="15px">
                   <Heading fontSize="25px">Pedido #{details?.id}</Heading>
-                  <Text>
+                  <Text fontSize="15px">
                     {moment(details?.createdAt)
                       .locale('pt-br')
                       .format('LLLL:SS')}
@@ -368,14 +435,33 @@ export default function Requests() {
                   {details?.user_request?.name.toLocaleUpperCase()} |{' '}
                   {phonesFormat(details?.user_request?.from || '')}
                 </Heading>
-                <Text mt="10px">Pontos de Fidelidade: 20 pts</Text>
-                <Text>Total de Pedidos do cliente: 20 </Text>
+                <Divider
+                  mt="10px"
+                  borderStyle="dashed"
+                  borderWidth="1.5px"
+                  borderColor={divider_color}
+                />
+                <Text fontSize="15px">Pontos de Fidelidade: 20 pts</Text>
+                <Divider
+                  borderStyle="dashed"
+                  borderWidth="1.5px"
+                  borderColor={divider_color}
+                />
+                <Text fontSize="15px">Total de Pedidos do cliente: 20 </Text>
+                <Divider
+                  borderStyle="dashed"
+                  borderWidth="1.5px"
+                  borderColor={divider_color}
+                />
                 <Text mt="20px">Tipo do pedido: {details?.type}</Text>
                 <TableContainer mt="20px">
                   <Table size="sm">
                     <Thead>
-                      <Tr bg="#cbd3e023">
-                        <Th>QTD</Th>
+                      <Tr
+                        // bg="#cbd3e023"
+                        bg={header_table}
+                      >
+                        <Th maxW="10px">QTD</Th>
                         <Th>Item</Th>
                         <Th textAlign="right">Valor</Th>
                       </Tr>
@@ -384,8 +470,8 @@ export default function Requests() {
                       {details?.request_details.items_request.map(
                         (item, key) => (
                           <Tr borderBottom="1px solid #CBD3E0" key={key}>
-                            <Td>{item.quantity}x</Td>
-                            <Td>{item.menu_item.title}</Td>
+                            <Td w="10px">{item.quantity}x</Td>
+                            <Td colSpan={0}>{item.menu_item.title}</Td>
                             <Td textAlign="right">
                               {' '}
                               {parseFloat(
@@ -398,8 +484,56 @@ export default function Requests() {
                           </Tr>
                         )
                       )}
-                      <Tr bg="#cbd3e023">
+                      <Tr
+                        // bg="#cbd3e023"
+                        bg={header_table}
+                      >
                         <Td>SubTotal</Td>
+                        <Td>{}</Td>
+                        <Td textAlign="right">
+                          {parseFloat(
+                            String(details?.total_amount) || '0'
+                          ).toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          })}
+                        </Td>
+                      </Tr>
+                      <Tr
+                      // bg="#cbd3e023"
+                      >
+                        <Td>Taxa de entrega</Td>
+                        <Td>{}</Td>
+                        <Td textAlign="right">
+                          {parseFloat(String(0) || '0').toLocaleString(
+                            'pt-BR',
+                            {
+                              style: 'currency',
+                              currency: 'BRL',
+                            }
+                          )}
+                        </Td>
+                      </Tr>
+                      <Tr
+                      // bg="#cbd3e023"
+                      >
+                        <Td>Desconto</Td>
+                        <Td>{}</Td>
+                        <Td textAlign="right">
+                          {parseFloat(String(0) || '0').toLocaleString(
+                            'pt-BR',
+                            {
+                              style: 'currency',
+                              currency: 'BRL',
+                            }
+                          )}
+                        </Td>
+                      </Tr>
+                      <Tr
+                        // bg="#cbd3e023"
+                        bg={header_table}
+                      >
+                        <Td>Total</Td>
                         <Td>{}</Td>
                         <Td textAlign="right">
                           {parseFloat(
@@ -413,20 +547,21 @@ export default function Requests() {
                     </Tbody>
                   </Table>
                 </TableContainer>
+                {data && (
+                  <Pagination
+                    isFetching={isFetching}
+                    per_page={perPage}
+                    current={page}
+                    setPage={setPage}
+                    next={data?.next}
+                    prev={data?.prev}
+                    total={data?.total_pages}
+                    lastPage={data?.total_pages}
+                  />
+                )}
               </Box>
             </Flex>
-            {data && (
-              <Pagination
-                isFetching={isFetching}
-                per_page={perPage}
-                current={page}
-                setPage={setPage}
-                next={data?.next}
-                prev={data?.prev}
-                total={data?.total_pages}
-                lastPage={data?.total_pages}
-              />
-            )}
+
             <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
           </Box>
         )}

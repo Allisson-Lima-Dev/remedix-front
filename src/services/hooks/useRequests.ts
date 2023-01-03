@@ -1,7 +1,11 @@
 import { useQuery } from 'react-query';
 import { HandleError } from '~/error/HandlerError';
 import { api } from '../api';
-import { IRequests } from '~/types/requests';
+import {
+  IDataRequests,
+  IData_Response_Default,
+  IRequests,
+} from '~/types/requests';
 
 export async function CreateRequest(id?: string) {
   try {
@@ -36,7 +40,7 @@ async function getRequests({
   status,
 }: IRequests) {
   try {
-    const { data } = await api.get(
+    const { data } = await api.get<IData_Response_Default<IDataRequests>>(
       `/admin/requests?per_page=${per_page || 100}&page=${page || 1}${
         status ? `&status=${status}` : ''
       }${startDate && endDate ? `&data_between=${startDate},${endDate}` : ''}${

@@ -10,6 +10,7 @@ import {
   BoxProps,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
+import { useColorModeDefault } from '~/styles/colorMode';
 
 interface ICardRequest extends BoxProps {
   number_request: any;
@@ -29,6 +30,7 @@ export function CardRequest({
   avatar,
   ...rest
 }: ICardRequest) {
+  const { text_color, bg_tablet } = useColorModeDefault();
   return (
     <Box
       {...rest}
@@ -38,11 +40,12 @@ export function CardRequest({
       maxW="350px"
       h="160px"
       p="15px"
+      color={text_color}
       borderRadius="8px"
       cursor="pointer"
       transition="all linear .55s"
       _hover={{
-        borderColor: '#ffff',
+        borderColor: bg_tablet,
         boxShadow: '50px',
       }}
     >
@@ -93,7 +96,7 @@ export function CardRequest({
           <Icon
             icon="material-symbols:chevron-right-rounded"
             width={25}
-            color="#fff"
+            color={text_color}
           />
         </Flex>
       </Flex>

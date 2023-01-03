@@ -33,7 +33,6 @@ export function CardRequest({
   const { text_color, bg_tablet } = useColorModeDefault();
   return (
     <Box
-      {...rest}
       boxShadow="base"
       border="1px solid #cccccc77"
       w="90%"
@@ -48,6 +47,7 @@ export function CardRequest({
         borderColor: bg_tablet,
         boxShadow: '50px',
       }}
+      {...rest}
     >
       <Flex align="center" w="full" justify="space-between" mb="5px">
         <Heading fontSize="18px" ml="5px">
@@ -96,7 +96,7 @@ export function CardRequest({
           <Icon
             icon="material-symbols:chevron-right-rounded"
             width={25}
-            color={text_color}
+            // color={text_color}
           />
         </Flex>
       </Flex>

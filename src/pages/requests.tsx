@@ -84,7 +84,7 @@ export default function Requests() {
     setEndDate(end);
   };
 
-  const { data, refetch, isFetching } = useRequest({
+  const { data, refetch, isFetching, isLoading } = useRequest({
     page,
     per_page: perPage,
     status:
@@ -130,8 +130,12 @@ export default function Requests() {
   };
 
   useEffect(() => {
-    setDetails(data?.data[0]);
-  }, []);
+    if (!details) {
+      setDetails(data?.data[0]);
+    }
+  }, [data]);
+
+  console.log({ details });
 
   return (
     <Box w="full">
@@ -343,30 +347,34 @@ export default function Requests() {
                 minW="350px"
                 minH="250px"
               >
-                {data?.data?.map((item: any, key: number) => (
-                  <CardRequest
-                    key={key}
-                    onClick={() => {
-                      setDetails(item);
-                      if (!item?.request_details) {
-                        return;
-                      }
-                      console.log();
+                {data &&
+                  data?.data?.map((item: any, key: number) => (
+                    <CardRequest
+                      key={key}
+                      onClick={() => {
+                        setDetails(item);
+                        if (!item?.request_details) {
+                          return;
+                        }
+                        console.log();
 
-                      // onOpen();
-                    }}
-                    number_request={item?.id}
-                    date={moment(item.createdAt)
-                      .locale('pt-br')
-                      .format('DD/MM/YYYY - LT')}
-                    name={item.user_request.name}
-                    phone={phonesFormat(item.user_request.from)}
-                    status={item?.status}
-                    bg={item.id === details?.id ? '#4988FA' : ''}
-                    color={item.id === details?.id ? '#fff' : ''}
-                    _active={{ bg: '#2b73fa' }}
-                  />
-                ))}
+                        // onOpen();
+                      }}
+                      number_request={item?.id}
+                      date={moment(item.createdAt)
+                        .locale('pt-br')
+                        .format('DD/MM/YYYY - LT')}
+                      name={item.user_request.name}
+                      phone={phonesFormat(item.user_request.from)}
+                      status={item?.status}
+                      bg={item.id === details?.id ? '#4988FA' : ''}
+                      color={item.id === details?.id ? '#fff' : ''}
+                      border={
+                        item.id === details?.id ? '' : '1px solid #cccccc77'
+                      }
+                      _active={{ bg: '#2b73fa' }}
+                    />
+                  ))}
               </SimpleGrid>
               <Box w="70%" mx="auto" pr="10px">
                 <Flex w="ful" justify="space-between" color="#ffffff">

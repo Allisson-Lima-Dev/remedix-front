@@ -29,7 +29,6 @@ export function ModalCreateCategory({
 
   async function handleCreateCategory(data: any) {
     setLoading(true);
-    console.log(data);
     await api
       .post('/admin/menu/company', data)
       .then(() => {

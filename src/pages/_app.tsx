@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from 'react';
 import type { AppProps } from 'next/app';
-import { CSSReset, ChakraProvider } from '@chakra-ui/react';
+import { CSSReset, ChakraProvider, ColorModeProvider } from '@chakra-ui/react';
 import NextNprogress from 'nextjs-progressbar'; // theme css file
 import 'moment/locale/pt-br';
 import { QueryClientProvider } from 'react-query';
@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   if (!showChild) {
-    return null;
+    return <>Loading</>;
   }
 
   if (typeof window === 'undefined') {
@@ -34,7 +34,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         height={3}
         showOnShallow
       />
-      <ChakraProvider theme={theme} resetCSS>
+      <ChakraProvider theme={theme}>
         <AuthProvider>
           <Layout>
             <Component {...pageProps} />

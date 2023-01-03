@@ -27,6 +27,7 @@ import {
   Td,
   Tbody,
   HStack,
+  Spinner,
 } from '@chakra-ui/react';
 
 import { useForm } from 'react-hook-form';
@@ -328,7 +329,7 @@ export default function Requests() {
             isFetching={isFetching}
             lastPage={data?.total_pages}
           />
-        ) : (
+        ) : !viewList ? (
           <Box py="20px" w="full" color={text_color}>
             <Flex w="full">
               <SimpleGrid
@@ -572,6 +573,10 @@ export default function Requests() {
 
             <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
           </Box>
+        ) : (
+          <Center h="full">
+            <Spinner />
+          </Center>
         )}
       </Box>
       <ModalFilter isOpen={isOpenFilter} onClose={onCloseFilter} />

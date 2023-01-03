@@ -18,6 +18,15 @@ import {
   Button,
   useMediaQuery,
   Tooltip,
+  Heading,
+  TableContainer,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Td,
+  Tbody,
+  HStack,
 } from '@chakra-ui/react';
 
 import { useForm } from 'react-hook-form';
@@ -33,6 +42,7 @@ import { ModalRequest } from '~/components/modals/ModalRequest';
 import { ModalFilter } from '~/components/modals/modalFilter';
 import { ModalCreateRequest } from '~/components/modals/modalCreateRequest';
 import { useColorModeDefault } from '~/styles/colorMode';
+import { IDataRequests } from '~/types/requests';
 
 export default function Requests() {
   const { bg_container, text_color, tab_text, bg, divider_color } =
@@ -57,7 +67,7 @@ export default function Requests() {
     onOpen: onOpenFilter,
     onClose: onCloseFilter,
   } = useDisclosure();
-  const [details, setDetails] = useState<any>();
+  const [details, setDetails] = useState<IDataRequests>();
   const { register, handleSubmit, reset } = useForm<any>();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState(null);
@@ -278,7 +288,7 @@ export default function Requests() {
         </Flex>
       </Box>
       <Box bg={bg_container} borderRadius="10px" boxShadow="base">
-        {viewList ? (
+        {viewList && data ? (
           <TabletRequests
             refetch={refetch}
             head_options={[
@@ -305,48 +315,118 @@ export default function Requests() {
             lastPage={data?.total_pages}
           />
         ) : (
-          <Box py="20px">
-            <SimpleGrid
-              columns={{
-                base: 1,
-                md: 2,
-                lg: isLarge1300 ? 2 : 3,
-                xl: isLarge1400 ? 3 : 4,
-              }}
-              spacing={10}
-              justifyItems="center"
-              minH="250px"
-            >
-              {data?.data?.map((item: any, key: number) => (
-                <CardRequest
-                  key={key}
-                  onClick={() => {
-                    setDetails(item);
-                    if (!item?.request_details) {
-                      return;
-                    }
-                    onOpen();
-                  }}
-                  number_request={item?.id}
-                  date={moment(item.createdAt)
-                    .locale('pt-br')
-                    .format('DD/MM/YYYY - LT')}
-                  name={item.user_request.name}
-                  phone={phonesFormat(item.user_request.from)}
-                  status={item?.status}
-                />
-              ))}
-            </SimpleGrid>
-            <Pagination
-              isFetching={isFetching}
-              per_page={perPage}
-              current={page}
-              setPage={setPage}
-              next={data?.next}
-              prev={data?.prev}
-              total={data?.total_pages}
-              lastPage={data?.total_pages}
-            />
+          <Box py="20px" w="full">
+            <Flex w="full">
+              <SimpleGrid
+                maxH="600px"
+                overflowY="auto"
+                columns={1}
+                // columns={{
+                //   base: 1,
+                //   md: 2,
+                //   lg: isLarge1300 ? 2 : 3,
+                //   xl: isLarge1400 ? 3 : 4,
+                // }}
+                justifyItems="center"
+                mx="auto"
+                spacing={5}
+                minW="350px"
+                minH="250px"
+              >
+                {data?.data?.map((item: any, key: number) => (
+                  <CardRequest
+                    key={key}
+                    onClick={() => {
+                      setDetails(item);
+                      if (!item?.request_details) {
+                        return;
+                      }
+                      console.log();
+
+                      // onOpen();
+                    }}
+                    number_request={item?.id}
+                    date={moment(item.createdAt)
+                      .locale('pt-br')
+                      .format('DD/MM/YYYY - LT')}
+                    name={item.user_request.name}
+                    phone={phonesFormat(item.user_request.from)}
+                    status={item?.status}
+                  />
+                ))}
+              </SimpleGrid>
+              <Box w="70%" mx="auto">
+                <Box textAlign="center">
+                  <Heading fontSize="25px">Pedido #{details?.id}</Heading>
+                  <Text>
+                    {moment(details?.createdAt)
+                      .locale('pt-br')
+                      .format('LLLL:SS')}
+                  </Text>
+                </Box>
+                <Heading fontSize="20px">
+                  {details?.user_request?.name.toLocaleUpperCase()} |{' '}
+                  {phonesFormat(details?.user_request?.from || '')}
+                </Heading>
+                <Text mt="10px">Pontos de Fidelidade: 20 pts</Text>
+                <Text>Total de Pedidos do cliente: 20 </Text>
+                <Text mt="20px">Tipo do pedido: {details?.type}</Text>
+                <TableContainer mt="20px">
+                  <Table size="sm">
+                    <Thead>
+                      <Tr bg="#cbd3e023">
+                        <Th>QTD</Th>
+                        <Th>Item</Th>
+                        <Th textAlign="right">Valor</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {details?.request_details.items_request.map(
+                        (item, key) => (
+                          <Tr borderBottom="1px solid #CBD3E0" key={key}>
+                            <Td>{item.quantity}x</Td>
+                            <Td>{item.menu_item.title}</Td>
+                            <Td textAlign="right">
+                              {' '}
+                              {parseFloat(
+                                String(item.menu_item.amount) || '0'
+                              ).toLocaleString('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL',
+                              })}
+                            </Td>
+                          </Tr>
+                        )
+                      )}
+                      <Tr bg="#cbd3e023">
+                        <Td>SubTotal</Td>
+                        <Td>{}</Td>
+                        <Td textAlign="right">
+                          {parseFloat(
+                            String(details?.total_amount) || '0'
+                          ).toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                          })}
+                        </Td>
+                      </Tr>
+                    </Tbody>
+                  </Table>
+                </TableContainer>
+              </Box>
+            </Flex>
+            {data && (
+              <Pagination
+                isFetching={isFetching}
+                per_page={perPage}
+                current={page}
+                setPage={setPage}
+                next={data?.next}
+                prev={data?.prev}
+                total={data?.total_pages}
+                lastPage={data?.total_pages}
+              />
+            )}
             <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
           </Box>
         )}

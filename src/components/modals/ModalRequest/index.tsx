@@ -3,8 +3,15 @@ import React from 'react';
 import { Box, Divider, Flex, Text } from '@chakra-ui/react';
 import { Modal } from '../modalDefault';
 import { useColorModeDefault } from '~/styles/colorMode';
+import { IDataRequests } from '~/types/requests';
 
-export function ModalRequest({ details, isOpen, onClose }: any) {
+interface IModalRequestProps {
+  details?: IDataRequests;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function ModalRequest({ details, isOpen, onClose }: IModalRequestProps) {
   const { divider_color } = useColorModeDefault();
   return (
     <Modal
@@ -18,7 +25,7 @@ export function ModalRequest({ details, isOpen, onClose }: any) {
           <Text>N° do Pedido: #{details?.id}</Text>
           <Text>
             Valor:{' '}
-            {parseFloat(details?.amount).toLocaleString('pt-BR', {
+            {parseFloat(String(details?.total_amount)).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}
@@ -32,7 +39,7 @@ export function ModalRequest({ details, isOpen, onClose }: any) {
           borderWidth="1.5px"
         />
         <Text mb="5px">Dados do Cliente:</Text>
-        <Text>Cliente: {details?.userRequest?.name}</Text>
+        <Text>Cliente: {details?.user_request?.name}</Text>
         <Text>Bairro: {details?.address[0]?.district}</Text>
         <Text>
           Rua: {details?.address[0]?.street}, {details?.address[0]?.number_home}
@@ -44,12 +51,12 @@ export function ModalRequest({ details, isOpen, onClose }: any) {
           borderWidth="1.5px"
         />
         <Text my="10px">Descrição do pedido:</Text>
-        {details?.details?.map((val: any, key: number) => (
+        {details?.request_details.items_request?.map((val, key) => (
           <Box key={key} mb="5px">
-            <Text>{val.title}</Text>
-            <Text>{val.description}</Text>
+            <Text>{val.menu_item.title}</Text>
+            <Text>{val.menu_item.description}</Text>
             <Divider
-              borderColor="#cccccc3e"
+              borderColor={divider_color}
               mt="6px"
               borderStyle="dashed"
               borderWidth="1.5px"

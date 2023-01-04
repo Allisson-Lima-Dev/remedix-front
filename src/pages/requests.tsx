@@ -44,6 +44,7 @@ import { ModalFilter } from '~/components/modals/modalFilter';
 import { ModalCreateRequest } from '~/components/modals/modalCreateRequest';
 import { useColorModeDefault } from '~/styles/colorMode';
 import { IDataRequests } from '~/types/requests';
+import { ModalConfirmation } from '~/components/modals/modalConfirmation';
 
 export default function Requests() {
   const {
@@ -54,11 +55,20 @@ export default function Requests() {
     divider_color,
     header_table,
   } = useColorModeDefault();
+  const {
+    isOpen: isOpenCofirm,
+    onOpen: onOpenCofirm,
+    onClose: onCloseCofirm,
+  } = useDisclosure();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [viewList, setViewList] = useState(true);
   const [filterTab, setFilterTab] = useState(0);
   const [search, setSearch] = useState('');
+  const [typeRequest, setTypeRequest] = useState({
+    type: '',
+    number_request: 0,
+  });
   const [isLarge1300, isLarge1400] = useMediaQuery([
     '(max-width: 1302px)',
     '(max-width: 1552px)',
@@ -131,7 +141,7 @@ export default function Requests() {
   };
 
   useEffect(() => {
-    if (!details) {
+    if (!details || typeRequest.type) {
       setDetails(data?.data[0]);
     }
   }, [data]);
@@ -177,7 +187,7 @@ export default function Requests() {
             ))}
           </Center>
           <Button
-            bg="#28a940"
+            bg="green.500"
             _active={{ bg: '#0a8f22' }}
             _hover={{ bg: '#31c64d', p: '20px' }}
             transition="all linear .25s"
@@ -358,8 +368,6 @@ export default function Requests() {
                           return;
                         }
                         console.log();
-
-                        // onOpen();
                       }}
                       number_request={item?.id}
                       date={moment(item.createdAt)
@@ -389,11 +397,12 @@ export default function Requests() {
                       borderRadius="5px"
                       mr="5px"
                       onClick={() => {
-                        // onOpenCofirm();
-                        // setTypeRequest({
-                        //   type: 'confirm',
-                        //   number_request: item?.id,
-                        // });
+                        onOpenCofirm();
+                        setTypeRequest({
+                          type: 'confirm',
+                          number_request: details?.id || 0,
+                        });
+                        refetch();
                       }}
                       leftIcon={
                         <Icon icon="material-symbols:check" width={20} />
@@ -409,11 +418,12 @@ export default function Requests() {
                       p="7px"
                       borderRadius="5px"
                       onClick={() => {
-                        // onOpenCofirm();
-                        // setTypeRequest({
-                        //   type: 'canceled',
-                        //   number_request: item?.id,
-                        // });
+                        onOpenCofirm();
+                        setTypeRequest({
+                          type: 'canceled',
+                          number_request: details?.id || 0,
+                        });
+                        refetch();
                       }}
                       leftIcon={
                         <Icon
@@ -584,6 +594,21 @@ export default function Requests() {
         onClose={onCloseCreateRequest}
         isOpen={isOpenCreateRequest}
         refetch={refetch}
+      />
+      <ModalConfirmation
+        isOpen={isOpenCofirm}
+        onClose={onCloseCofirm}
+        type={typeRequest.type}
+        number_request={typeRequest.number_request}
+        status={
+          filterTab === 0
+            ? 'production'
+            : filterTab === 1
+            ? 'concluded'
+            : 'canceled'
+        }
+        refetch={refetch}
+        currentTab={filterTab}
       />
     </Box>
   );

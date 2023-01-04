@@ -35,8 +35,8 @@ export default function Sidebar({
             route: '/requests',
           },
           {
-            title: 'Criar',
-            route: '/batch-customer',
+            title: 'PDV',
+            route: '/pdv',
           },
           {
             title: 'Todos',

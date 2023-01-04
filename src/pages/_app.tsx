@@ -43,10 +43,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   if (typeof window === 'undefined') {
     return <></>;
   }
-  // const colorModeManager =
-  //   typeof cookies === 'string'
-  //     ? cookieStorageManagerSSR(cookies)
-  //     : localStorageManager;
+
   return (
     <QueryClientProvider client={queryClient}>
       <NextNprogress

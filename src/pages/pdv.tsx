@@ -10,28 +10,23 @@ import {
   Button,
   useNumberInput,
   HStack,
-  Textarea,
+  TableContainer,
+  Table,
+  Tbody,
+  Thead,
+  Tr,
+  Th,
+  Td,
   Divider,
-  NumberInput,
-  NumberInputField,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  NumberInputStepper,
-  IconButton,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionIcon,
-  AccordionPanel,
-  RadioGroup,
-  Stack,
-  Radio,
+  Avatar,
   Switch,
   useToast,
   FormControl,
   FormLabel,
   FormErrorMessage,
   Center,
+  VStack,
+  Image,
 } from '@chakra-ui/react';
 import {
   AsyncCreatableSelect,
@@ -110,7 +105,7 @@ const createRequestFormSchema = yup.object().shape({
   ),
 });
 export default function PDV() {
-  const { hover_accordion, expanded_color, text_color, bg_container } =
+  const { hover_tablet, bg_tablet, text_color, bg_container } =
     useColorModeDefault();
   const sliderRef = useRef<any | null>(null);
   const [width, setWidth] = useState(0);
@@ -120,6 +115,7 @@ export default function PDV() {
   const [category_id, setCategory_id] = useState(
     data?.menu_company[0]?.id || ''
   );
+  const { data: dataItems } = useMenuItems(category_id);
   const { data: dataMenuItems } = useAllMenuItems();
   const { data: data_options, refetch: refetchOptions } = useOptions();
   function formatDobleFloatValue(value: string, fixed?: number) {
@@ -247,41 +243,180 @@ export default function PDV() {
               </Select>
             </Box>
           </Flex>
-          <Text>Categorias</Text>
+          <Text fontSize="20px" fontWeight="600">
+            Categorias
+          </Text>
           <Flex
             as={motion.div}
             justify="space-between"
-            my="20px"
+            my="10px"
             ref={sliderRef}
+            overflowX="auto"
+            // __css={{
+            //   '&::-webkit-scrollbar': {
+            //     width: '10px',
+            //     borderRadius: '24px',
+            //     background: '#2C3045',
+            //   },
+            //   '&::-webkit-scrollbar-track': {
+            //     width: '10px',
+            //   },
+            //   '&::-webkit-scrollbar-thumb': {
+            //     background: '#5e94f9af',
+            //     width: '10px',
+            //     borderRadius: '24px',
+            //   },
+            // }}
           >
             <Flex
               as={motion.div}
               dragConstraints={{ right: 0, left: -width }}
               drag="x"
               whileTap={{ cursor: 'grabbing' }}
-              initial={{ x: 100 }}
-              animate={{ x: 0 }}
             >
               {data &&
                 data?.menu_company?.map((itemMenu, key) => (
-                  <Box mx="10px">
+                  <VStack
+                    mx="10px"
+                    textAlign="center"
+                    onClick={() => {
+                      setCategory_id(itemMenu.id);
+                      console.log();
+                    }}
+                  >
                     <Center
-                      cursor="grab"
-                      bg="red"
-                      h="100px"
-                      w="100px"
+                      cursor="pointer"
+                      bg="#f1f1f1"
+                      transition="all linear 0.20s"
+                      border={
+                        category_id === itemMenu.id ? '2px solid #5e94f9af' : ''
+                      }
+                      h="80px"
+                      w="80px"
                       borderRadius="50%"
                       key={key}
                     >
-                      {itemMenu.menu_name}
+                      <Image src="/assets/food.svg" pointerEvents="none" />
                     </Center>
-                  </Box>
+
+                    <Text pb="10px">{itemMenu.menu_name}</Text>
+                  </VStack>
                 ))}
             </Flex>
           </Flex>
+          <TableContainer
+            whiteSpace="nowrap"
+            w="full"
+            // borderTopRadius="8px"
+            overflowY="auto"
+            maxH="700px"
+            // mt="10px"
+          >
+            <Table variant="unstyled" size="sm">
+              <Thead w="full">
+                <Tr
+                  h="40px"
+                  bg={bg_tablet}
+                  // bg="#1E2540"
+                  textAlign="center"
+                >
+                  <Th>Item</Th>
+                  <Th textAlign="right">Valor</Th>
+                  <Th textAlign="right" mr="10px">
+                    Ações
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody pos="relative">
+                {dataItems &&
+                  dataItems.items_menu.map((items, idx) => (
+                    <Tr
+                      borderBottom="1px solid #32394e"
+                      key={idx}
+                      _hover={{
+                        bg: hover_tablet,
+                      }}
+                    >
+                      <Td>{items?.title}</Td>
+
+                      <Td textAlign="right">
+                        {parseFloat(String(items.amount)).toLocaleString(
+                          'pt-BR',
+                          {
+                            style: 'currency',
+                            currency: 'BRL',
+                          }
+                        )}
+                      </Td>
+
+                      <Td
+                        align="right"
+                        justifyItems="right"
+                        justifyContent="right"
+                      >
+                        <Center justifyContent="right">
+                          <Icon
+                            icon="carbon:view"
+                            width={22}
+                            cursor="pointer"
+                          />
+                          <Center color="green.400" ml="10px" cursor="pointer">
+                            <Icon
+                              icon="material-symbols:add-shopping-cart"
+                              width={25}
+                            />
+                          </Center>
+                        </Center>
+                      </Td>
+                    </Tr>
+                  ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
         </Box>
-        <Box bg={bg_container} p="10px" borderRadius="10px" w="50%">
-          Texte
+        <Box bg={bg_container} p="10px" borderRadius="10px" w="40%">
+          <HStack>
+            <Icon icon="material-symbols:shopping-cart" width={20} />
+            <Text fontSize="20px" fontWeight={600}>
+              Detalhes do Pedido
+            </Text>
+          </HStack>
+          <HStack
+            w="full"
+            justify="space-between"
+            align="center"
+            borderBottom="1px solid #ccc"
+            pb="10px"
+            mb="10px"
+          >
+            <Box>
+              <Text>Pizza Baia</Text>
+              <Text>R$ 20,00</Text>
+            </Box>
+            <HStack>
+              <Button>-</Button>
+              <Button>2</Button>
+              <Button>+</Button>
+            </HStack>
+          </HStack>
+          <HStack
+            w="full"
+            justify="space-between"
+            align="center"
+            borderBottom="1px solid #ccc"
+            pb="10px"
+            mb="10px"
+          >
+            <Box>
+              <Text>Pizza Baia</Text>
+              <Text>R$ 20,00</Text>
+            </Box>
+            <HStack>
+              <Button>-</Button>
+              <Button>1</Button>
+              <Button>+</Button>
+            </HStack>
+          </HStack>
         </Box>
       </Flex>
     </Box>

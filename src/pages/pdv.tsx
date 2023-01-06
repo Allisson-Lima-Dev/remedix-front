@@ -27,6 +27,12 @@ import {
   Center,
   VStack,
   Image,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  IconButton,
 } from '@chakra-ui/react';
 import {
   AsyncCreatableSelect,
@@ -75,6 +81,7 @@ interface FlavorOrColorOption extends OptionBase {
 interface IITemsRequestMenu {
   id_menu_company: string;
   id_item: string;
+  title?: string;
   unity: number;
   amount?: number;
   note?: string;
@@ -122,14 +129,7 @@ export default function PDV() {
     let formatValue = +String(value).replace(/\D/g, '');
     return parseFloat(formatValue.toFixed(fixed || 2)) / 100;
   }
-  const emptyData = {
-    id_menu_company: data?.menu_company[0]?.id,
-    id_item: '',
-    unity: 1,
-    amount: 0,
-    note: '',
-    accept_note: true,
-  };
+
   const {
     register,
     handleSubmit,
@@ -143,9 +143,6 @@ export default function PDV() {
     clearErrors,
   } = useForm<IRequestEdit>({
     resolver: yupResolver(createRequestFormSchema),
-    defaultValues: {
-      requests: [emptyData],
-    },
   });
 
   let numbers: number[] = [];
@@ -157,6 +154,8 @@ export default function PDV() {
   });
 
   async function handleCreateCategory(request_data: IRequestEdit) {
+    console.log(request_data);
+
     setLoading(true);
     await api
       .post(`/admin/request`, request_data)
@@ -176,6 +175,7 @@ export default function PDV() {
         // onClose();
       });
   }
+  console.log({ fields });
 
   useEffect(() => {
     setWidth(sliderRef?.current?.scrollWidth - sliderRef?.current?.offsetWidth);
@@ -360,7 +360,22 @@ export default function PDV() {
                             width={22}
                             cursor="pointer"
                           />
-                          <Center color="green.400" ml="10px" cursor="pointer">
+                          <Center
+                            color="green.400"
+                            ml="10px"
+                            cursor="pointer"
+                            onClick={() => {
+                              append({
+                                id_menu_company: items.category_menu_id,
+                                title: items.title,
+                                id_item: items.uuid,
+                                unity: 1,
+                                amount: items.amount,
+                                note: '',
+                                accept_note: true,
+                              });
+                            }}
+                          >
                             <Icon
                               icon="material-symbols:add-shopping-cart"
                               width={25}
@@ -374,48 +389,163 @@ export default function PDV() {
             </Table>
           </TableContainer>
         </Box>
-        <Box bg={bg_container} p="10px" borderRadius="10px" w="40%">
-          <HStack>
+        <Box
+          bg={bg_container}
+          p="20px"
+          borderRadius="10px"
+          w="40%"
+          as="form"
+          onSubmit={handleSubmit(handleCreateCategory)}
+        >
+          <HStack mb="10px">
             <Icon icon="material-symbols:shopping-cart" width={20} />
             <Text fontSize="20px" fontWeight={600}>
               Detalhes do Pedido
             </Text>
           </HStack>
-          <HStack
-            w="full"
-            justify="space-between"
-            align="center"
-            borderBottom="1px solid #ccc"
-            pb="10px"
-            mb="10px"
-          >
-            <Box>
-              <Text>Pizza Baia</Text>
-              <Text>R$ 20,00</Text>
-            </Box>
-            <HStack>
-              <Button>-</Button>
-              <Button>2</Button>
-              <Button>+</Button>
-            </HStack>
+          {fields &&
+            fields?.map((item, idx) => (
+              <HStack
+                key={idx}
+                w="full"
+                justify="space-between"
+                align="center"
+                borderBottom="1px solid #cccccc31"
+                pb="2px"
+                mb="5px"
+              >
+                <Box>
+                  <Text>{item.title}</Text>
+                  <Text>
+                    {parseFloat(String(item.amount)).toLocaleString('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })}
+                  </Text>
+                </Box>
+                <HStack>
+                  <NumberInput
+                    step={1}
+                    defaultValue={1}
+                    min={1}
+                    max={30}
+                    w="70px"
+                    onChange={(e, value) => {
+                      setValue(`requests.${idx}.unity`, value);
+                      setValue(
+                        `requests.${idx}.amount`,
+                        (dataMenuItems?.items_menu?.find(
+                          (itemMenu) =>
+                            itemMenu.uuid ===
+                            getValues(`requests.${idx}.id_item`)
+                        )?.amount || 0) * value
+                        // (watch(`requests.${idx}.amount`) || 0) * value
+                      );
+                      setValue(
+                        'total_amount',
+
+                        watch('requests').reduce(
+                          (acc, val) =>
+                            Number((acc + (val?.amount || 0)).toFixed(2)),
+                          0
+                        ) as number
+                      );
+                      // setValue(
+                      //   'total_amount',
+                      //   (watch(`requests.${idx}.unity`) *
+                      //     watch('requests').reduce(
+                      //       (acc, val) => acc + (val?.amount || 0),
+                      //       0
+                      //     )) as number
+                      // );
+                    }}
+                  >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper color="#fff" />
+                      <NumberDecrementStepper color="#fff" />
+                    </NumberInputStepper>
+                  </NumberInput>
+                  <HStack>
+                    <IconButton
+                      variant="unstyled"
+                      onClick={() => remove(idx)}
+                      aria-label="Search database"
+                      icon={
+                        <Icon
+                          icon="material-symbols:delete-outline"
+                          width={25}
+                        />
+                      }
+                    />
+                  </HStack>
+                </HStack>
+              </HStack>
+            ))}
+          <HStack w="full" justify="space-between" mt="20px">
+            <Text>SubTotal</Text>
+            <Text>
+              {parseFloat(
+                String(
+                  watch('requests') &&
+                    (watch('requests')?.reduce(
+                      (acc, val) =>
+                        Number((acc + (val?.amount || 0)).toFixed(2)),
+                      0
+                    ) as number)
+                )
+              ).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              })}
+            </Text>
           </HStack>
-          <HStack
-            w="full"
-            justify="space-between"
-            align="center"
-            borderBottom="1px solid #ccc"
-            pb="10px"
-            mb="10px"
-          >
-            <Box>
-              <Text>Pizza Baia</Text>
-              <Text>R$ 20,00</Text>
-            </Box>
-            <HStack>
-              <Button>-</Button>
-              <Button>1</Button>
-              <Button>+</Button>
-            </HStack>
+          <HStack w="full" justify="space-between">
+            <Text>Desconto</Text>
+            <Text>
+              {parseFloat(String(0)).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              })}
+            </Text>
+          </HStack>
+          <HStack w="full" justify="space-between">
+            <Text fontSize="25px" fontWeight={700}>
+              Total
+            </Text>
+            <Text fontSize="25px" fontWeight={700}>
+              {parseFloat(
+                String(
+                  watch('requests') &&
+                    (watch('requests')?.reduce(
+                      (acc, val) =>
+                        Number((acc + (val?.amount || 0)).toFixed(2)),
+                      0
+                    ) as number)
+                )
+              ).toLocaleString('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+              })}
+            </Text>
+          </HStack>
+          <HStack justify="right" mt="20px">
+            <Button
+              bg="green.500"
+              type="submit"
+              onClick={() => {
+                setValue(
+                  'total_amount',
+
+                  watch('requests').reduce(
+                    (acc, val) => Number((acc + (val?.amount || 0)).toFixed(2)),
+                    0
+                  ) as number
+                );
+              }}
+            >
+              Finalizar
+            </Button>
           </HStack>
         </Box>
       </Flex>

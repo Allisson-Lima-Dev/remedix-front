@@ -74,7 +74,7 @@ interface FlavorOrColorOption extends OptionBase {
   rating?: string;
 }
 
-interface IITemsRequestMenu {
+export interface IITemsRequestMenu {
   id_menu_company: string;
   id_item: string;
   unity: number;

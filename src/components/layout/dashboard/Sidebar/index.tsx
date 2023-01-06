@@ -52,6 +52,13 @@ export default function Sidebar({
         // subMenu: [],
       },
       {
+        title: 'Clientes',
+        route: '/clients',
+        // path: ['/payment', '/payment/review'],
+        icon: 'mdi:users-group',
+        // subMenu: [],
+      },
+      {
         title: 'Chat',
         route: '/chat',
         // path: ['/payment', '/payment/review'],

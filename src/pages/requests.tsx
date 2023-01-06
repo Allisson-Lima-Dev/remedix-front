@@ -27,6 +27,7 @@ import {
   Td,
   Tbody,
   HStack,
+  Spinner,
 } from '@chakra-ui/react';
 
 import { useForm } from 'react-hook-form';
@@ -43,6 +44,7 @@ import { ModalFilter } from '~/components/modals/modalFilter';
 import { ModalCreateRequest } from '~/components/modals/modalCreateRequest';
 import { useColorModeDefault } from '~/styles/colorMode';
 import { IDataRequests } from '~/types/requests';
+import { ModalConfirmation } from '~/components/modals/modalConfirmation';
 
 export default function Requests() {
   const {
@@ -53,11 +55,20 @@ export default function Requests() {
     divider_color,
     header_table,
   } = useColorModeDefault();
+  const {
+    isOpen: isOpenCofirm,
+    onOpen: onOpenCofirm,
+    onClose: onCloseCofirm,
+  } = useDisclosure();
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [viewList, setViewList] = useState(true);
   const [filterTab, setFilterTab] = useState(0);
   const [search, setSearch] = useState('');
+  const [typeRequest, setTypeRequest] = useState({
+    type: '',
+    number_request: 0,
+  });
   const [isLarge1300, isLarge1400] = useMediaQuery([
     '(max-width: 1302px)',
     '(max-width: 1552px)',
@@ -84,7 +95,7 @@ export default function Requests() {
     setEndDate(end);
   };
 
-  const { data, refetch, isFetching } = useRequest({
+  const { data, refetch, isFetching, isLoading } = useRequest({
     page,
     per_page: perPage,
     status:
@@ -130,8 +141,12 @@ export default function Requests() {
   };
 
   useEffect(() => {
-    setDetails(data?.data[0]);
-  }, []);
+    if (!details || typeRequest.type) {
+      setDetails(data?.data[0]);
+    }
+  }, [data]);
+
+  console.log({ details });
 
   return (
     <Box w="full">
@@ -172,7 +187,7 @@ export default function Requests() {
             ))}
           </Center>
           <Button
-            bg="#28a940"
+            bg="green.500"
             _active={{ bg: '#0a8f22' }}
             _hover={{ bg: '#31c64d', p: '20px' }}
             transition="all linear .25s"
@@ -324,7 +339,7 @@ export default function Requests() {
             isFetching={isFetching}
             lastPage={data?.total_pages}
           />
-        ) : (
+        ) : !viewList ? (
           <Box py="20px" w="full" color={text_color}>
             <Flex w="full">
               <SimpleGrid
@@ -343,32 +358,34 @@ export default function Requests() {
                 minW="350px"
                 minH="250px"
               >
-                {data?.data?.map((item: any, key: number) => (
-                  <CardRequest
-                    key={key}
-                    onClick={() => {
-                      setDetails(item);
-                      if (!item?.request_details) {
-                        return;
+                {data &&
+                  data?.data?.map((item: any, key: number) => (
+                    <CardRequest
+                      key={key}
+                      onClick={() => {
+                        setDetails(item);
+                        if (!item?.request_details) {
+                          return;
+                        }
+                        console.log();
+                      }}
+                      number_request={item?.id}
+                      date={moment(item.createdAt)
+                        .locale('pt-br')
+                        .format('DD/MM/YYYY - LT')}
+                      name={item.user_request.name}
+                      phone={phonesFormat(item.user_request.from)}
+                      status={item?.status}
+                      bg={item.id === details?.id ? '#4988FA' : ''}
+                      color={item.id === details?.id ? '#fff' : ''}
+                      border={
+                        item.id === details?.id ? '' : '1px solid #cccccc77'
                       }
-                      console.log();
-
-                      // onOpen();
-                    }}
-                    number_request={item?.id}
-                    date={moment(item.createdAt)
-                      .locale('pt-br')
-                      .format('DD/MM/YYYY - LT')}
-                    name={item.user_request.name}
-                    phone={phonesFormat(item.user_request.from)}
-                    status={item?.status}
-                    bg={item.id === details?.id ? '#4988FA' : ''}
-                    color={item.id === details?.id ? '#fff' : ''}
-                    _active={{ bg: '#2b73fa' }}
-                  />
-                ))}
+                      _active={{ bg: '#2b73fa' }}
+                    />
+                  ))}
               </SimpleGrid>
-              <Box w="70%" mx="auto" pr="10px">
+              <Box w="70%" mx="auto" pr="10px" p="20px">
                 <Flex w="ful" justify="space-between" color="#ffffff">
                   <Text>Whatsapp</Text>
                   <Center justifyContent="flex-start">
@@ -380,11 +397,12 @@ export default function Requests() {
                       borderRadius="5px"
                       mr="5px"
                       onClick={() => {
-                        // onOpenCofirm();
-                        // setTypeRequest({
-                        //   type: 'confirm',
-                        //   number_request: item?.id,
-                        // });
+                        onOpenCofirm();
+                        setTypeRequest({
+                          type: 'confirm',
+                          number_request: details?.id || 0,
+                        });
+                        refetch();
                       }}
                       leftIcon={
                         <Icon icon="material-symbols:check" width={20} />
@@ -400,11 +418,12 @@ export default function Requests() {
                       p="7px"
                       borderRadius="5px"
                       onClick={() => {
-                        // onOpenCofirm();
-                        // setTypeRequest({
-                        //   type: 'canceled',
-                        //   number_request: item?.id,
-                        // });
+                        onOpenCofirm();
+                        setTypeRequest({
+                          type: 'canceled',
+                          number_request: details?.id || 0,
+                        });
+                        refetch();
                       }}
                       leftIcon={
                         <Icon
@@ -564,6 +583,10 @@ export default function Requests() {
 
             <ModalRequest details={details} isOpen={isOpen} onClose={onClose} />
           </Box>
+        ) : (
+          <Center h="full">
+            <Spinner />
+          </Center>
         )}
       </Box>
       <ModalFilter isOpen={isOpenFilter} onClose={onCloseFilter} />
@@ -571,6 +594,21 @@ export default function Requests() {
         onClose={onCloseCreateRequest}
         isOpen={isOpenCreateRequest}
         refetch={refetch}
+      />
+      <ModalConfirmation
+        isOpen={isOpenCofirm}
+        onClose={onCloseCofirm}
+        type={typeRequest.type}
+        number_request={typeRequest.number_request}
+        status={
+          filterTab === 0
+            ? 'production'
+            : filterTab === 1
+            ? 'concluded'
+            : 'canceled'
+        }
+        refetch={refetch}
+        currentTab={filterTab}
       />
     </Box>
   );

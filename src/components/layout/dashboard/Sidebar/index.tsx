@@ -35,8 +35,8 @@ export default function Sidebar({
             route: '/requests',
           },
           {
-            title: 'Criar',
-            route: '/batch-customer',
+            title: 'PDV',
+            route: '/pdv',
           },
           {
             title: 'Todos',
@@ -49,6 +49,13 @@ export default function Sidebar({
         route: '/menu_digital',
         // path: ['/payment', '/payment/review'],
         icon: 'material-symbols:format-list-bulleted-rounded',
+        // subMenu: [],
+      },
+      {
+        title: 'Clientes',
+        route: '/clients',
+        // path: ['/payment', '/payment/review'],
+        icon: 'mdi:users-group',
         // subMenu: [],
       },
       {

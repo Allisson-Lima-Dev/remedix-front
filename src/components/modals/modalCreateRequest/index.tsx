@@ -74,7 +74,7 @@ interface FlavorOrColorOption extends OptionBase {
   rating?: string;
 }
 
-interface IITemsRequestMenu {
+export interface IITemsRequestMenu {
   id_menu_company: string;
   id_item: string;
   unity: number;
@@ -161,9 +161,7 @@ export function ModalCreateRequest({
   });
 
   async function handleCreateCategory(request_data: IRequestEdit) {
-    console.log(request_data);
     setLoading(true);
-    console.log(data);
     await api
       .post(`/admin/request`, request_data)
       .then(() => {
@@ -182,7 +180,6 @@ export function ModalCreateRequest({
         onClose();
       });
   }
-  console.log('ARRAY', fields);
 
   return (
     <Modal
@@ -421,13 +418,7 @@ export function ModalCreateRequest({
                       defaultValue="1"
                       mt="10px"
                       onChange={(e) => {
-                        console.log('CHECK', e);
-
                         setValue(`requests.${idx}.accept_note`, e === '1');
-                        console.log(
-                          'Accept_note',
-                          getValues(`requests.${idx}.accept_note`)
-                        );
                       }}
                     >
                       <Stack spacing={4} direction="row">

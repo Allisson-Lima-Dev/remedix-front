@@ -59,7 +59,6 @@ export async function updateRequest(
 ) {
   try {
     const { data } = await api.put(`/admin/request/${id}?status=${status}`);
-    console.log(data);
   } catch (error) {
     console.log();
   }

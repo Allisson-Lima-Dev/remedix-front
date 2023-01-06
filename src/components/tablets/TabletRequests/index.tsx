@@ -126,7 +126,6 @@ export function TabletRequests({
           IframeRef.current?.contentWindow.print();
         }
       }, 700);
-      console.log(res);
     } catch (error) {
       console.log();
     } finally {

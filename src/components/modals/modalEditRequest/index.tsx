@@ -113,8 +113,6 @@ export function ModalEditRequest({
     control,
   });
 
-  console.log({ fields });
-
   return (
     <Modal
       isOpen={isOpen}
@@ -288,13 +286,7 @@ export function ModalEditRequest({
                     defaultValue="1"
                     mt="10px"
                     onChange={(e) => {
-                      console.log('CHECK', e);
-
                       setValue(`requests.${idx}.accept_note`, e === '1');
-                      console.log(
-                        'Accept_note',
-                        getValues(`requests.${idx}.accept_note`)
-                      );
                     }}
                   >
                     <Stack spacing={4} direction="row">

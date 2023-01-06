@@ -38,7 +38,6 @@ export default function Login() {
 
   async function handleSignIn(data: SignInRequestData) {
     setLoading(true);
-    console.log(data);
     await signIn(data)
       .catch((err) => {
         toast({

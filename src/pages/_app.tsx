@@ -1,8 +1,19 @@
 import '../styles/globals.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from 'react';
+import { parseCookies } from 'nookies';
 import type { AppProps } from 'next/app';
-import { CSSReset, ChakraProvider } from '@chakra-ui/react';
+import {
+  CSSReset,
+  ChakraProvider,
+  ColorMode,
+  ColorModeProvider,
+  Flex,
+  Spinner,
+  Text,
+  cookieStorageManagerSSR,
+  localStorageManager,
+} from '@chakra-ui/react';
 import NextNprogress from 'nextjs-progressbar'; // theme css file
 import 'moment/locale/pt-br';
 import { QueryClientProvider } from 'react-query';
@@ -13,18 +24,26 @@ import { theme } from '~/styles/theme';
 import { AuthProvider } from '~/context/AuthContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  const { getInitialProps } = Component;
+  const { 'chakra-ui-color-mode': cookie } = parseCookies();
+
   const [showChild, setShowChild] = useState(false);
   useEffect(() => {
     setShowChild(true);
   }, []);
 
   if (!showChild) {
-    return null;
+    return (
+      <Flex justify="center" align="center" h="100vh">
+        <Spinner size="xs" w="50px" h="50px" />
+      </Flex>
+    );
   }
 
   if (typeof window === 'undefined') {
     return <></>;
   }
+
   return (
     <QueryClientProvider client={queryClient}>
       <NextNprogress
@@ -34,7 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         height={3}
         showOnShallow
       />
-      <ChakraProvider theme={theme} resetCSS>
+      <ChakraProvider theme={theme}>
         <AuthProvider>
           <Layout>
             <Component {...pageProps} />

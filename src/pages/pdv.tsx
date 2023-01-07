@@ -160,14 +160,16 @@ export default function PDV() {
     await api
       .post(`/admin/request`, request_data)
       .then(() => {
+        remove();
+        resetField('name_client');
+        resetField('client_from');
         toast({
           title: 'Criado com sucesso',
           status: 'success',
           variant: 'solid',
           isClosable: true,
         });
-        reset();
-        refetchOptions();
+        // refetchOptions();
         // refetch();
       })
       .finally(() => {
@@ -179,10 +181,19 @@ export default function PDV() {
 
   useEffect(() => {
     setWidth(sliderRef?.current?.scrollWidth - sliderRef?.current?.offsetWidth);
-  }, []);
+    if (!category_id) {
+      setCategory_id(data?.menu_company[0]?.id || '');
+    }
+  }, [data]);
 
   return (
-    <Box h="full" w="full" color={text_color}>
+    <Box
+      h="full"
+      w="full"
+      color={text_color}
+      as="form"
+      onSubmit={handleSubmit(handleCreateCategory)}
+    >
       <Flex w="full" justify="space-between">
         <Box
           bg={bg_container}
@@ -196,6 +207,7 @@ export default function PDV() {
             <FormControl isInvalid={!!formState?.errors?.name_client} w="50%">
               <FormLabel>Nome do Cliente:</FormLabel>
               <CreatableSelect
+                name="name_client"
                 onChange={(e) => {
                   setValue('name_client', e?.value || '');
                   clearErrors('name_client');
@@ -208,7 +220,6 @@ export default function PDV() {
                 options={data_options}
                 formatCreateLabel={(userInput) => `📝: "${userInput}"`}
                 placeholder="Selecione cliente"
-                // closeMenuOnSelect={false}
               />
               {formState?.errors?.name_client && (
                 <FormErrorMessage>
@@ -243,7 +254,7 @@ export default function PDV() {
               </Select>
             </Box>
           </Flex>
-          <Text fontSize="20px" fontWeight="600">
+          <Text mt="10px" fontSize="20px" fontWeight="600">
             Categorias
           </Text>
           <Flex
@@ -252,21 +263,6 @@ export default function PDV() {
             my="10px"
             ref={sliderRef}
             overflowX="auto"
-            // __css={{
-            //   '&::-webkit-scrollbar': {
-            //     width: '10px',
-            //     borderRadius: '24px',
-            //     background: '#2C3045',
-            //   },
-            //   '&::-webkit-scrollbar-track': {
-            //     width: '10px',
-            //   },
-            //   '&::-webkit-scrollbar-thumb': {
-            //     background: '#5e94f9af',
-            //     width: '10px',
-            //     borderRadius: '24px',
-            //   },
-            // }}
           >
             <Flex
               as={motion.div}
@@ -289,7 +285,7 @@ export default function PDV() {
                       bg="#f1f1f1"
                       transition="all linear 0.20s"
                       border={
-                        category_id === itemMenu.id ? '2px solid #5e94f9af' : ''
+                        category_id === itemMenu.id ? '5px solid #5e94f9af' : ''
                       }
                       h="80px"
                       w="80px"
@@ -299,7 +295,12 @@ export default function PDV() {
                       <Image src="/assets/food.svg" pointerEvents="none" />
                     </Center>
 
-                    <Text pb="10px">{itemMenu.menu_name}</Text>
+                    <Text
+                      pb="10px"
+                      color={category_id === itemMenu.id ? '#5481d6' : ''}
+                    >
+                      {itemMenu.menu_name}
+                    </Text>
                   </VStack>
                 ))}
             </Flex>
@@ -389,14 +390,7 @@ export default function PDV() {
             </Table>
           </TableContainer>
         </Box>
-        <Box
-          bg={bg_container}
-          p="20px"
-          borderRadius="10px"
-          w="40%"
-          as="form"
-          onSubmit={handleSubmit(handleCreateCategory)}
-        >
+        <Box bg={bg_container} p="20px" borderRadius="10px" w="40%">
           <HStack mb="10px">
             <Icon icon="material-symbols:shopping-cart" width={20} />
             <Text fontSize="20px" fontWeight={600}>
@@ -444,11 +438,11 @@ export default function PDV() {
                       setValue(
                         'total_amount',
 
-                        watch('requests').reduce(
+                        (watch('requests').reduce(
                           (acc, val) =>
                             Number((acc + (val?.amount || 0)).toFixed(2)),
                           0
-                        ) as number
+                        ) as number) || 0
                       );
                       // setValue(
                       //   'total_amount',
@@ -462,8 +456,8 @@ export default function PDV() {
                   >
                     <NumberInputField />
                     <NumberInputStepper>
-                      <NumberIncrementStepper color="#fff" />
-                      <NumberDecrementStepper color="#fff" />
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
                     </NumberInputStepper>
                   </NumberInput>
                   <HStack>
@@ -487,12 +481,13 @@ export default function PDV() {
             <Text>
               {parseFloat(
                 String(
-                  watch('requests') &&
+                  (watch('requests') &&
                     (watch('requests')?.reduce(
                       (acc, val) =>
                         Number((acc + (val?.amount || 0)).toFixed(2)),
                       0
-                    ) as number)
+                    ) as number)) ||
+                    0
                 )
               ).toLocaleString('pt-BR', {
                 style: 'currency',
@@ -516,12 +511,13 @@ export default function PDV() {
             <Text fontSize="25px" fontWeight={700}>
               {parseFloat(
                 String(
-                  watch('requests') &&
+                  (watch('requests') &&
                     (watch('requests')?.reduce(
                       (acc, val) =>
                         Number((acc + (val?.amount || 0)).toFixed(2)),
                       0
-                    ) as number)
+                    ) as number)) ||
+                    0
                 )
               ).toLocaleString('pt-BR', {
                 style: 'currency',
@@ -529,18 +525,30 @@ export default function PDV() {
               })}
             </Text>
           </HStack>
-          <HStack justify="right" mt="20px">
+          <HStack justify="right" mt="20px" w="full">
             <Button
+              bg="red.500"
+              color="#fff"
+              leftIcon={<Icon icon="icomoon-free:cancel-circle" />}
+            >
+              Cancelar
+            </Button>
+            <Button
+              w="150px"
               bg="green.500"
               type="submit"
+              color="#fff"
+              leftIcon={
+                <Icon icon="material-symbols:payments-outline" width={20} />
+              }
               onClick={() => {
                 setValue(
                   'total_amount',
 
-                  watch('requests').reduce(
+                  (watch('requests')?.reduce(
                     (acc, val) => Number((acc + (val?.amount || 0)).toFixed(2)),
                     0
-                  ) as number
+                  ) as number) || 0
                 );
               }}
             >

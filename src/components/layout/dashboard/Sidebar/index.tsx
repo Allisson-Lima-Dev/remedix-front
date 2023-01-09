@@ -38,10 +38,6 @@ export default function Sidebar({
             title: 'PDV',
             route: '/pdv',
           },
-          {
-            title: 'Todos',
-            route: '/links',
-          },
         ],
       },
       {

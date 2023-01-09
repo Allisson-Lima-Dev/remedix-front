@@ -33,9 +33,15 @@ import {
   Avatar,
 } from '@chakra-ui/react';
 import { ModalCreateCategory } from '~/components/modals/modalCreateCategory';
-import { useMenuCompany } from '~/services/hooks/useMenuCompany';
+import {
+  deleteMenuCompany,
+  IUpdateMenuCategory,
+  updateMenuCompany,
+  useMenuCompany,
+} from '~/services/hooks/useMenuCompany';
 import { ModalCreateItems } from '~/components/modals/modalCreateItems';
 import { useColorModeDefault } from '~/styles/colorMode';
+import { deleteMenuItems } from '~/services/hooks/useMenuItems';
 
 export default function MenuDigital() {
   const { bg_container, text_color, bg_tablet } = useColorModeDefault();
@@ -48,6 +54,31 @@ export default function MenuDigital() {
     onClose: onCloseCreateItem,
   } = useDisclosure();
   const { data: dataMenuCategory, refetch } = useMenuCompany();
+
+  async function updateMenu(id: string, dataMenu: IUpdateMenuCategory) {
+    try {
+      await updateMenuCompany(id, dataMenu);
+      refetch();
+    } catch (error) {
+      console.log();
+    }
+  }
+  async function handleDeleteMenu(id: string) {
+    try {
+      await deleteMenuCompany(id);
+      refetch();
+    } catch (error) {
+      console.log();
+    }
+  }
+  async function handleDeleteMenuItems(id: string) {
+    try {
+      await deleteMenuItems(id);
+      refetch();
+    } catch (error) {
+      console.log();
+    }
+  }
   return (
     <Box h="full" w="full" color={text_color}>
       <Text>Menu Digital</Text>
@@ -162,10 +193,11 @@ export default function MenuDigital() {
                       <Switch
                         size="md"
                         defaultChecked={item.active}
-                        onChange={(e) => {
-                          console.log(e.target.checked);
-
+                        onChange={async (e) => {
                           e.target.checked = !e.target.checked;
+                          await updateMenu(item.id, {
+                            active: !e.target.checked,
+                          });
                         }}
                       />
                       <Text ml="5px">Ativo</Text>
@@ -173,13 +205,16 @@ export default function MenuDigital() {
                     <IconButton
                       zIndex={2}
                       variant="unstyled"
-                      onClick={() => console.log('Oii')}
+                      // onClick={async () => {
+                      //   await deleteMenuCompany(item.id);
+                      // }}
                       aria-label="Search database"
                       icon={<Icon icon="carbon:edit" width={25} />}
                     />
                     <IconButton
                       variant="unstyled"
                       aria-label="Search database"
+                      onClick={() => handleDeleteMenu(item.id)}
                       icon={
                         <Icon
                           icon="material-symbols:delete-outline"
@@ -217,7 +252,7 @@ export default function MenuDigital() {
                             'Valor',
                             'Descrição',
                             'Ativar',
-                            'Datelhes',
+                            'Ações',
                           ]?.map(
                             (name, key) =>
                               name?.trim() && (
@@ -225,6 +260,8 @@ export default function MenuDigital() {
                                   textAlign={
                                     key === 8 || key === 6 || key === 9
                                       ? 'center'
+                                      : key === 5
+                                      ? 'right'
                                       : 'left'
                                   }
                                   key={key}
@@ -275,16 +312,30 @@ export default function MenuDigital() {
                             <Td>
                               <Switch />
                             </Td>
-                            <Td justifyContent="center">
-                              <Flex
-                                border="1px solid #cccccc39"
-                                boxShadow="2xl"
-                                borderRadius="5px"
-                                w="-webkit-fit-content"
-                                p="5px"
-                              >
-                                <Icon icon="circum:menu-kebab" width={22} />
-                              </Flex>
+                            <Td
+                              align="right"
+                              justifyItems="right"
+                              justifyContent="right"
+                            >
+                              <Center justifyContent="right">
+                                <Icon
+                                  icon="carbon:view"
+                                  width={22}
+                                  cursor="pointer"
+                                />
+                                <Center
+                                  ml="10px"
+                                  cursor="pointer"
+                                  onClick={() => {
+                                    handleDeleteMenuItems(items.uuid);
+                                  }}
+                                >
+                                  <Icon
+                                    icon="material-symbols:delete-outline-rounded"
+                                    width={25}
+                                  />
+                                </Center>
+                              </Center>
                             </Td>
                           </Tr>
                         ))}

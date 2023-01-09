@@ -11,6 +11,7 @@ interface IMenuItems {
     amount: number;
     amount_promotion: number | null;
     accept_note: boolean;
+    active: boolean;
     unity: number;
     size: string | null;
     image_product: string | null;
@@ -18,6 +19,15 @@ interface IMenuItems {
     coupon_request_menu_id: string | null;
     company_id: string;
   }[];
+}
+
+export async function deleteMenuItems(id: string) {
+  try {
+    const { data } = await api.delete(`/admin/menu/items/${id}`);
+    return data;
+  } catch (error) {
+    throw new HandleError(error);
+  }
 }
 
 export async function getMenuItems(id: string) {

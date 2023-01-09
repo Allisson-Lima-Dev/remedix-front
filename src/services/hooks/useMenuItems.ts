@@ -11,6 +11,7 @@ interface IMenuItems {
     amount: number;
     amount_promotion: number | null;
     accept_note: boolean;
+    active: boolean;
     unity: number;
     size: string | null;
     image_product: string | null;

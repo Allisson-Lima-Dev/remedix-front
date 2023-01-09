@@ -34,11 +34,10 @@ import {
   NumberDecrementStepper,
   IconButton,
 } from '@chakra-ui/react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Keyboard, Pagination, Navigation, Autoplay } from 'swiper';
 import {
-  AsyncCreatableSelect,
-  AsyncSelect,
   CreatableSelect,
-  GroupBase,
   OptionBase,
   Select as SelectLib,
 } from 'chakra-react-select';
@@ -199,7 +198,7 @@ export default function PDV() {
           bg={bg_container}
           w="60%"
           mr="20px"
-          p="10px"
+          p="20px"
           borderRadius="10px"
           overflow="hidden"
         >
@@ -208,6 +207,7 @@ export default function PDV() {
               <FormLabel>Nome do Cliente:</FormLabel>
               <CreatableSelect
                 name="name_client"
+                className="select_input"
                 onChange={(e) => {
                   setValue('name_client', e?.value || '');
                   clearErrors('name_client');
@@ -257,59 +257,89 @@ export default function PDV() {
           <Text mt="10px" fontSize="20px" fontWeight="600">
             Categorias
           </Text>
-          <Flex
-            as={motion.div}
-            justify="space-between"
-            my="10px"
-            ref={sliderRef}
-            overflowX="auto"
+          <Swiper
+            slidesPerView={5}
+            spaceBetween={20}
+            // navigation={true}
+            grabCursor
+            breakpoints={{
+              1100: {
+                slidesPerView: 4,
+                spaceBetween: 20,
+              },
+              1200: {
+                slidesPerView: 6,
+                spaceBetween: 20,
+              },
+              848: {
+                slidesPerView: 3,
+                spaceBetween: 50,
+              },
+              200: {
+                slidesPerView: 1,
+                spaceBetween: 50,
+                navigation: true,
+              },
+            }}
+            autoplay={{ delay: 3000 }}
+            keyboard={{
+              enabled: false,
+            }}
+            pagination={{
+              clickable: true,
+            }}
+            modules={[Keyboard, Pagination, Navigation, Autoplay]}
+            className="mySwiper_pdv"
           >
-            <Flex
-              as={motion.div}
-              dragConstraints={{ right: 0, left: -width }}
-              drag="x"
-              whileTap={{ cursor: 'grabbing' }}
-            >
-              {data &&
-                data?.menu_company?.map(
-                  (itemMenu, key) =>
-                    itemMenu.active && (
+            {data &&
+              data?.menu_company?.map(
+                (itemMenu, key) =>
+                  itemMenu.active && (
+                    <SwiperSlide key={key}>
                       <VStack
-                        mx="10px"
+                        // mx="10px"
                         textAlign="center"
+                        align="start"
+                        w="full"
                         onClick={() => {
                           setCategory_id(itemMenu.id);
                           console.log();
                         }}
                       >
-                        <Center
-                          cursor="pointer"
-                          bg="#f1f1f1"
-                          transition="all linear 0.20s"
-                          border={
-                            category_id === itemMenu.id
-                              ? '5px solid #5e94f9af'
-                              : ''
-                          }
-                          h="80px"
-                          w="80px"
-                          borderRadius="50%"
-                          key={key}
-                        >
-                          <Image src="/assets/food.svg" pointerEvents="none" />
-                        </Center>
+                        <Box>
+                          <Center
+                            cursor="pointer"
+                            bg="#f1f1f1"
+                            transition="all linear 0.20s"
+                            border={
+                              category_id === itemMenu.id
+                                ? '5px solid #5e94f9af'
+                                : ''
+                            }
+                            h="80px"
+                            w="80px"
+                            borderRadius="50%"
+                            key={key}
+                          >
+                            <Image
+                              src="/assets/food.svg"
+                              pointerEvents="none"
+                            />
+                          </Center>
 
-                        <Text
-                          pb="10px"
-                          color={category_id === itemMenu.id ? '#5481d6' : ''}
-                        >
-                          {itemMenu.menu_name}
-                        </Text>
+                          <Text
+                            textAlign="center"
+                            pb="10px"
+                            color={category_id === itemMenu.id ? '#5481d6' : ''}
+                          >
+                            {itemMenu.menu_name}
+                          </Text>
+                        </Box>
                       </VStack>
-                    )
-                )}
-            </Flex>
-          </Flex>
+                    </SwiperSlide>
+                  )
+              )}
+          </Swiper>
           <TableContainer
             whiteSpace="nowrap"
             w="full"
@@ -335,62 +365,65 @@ export default function PDV() {
               </Thead>
               <Tbody pos="relative">
                 {dataItems &&
-                  dataItems.items_menu.map((items, idx) => (
-                    <Tr
-                      borderBottom="1px solid #32394e"
-                      key={idx}
-                      _hover={{
-                        bg: hover_tablet,
-                      }}
-                    >
-                      <Td>{items?.title}</Td>
+                  dataItems.items_menu.map(
+                    (items, idx) =>
+                      items.active && (
+                        <Tr
+                          borderBottom="1px solid #32394e"
+                          key={idx}
+                          _hover={{
+                            bg: hover_tablet,
+                          }}
+                        >
+                          <Td>{items?.title}</Td>
 
-                      <Td textAlign="right">
-                        {parseFloat(String(items.amount)).toLocaleString(
-                          'pt-BR',
-                          {
-                            style: 'currency',
-                            currency: 'BRL',
-                          }
-                        )}
-                      </Td>
+                          <Td textAlign="right">
+                            {parseFloat(String(items.amount)).toLocaleString(
+                              'pt-BR',
+                              {
+                                style: 'currency',
+                                currency: 'BRL',
+                              }
+                            )}
+                          </Td>
 
-                      <Td
-                        align="right"
-                        justifyItems="right"
-                        justifyContent="right"
-                      >
-                        <Center justifyContent="right">
-                          <Icon
-                            icon="carbon:view"
-                            width={22}
-                            cursor="pointer"
-                          />
-                          <Center
-                            color="green.400"
-                            ml="10px"
-                            cursor="pointer"
-                            onClick={() => {
-                              append({
-                                id_menu_company: items.category_menu_id,
-                                title: items.title,
-                                id_item: items.uuid,
-                                unity: 1,
-                                amount: items.amount,
-                                note: '',
-                                accept_note: true,
-                              });
-                            }}
+                          <Td
+                            align="right"
+                            justifyItems="right"
+                            justifyContent="right"
                           >
-                            <Icon
-                              icon="material-symbols:add-shopping-cart"
-                              width={25}
-                            />
-                          </Center>
-                        </Center>
-                      </Td>
-                    </Tr>
-                  ))}
+                            <Center justifyContent="right">
+                              <Icon
+                                icon="carbon:view"
+                                width={22}
+                                cursor="pointer"
+                              />
+                              <Center
+                                color="green.400"
+                                ml="10px"
+                                cursor="pointer"
+                                onClick={() => {
+                                  append({
+                                    id_menu_company: items.category_menu_id,
+                                    title: items.title,
+                                    id_item: items.uuid,
+                                    unity: 1,
+                                    amount: items.amount,
+                                    note: '',
+                                    accept_note: true,
+                                  });
+                                }}
+                              >
+                                <Icon
+                                  icon="material-symbols:add-shopping-cart"
+                                  width={25}
+                                />
+                              </Center>
+                            </Center>
+                          </Td>
+                        </Tr>
+                      )
+                  )}
               </Tbody>
             </Table>
           </TableContainer>
@@ -534,6 +567,7 @@ export default function PDV() {
             <Button
               bg="red.500"
               color="#fff"
+              type="reset"
               leftIcon={<Icon icon="icomoon-free:cancel-circle" />}
             >
               Cancelar

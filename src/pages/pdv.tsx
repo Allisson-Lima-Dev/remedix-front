@@ -297,7 +297,7 @@ export default function PDV() {
                   itemMenu.active && (
                     <SwiperSlide key={key}>
                       <VStack
-                        // mx="10px"
+                        mx="10px"
                         textAlign="center"
                         align="start"
                         w="full"

@@ -355,11 +355,14 @@ export function ModalCreateRequest({
                           }
                         >
                           {data &&
-                            data?.menu_company?.map((itemMenu, key) => (
-                              <option value={itemMenu.id} key={key}>
-                                {itemMenu.menu_name}
-                              </option>
-                            ))}
+                            data?.menu_company?.map(
+                              (itemMenu, key) =>
+                                itemMenu.active && (
+                                  <option value={itemMenu.id} key={key}>
+                                    {itemMenu.menu_name}
+                                  </option>
+                                )
+                            )}
                         </Select>
                       </Box>
                       <Box w="60%" ml="20px">

@@ -385,7 +385,14 @@ export default function Requests() {
                     />
                   ))}
               </SimpleGrid>
-              <Box w="70%" mx="auto" pr="10px" p="20px">
+              <Box
+                w="70%"
+                mx="auto"
+                pr="10px"
+                p="20px"
+                // bg="#f4ed9f9f"
+                // cor da nota
+              >
                 <Flex w="ful" justify="space-between" color="#ffffff">
                   <Text>Whatsapp</Text>
                   <Center justifyContent="flex-start">

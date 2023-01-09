@@ -20,6 +20,15 @@ interface IMenuItems {
   }[];
 }
 
+export async function deleteMenuItems(id: string) {
+  try {
+    const { data } = await api.delete(`/admin/menu/items/${id}`);
+    return data;
+  } catch (error) {
+    throw new HandleError(error);
+  }
+}
+
 export async function getMenuItems(id: string) {
   try {
     const { data } = await api.get<IMenuItems>(`/admin/menu/items/${id}`);

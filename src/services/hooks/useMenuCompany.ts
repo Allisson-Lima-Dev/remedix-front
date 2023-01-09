@@ -25,6 +25,30 @@ interface IMenuCompany {
     }[];
   }[];
 }
+export interface IUpdateMenuCategory {
+  name_category?: string;
+  active?: boolean;
+}
+
+export async function deleteMenuCompany(id: string) {
+  try {
+    const { data } = await api.delete(`/admin/menu/company/${id}`);
+    return data;
+  } catch (error) {
+    throw new HandleError(error);
+  }
+}
+export async function updateMenuCompany(
+  id: string,
+  dataMenu: IUpdateMenuCategory
+) {
+  try {
+    const { data } = await api.put(`/admin/menu/company/${id}`, dataMenu);
+    return data;
+  } catch (error) {
+    throw new HandleError(error);
+  }
+}
 
 export async function getMenuCompany() {
   try {

@@ -271,38 +271,43 @@ export default function PDV() {
               whileTap={{ cursor: 'grabbing' }}
             >
               {data &&
-                data?.menu_company?.map((itemMenu, key) => (
-                  <VStack
-                    mx="10px"
-                    textAlign="center"
-                    onClick={() => {
-                      setCategory_id(itemMenu.id);
-                      console.log();
-                    }}
-                  >
-                    <Center
-                      cursor="pointer"
-                      bg="#f1f1f1"
-                      transition="all linear 0.20s"
-                      border={
-                        category_id === itemMenu.id ? '5px solid #5e94f9af' : ''
-                      }
-                      h="80px"
-                      w="80px"
-                      borderRadius="50%"
-                      key={key}
-                    >
-                      <Image src="/assets/food.svg" pointerEvents="none" />
-                    </Center>
+                data?.menu_company?.map(
+                  (itemMenu, key) =>
+                    itemMenu.active && (
+                      <VStack
+                        mx="10px"
+                        textAlign="center"
+                        onClick={() => {
+                          setCategory_id(itemMenu.id);
+                          console.log();
+                        }}
+                      >
+                        <Center
+                          cursor="pointer"
+                          bg="#f1f1f1"
+                          transition="all linear 0.20s"
+                          border={
+                            category_id === itemMenu.id
+                              ? '5px solid #5e94f9af'
+                              : ''
+                          }
+                          h="80px"
+                          w="80px"
+                          borderRadius="50%"
+                          key={key}
+                        >
+                          <Image src="/assets/food.svg" pointerEvents="none" />
+                        </Center>
 
-                    <Text
-                      pb="10px"
-                      color={category_id === itemMenu.id ? '#5481d6' : ''}
-                    >
-                      {itemMenu.menu_name}
-                    </Text>
-                  </VStack>
-                ))}
+                        <Text
+                          pb="10px"
+                          color={category_id === itemMenu.id ? '#5481d6' : ''}
+                        >
+                          {itemMenu.menu_name}
+                        </Text>
+                      </VStack>
+                    )
+                )}
             </Flex>
           </Flex>
           <TableContainer

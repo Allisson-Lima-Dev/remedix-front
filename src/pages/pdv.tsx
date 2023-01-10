@@ -111,7 +111,7 @@ const createRequestFormSchema = yup.object().shape({
   ),
 });
 export default function PDV() {
-  const { hover_tablet, bg_tablet, text_color, bg_container } =
+  const { hover_tablet, bg_tablet, text_color, bg_container, text_color_item } =
     useColorModeDefault();
   const sliderRef = useRef<any | null>(null);
   const [width, setWidth] = useState(0);
@@ -297,44 +297,39 @@ export default function PDV() {
                   itemMenu.active && (
                     <SwiperSlide key={key}>
                       <VStack
-                        // mx="10px"
+                        mx="10px"
                         textAlign="center"
-                        align="start"
+                        align="center"
                         w="full"
                         onClick={() => {
                           setCategory_id(itemMenu.id);
                           console.log();
                         }}
                       >
-                        <Box>
-                          <Center
-                            cursor="pointer"
-                            bg="#f1f1f1"
-                            transition="all linear 0.20s"
-                            border={
-                              category_id === itemMenu.id
-                                ? '5px solid #5e94f9af'
-                                : ''
-                            }
-                            h="80px"
-                            w="80px"
-                            borderRadius="50%"
-                            key={key}
-                          >
-                            <Image
-                              src="/assets/food.svg"
-                              pointerEvents="none"
-                            />
-                          </Center>
+                        <Center
+                          cursor="pointer"
+                          bg="#f1f1f1"
+                          transition="all linear 0.20s"
+                          border={
+                            category_id === itemMenu.id
+                              ? '5px solid #5e94f9af'
+                              : ''
+                          }
+                          h="80px"
+                          w="80px"
+                          borderRadius="50%"
+                          key={key}
+                        >
+                          <Image src="/assets/food.svg" pointerEvents="none" />
+                        </Center>
 
-                          <Text
-                            textAlign="center"
-                            pb="10px"
-                            color={category_id === itemMenu.id ? '#5481d6' : ''}
-                          >
-                            {itemMenu.menu_name}
-                          </Text>
-                        </Box>
+                        <Text
+                          textAlign="center"
+                          pb="10px"
+                          color={category_id === itemMenu.id ? '#5481d6' : ''}
+                        >
+                          {itemMenu.menu_name}
+                        </Text>
                       </VStack>
                     </SwiperSlide>
                   )
@@ -369,13 +364,37 @@ export default function PDV() {
                     (items, idx) =>
                       items.active && (
                         <Tr
-                          borderBottom="1px solid #32394e"
+                          borderBottom="1px solid #494e5b3f"
                           key={idx}
                           _hover={{
                             bg: hover_tablet,
                           }}
                         >
-                          <Td>{items?.title}</Td>
+                          <Td whiteSpace="pre-wrap">
+                            <HStack>
+                              <Image
+                                src="/assets/hamburger.jpeg"
+                                borderRadius="5px"
+                                w="60px"
+                                h="60px"
+                              />
+                              <Box>
+                                <Text color={text_color_item} fontWeight={700}>
+                                  {items?.title}
+                                </Text>
+                                <Text
+                                  color="#909090"
+                                  fontSize="15px"
+                                  maxW="350px"
+                                >
+                                  Lorem, ipsum dolor sit amet consectetur
+                                  adipisicing elit. Error vitae earum quo saepe,
+                                  repudiandae amet consequatur sapiente
+                                  {/* {items.description} */}
+                                </Text>
+                              </Box>
+                            </HStack>
+                          </Td>
 
                           <Td textAlign="right">
                             {parseFloat(String(items.amount)).toLocaleString(

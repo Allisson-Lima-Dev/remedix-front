@@ -1,5 +1,18 @@
-import React from 'react';
-import { Box, Button, Center, Flex, HStack, Text } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Heading,
+  HStack,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { Layout } from '~/components';
 import { useOptions } from '~/services/hooks/useOptions';
@@ -9,9 +22,53 @@ export default function Clients() {
   const { hover_tablet, bg_tablet, text_color, bg_container, text_color_item } =
     useColorModeDefault();
   const { data: data_options, refetch: refetchOptions } = useOptions();
+  const [search, setSearch] = useState('');
+  let timeoutId: any;
+
+  const debouncedSearch = (value: string) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      setSearch(value);
+    }, 1000);
+  };
   return (
     <Box h="full" w="full" color={text_color}>
-      <Text>Clientes</Text>
+      <HStack w="full" justify="space-between">
+        <Heading fontSize="20px">Clientes</Heading>
+
+        <InputGroup w="290px">
+          <InputLeftElement
+            pointerEvents="none"
+            children={<Icon icon="ic:baseline-search" width={20} />}
+          />
+
+          <Input
+            h="36px"
+            type="tel"
+            placeholder="Busque por nome"
+            variant="outline"
+            onChange={(e) => {
+              debouncedSearch(e.target.value);
+            }}
+          />
+
+          <InputRightElement
+            cursor="pointer"
+            children={
+              <Tooltip
+                label="Pesquise pelo nome do cliente ou n° do Pedido"
+                bg="yellow.500"
+                mt="5px"
+                mr="50px"
+                closeDelay={500}
+                color="#fff"
+              >
+                <Icon icon="lucide:alert-circle" color="#cccccc86" />
+              </Tooltip>
+            }
+          />
+        </InputGroup>
+      </HStack>
       {data_options?.map((item, key) => (
         <HStack
           w="full"

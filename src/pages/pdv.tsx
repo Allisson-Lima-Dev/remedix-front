@@ -281,7 +281,7 @@ export default function PDV() {
                 navigation: true,
               },
             }}
-            autoplay={{ delay: 3000 }}
+            // autoplay={{ delay: 3000 }}
             keyboard={{
               enabled: false,
             }}
@@ -396,7 +396,7 @@ export default function PDV() {
                             </HStack>
                           </Td>
 
-                          <Td textAlign="right">
+                          <Td textAlign="right" fontWeight={700}>
                             {parseFloat(String(items.amount)).toLocaleString(
                               'pt-BR',
                               {
@@ -412,11 +412,11 @@ export default function PDV() {
                             justifyContent="right"
                           >
                             <Center justifyContent="right">
-                              <Icon
+                              {/* <Icon
                                 icon="carbon:view"
                                 width={22}
                                 cursor="pointer"
-                              />
+                              /> */}
                               <Center
                                 color="green.400"
                                 ml="10px"
@@ -454,85 +454,93 @@ export default function PDV() {
               Detalhes do Pedido
             </Text>
           </HStack>
-          {fields &&
-            fields?.map((item, idx) => (
-              <HStack
-                key={idx}
-                w="full"
-                justify="space-between"
-                align="center"
-                borderBottom="1px solid #cccccc31"
-                pb="2px"
-                mb="5px"
-              >
-                <Box>
-                  <Text>{item.title}</Text>
-                  <Text>
-                    {parseFloat(String(item.amount)).toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })}
-                  </Text>
-                </Box>
-                <HStack>
-                  <NumberInput
-                    step={1}
-                    defaultValue={1}
-                    min={1}
-                    max={30}
-                    w="70px"
-                    onChange={(e, value) => {
-                      setValue(`requests.${idx}.unity`, value);
-                      setValue(
-                        `requests.${idx}.amount`,
-                        (dataMenuItems?.items_menu?.find(
-                          (itemMenu) =>
-                            itemMenu.uuid ===
-                            getValues(`requests.${idx}.id_item`)
-                        )?.amount || 0) * value
-                        // (watch(`requests.${idx}.amount`) || 0) * value
-                      );
-                      setValue(
-                        'total_amount',
-
-                        (watch('requests').reduce(
-                          (acc, val) =>
-                            Number((acc + (val?.amount || 0)).toFixed(2)),
-                          0
-                        ) as number) || 0
-                      );
-                      // setValue(
-                      //   'total_amount',
-                      //   (watch(`requests.${idx}.unity`) *
-                      //     watch('requests').reduce(
-                      //       (acc, val) => acc + (val?.amount || 0),
-                      //       0
-                      //     )) as number
-                      // );
-                    }}
-                  >
-                    <NumberInputField />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper />
-                      <NumberDecrementStepper />
-                    </NumberInputStepper>
-                  </NumberInput>
+          <Box maxH="250px" overflowY="auto">
+            {fields &&
+              fields?.map((item, idx) => (
+                <HStack
+                  key={idx}
+                  w="full"
+                  justify="space-between"
+                  align="center"
+                  borderBottom="1px solid #cccccc31"
+                  pb="2px"
+                  mb="5px"
+                >
+                  <Box>
+                    <Text
+                      color={text_color_item}
+                      fontWeight={700}
+                      fontSize="17px"
+                    >
+                      {item.title}
+                    </Text>
+                    <Text color="#797373" fontSize="15px">
+                      {parseFloat(String(item.amount)).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })}
+                    </Text>
+                  </Box>
                   <HStack>
-                    <IconButton
-                      variant="unstyled"
-                      onClick={() => remove(idx)}
-                      aria-label="Search database"
-                      icon={
-                        <Icon
-                          icon="material-symbols:delete-outline"
-                          width={25}
-                        />
-                      }
-                    />
+                    <NumberInput
+                      step={1}
+                      defaultValue={1}
+                      min={1}
+                      max={30}
+                      w="70px"
+                      onChange={(e, value) => {
+                        setValue(`requests.${idx}.unity`, value);
+                        setValue(
+                          `requests.${idx}.amount`,
+                          (dataMenuItems?.items_menu?.find(
+                            (itemMenu) =>
+                              itemMenu.uuid ===
+                              getValues(`requests.${idx}.id_item`)
+                          )?.amount || 0) * value
+                          // (watch(`requests.${idx}.amount`) || 0) * value
+                        );
+                        setValue(
+                          'total_amount',
+
+                          (watch('requests').reduce(
+                            (acc, val) =>
+                              Number((acc + (val?.amount || 0)).toFixed(2)),
+                            0
+                          ) as number) || 0
+                        );
+                        // setValue(
+                        //   'total_amount',
+                        //   (watch(`requests.${idx}.unity`) *
+                        //     watch('requests').reduce(
+                        //       (acc, val) => acc + (val?.amount || 0),
+                        //       0
+                        //     )) as number
+                        // );
+                      }}
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                    <HStack>
+                      <IconButton
+                        variant="unstyled"
+                        onClick={() => remove(idx)}
+                        aria-label="Search database"
+                        icon={
+                          <Icon
+                            icon="material-symbols:delete-outline"
+                            width={25}
+                          />
+                        }
+                      />
+                    </HStack>
                   </HStack>
                 </HStack>
-              </HStack>
-            ))}
+              ))}
+          </Box>
           <HStack w="full" justify="space-between" mt="20px">
             <Text>SubTotal</Text>
             <Text>

@@ -54,7 +54,19 @@ export default function Requests() {
     bg,
     divider_color,
     header_table,
+    nf_bg,
   } = useColorModeDefault();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenCreateRequest,
+    onOpen: onOpenCreateRequest,
+    onClose: onCloseCreateRequest,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenFilter,
+    onOpen: onOpenFilter,
+    onClose: onCloseFilter,
+  } = useDisclosure();
   const {
     isOpen: isOpenCofirm,
     onOpen: onOpenCofirm,
@@ -73,17 +85,7 @@ export default function Requests() {
     '(max-width: 1302px)',
     '(max-width: 1552px)',
   ]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isOpenCreateRequest,
-    onOpen: onOpenCreateRequest,
-    onClose: onCloseCreateRequest,
-  } = useDisclosure();
-  const {
-    isOpen: isOpenFilter,
-    onOpen: onOpenFilter,
-    onClose: onCloseFilter,
-  } = useDisclosure();
+
   const [details, setDetails] = useState<IDataRequests>();
   const { register, handleSubmit, reset } = useForm<any>();
   const [startDate, setStartDate] = useState();
@@ -142,11 +144,11 @@ export default function Requests() {
 
   useEffect(() => {
     if (!details || typeRequest.type) {
-      setDetails(data?.data[0]);
+      if (data?.data) {
+        setDetails(data?.data[0]);
+      }
     }
   }, [data]);
-
-  console.log({ details });
 
   return (
     <Box w="full">
@@ -390,7 +392,8 @@ export default function Requests() {
                 mx="auto"
                 pr="10px"
                 p="20px"
-                // bg="#f4ed9f9f"
+                borderRadius="7px"
+                bg={nf_bg}
                 // cor da nota
               >
                 <Flex w="ful" justify="space-between" color="#ffffff">

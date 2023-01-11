@@ -14,6 +14,7 @@ export const useColorModeDefault = () => {
   const button_pagination_inative = useColorModeValue('#cfcfcfff', '#8181826b');
   const button_pagination_active = useColorModeValue('#f1f1f1', '#363C4F');
   const text_color_item = useColorModeValue('#3e4952', '#f1f1f1');
+  const nf_bg = useColorModeValue('#f4ed9f9f', '#3e4952');
 
   return {
     bg,
@@ -29,5 +30,6 @@ export const useColorModeDefault = () => {
     hover_accordion,
     header_table,
     text_color_item,
+    nf_bg,
   };
 };

@@ -120,7 +120,7 @@ export default function Requests() {
       icon: 'mdi:store-alert',
     },
     {
-      name: 'Em Andamento',
+      name: 'Produção',
       icon: 'ic:twotone-pending-actions',
     },
     {

@@ -153,17 +153,28 @@ export default function PDV() {
   });
 
   async function handleCreateCategory(request_data: IRequestEdit) {
-    console.log(request_data);
+    if (fields.length === 0) {
+      return toast({
+        title: 'Adicionar pedido obrigatório!',
+        status: 'error',
+        variant: 'solid',
+        isClosable: true,
+      });
+    }
+    let data_request = {
+      status: 'production',
+      ...request_data,
+    };
 
     setLoading(true);
     await api
-      .post(`/admin/request`, request_data)
+      .post(`/admin/request`, data_request)
       .then(() => {
         remove();
         resetField('name_client');
         resetField('client_from');
         toast({
-          title: 'Criado com sucesso',
+          title: 'Pedido realizado!',
           status: 'success',
           variant: 'solid',
           isClosable: true,
@@ -604,6 +615,7 @@ export default function PDV() {
               bg="green.500"
               type="submit"
               color="#fff"
+              isLoading={loading}
               leftIcon={
                 <Icon icon="material-symbols:payments-outline" width={20} />
               }

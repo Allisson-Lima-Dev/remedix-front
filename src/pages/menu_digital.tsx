@@ -44,7 +44,8 @@ import { useColorModeDefault } from '~/styles/colorMode';
 import { deleteMenuItems } from '~/services/hooks/useMenuItems';
 
 export default function MenuDigital() {
-  const { bg_container, text_color, bg_tablet } = useColorModeDefault();
+  const { bg_container, text_color, bg_tablet, hover_tablet } =
+    useColorModeDefault();
   const [id_category, setId_category] = useState('');
   const [type, setType] = useState<'new' | 'existing'>('new');
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -278,7 +279,8 @@ export default function MenuDigital() {
                             borderBottom="1px solid #32394e"
                             key={idx}
                             _hover={{
-                              bg: '#282e3f',
+                              // bg: '#282e3f',
+                              bg: hover_tablet,
                             }}
                           >
                             <Td>{items?.title}</Td>
